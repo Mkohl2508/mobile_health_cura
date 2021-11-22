@@ -37,10 +37,7 @@ class _TextInputLoginState extends State<TextInputLogin> {
     return Container(
       width: 300,
       height: 50,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
+      color: Colors.white,
       child: Row(
         children: [
           Padding(padding: const EdgeInsets.only(left: 15), child: startIcon),
