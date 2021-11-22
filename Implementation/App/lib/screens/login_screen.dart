@@ -1,3 +1,5 @@
+import 'package:cura/model/widget/AppColors.dart';
+import 'package:cura/screens/home_screen.dart';
 import 'package:cura/shared/text_input_login_wdiget.dart';
 import 'package:flutter/material.dart';
 
@@ -11,76 +13,118 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        colors: [
-          Color(0xff37ffa5),
-          Color(0xff3798ff),
-        ],
-        begin: Alignment(0, 1),
-        end: Alignment(-1.0, -1),
-      )),
-      child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: SafeArea(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 30,
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: AppColors.cura_background,
+        body: SafeArea(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 35, top: 20),
+                  child: Image(
+                    image: AssetImage("assets/cura_logo.png"),
                   ),
-                  Text("Welcome to Cura",
-                      style: TextStyle(
-                          fontSize: 40,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(0, 4.0),
-                              blurRadius: 4.0,
-                              color: Color.fromARGB(64, 0, 0, 0),
-                            )
-                          ])),
-                  SizedBox(
-                    height: 80,
+                ),
+                SizedBox(
+                  height: 120,
+                ),
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 40,
+                      ),
+                      TextInputLogin(
+                        icon: Icon(
+                          Icons.person,
+                          color: AppColors.cura_orange,
+                          size: 25,
+                        ),
+                        color: AppColors.cura_orange,
+                        hint: "Username",
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextInputLogin(
+                        isPassword: true,
+                        icon: Icon(
+                          Icons.lock,
+                          color: AppColors.cura_orange,
+                          size: 25,
+                        ),
+                        color: AppColors.cura_orange,
+                        hint: "Password",
+                      ),
+                      SizedBox(
+                        height: 50,
+                      ),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                AppColors.cura_orange),
+                            shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40.0),
+                                    side: BorderSide(
+                                        color: AppColors.cura_orange)))),
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()),
+                              (route) => false);
+                        },
+                        child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                "Login",
+                                style: TextStyle(fontSize: 22),
+                              ),
+                            )),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                Color.fromRGBO(134, 118, 102, 0.5)),
+                            shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40.0),
+                                    side: BorderSide(
+                                        color: Color.fromRGBO(
+                                            134, 118, 102, 0.5))))),
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()),
+                              (route) => false);
+                        },
+                        child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                "Sign up",
+                                style: TextStyle(fontSize: 22),
+                              ),
+                            )),
+                      )
+                    ],
                   ),
-                  Icon(
-                    Icons.account_circle,
-                    size: 150,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  TextInputLogin(
-                    icon: Icon(
-                      Icons.person,
-                      color: Color(0x7001A1DB),
-                      size: 25,
-                    ),
-                    color: Color(0x7001A1DB),
-                    hint: "Username",
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  TextInputLogin(
-                    isPassword: true,
-                    icon: Icon(
-                      Icons.lock,
-                      color: Color(0x7001A1DB),
-                      size: 25,
-                    ),
-                    color: Color(0x7001A1DB),
-                    hint: "Password",
-                  ),
-                ],
-              ),
-            ),
-          )),
-    );
+                ),
+              ]),
+        ));
   }
 }
