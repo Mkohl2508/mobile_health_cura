@@ -5,12 +5,14 @@ class TextInputLogin extends StatefulWidget {
   final Color? verticalDevColor;
   final String? textHint;
   final bool isPassword;
+  final TextEditingController? controller;
   const TextInputLogin(
       {Key? key,
       Icon? icon,
       Color? color,
       String? hint,
-      bool isPassword = false})
+      bool isPassword = false,
+      this.controller})
       : startIcon = icon,
         textHint = hint,
         verticalDevColor = color,
@@ -19,8 +21,8 @@ class TextInputLogin extends StatefulWidget {
         super(key: key);
 
   @override
-  _TextInputLoginState createState() =>
-      _TextInputLoginState(startIcon, verticalDevColor, textHint, isPassword);
+  _TextInputLoginState createState() => _TextInputLoginState(
+      startIcon, verticalDevColor, textHint, isPassword, controller);
 }
 
 class _TextInputLoginState extends State<TextInputLogin> {
@@ -28,9 +30,10 @@ class _TextInputLoginState extends State<TextInputLogin> {
   final Color? verticalDevColor;
   final String? textHint;
   final bool isPassword;
+  final TextEditingController? controller;
 
-  _TextInputLoginState(
-      this.startIcon, this.verticalDevColor, this.textHint, this.isPassword);
+  _TextInputLoginState(this.startIcon, this.verticalDevColor, this.textHint,
+      this.isPassword, this.controller);
 
   @override
   Widget build(BuildContext context) {
