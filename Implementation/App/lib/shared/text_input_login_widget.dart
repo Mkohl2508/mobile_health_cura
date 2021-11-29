@@ -58,6 +58,7 @@ class _TextInputLoginState extends State<TextInputLogin> {
               child: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
             child: TextFormField(
+              controller: controller,
               validator: validator,
               obscureText: isPassword,
               enableSuggestions: !isPassword,

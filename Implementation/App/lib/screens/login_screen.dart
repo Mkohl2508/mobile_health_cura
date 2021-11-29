@@ -34,135 +34,138 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _formKey,
         resizeToAvoidBottomInset: false,
         backgroundColor: AppColors.cura_background,
         body: SafeArea(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 35, top: 20),
-                  child: Image(
-                    image: AssetImage("assets/cura_logo.png"),
+          child: Form(
+            key: _formKey,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 35, top: 20),
+                    child: Image(
+                      image: AssetImage("assets/cura_logo.png"),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 120,
-                ),
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 40,
-                      ),
-                      TextInputLogin(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
+                  SizedBox(
+                    height: 120,
+                  ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 40,
+                        ),
+                        TextInputLogin(
+                          controller: _emailController,
                           icon: Icon(
                             Icons.person,
                             color: AppColors.cura_orange,
                             size: 25,
                           ),
-                          fillColor: AppColors.cura_orange,
-                          labelText: "Username",
+                          color: AppColors.cura_orange,
+                          hint: "Username",
+                          validator: (String? value) {
+                            if (value!.isEmpty) return 'Please enter some text';
+                            return null;
+                          },
                         ),
-                        validator: (String? value) {
-                          if (value!.isEmpty) return 'Please enter some text';
-                          return null;
-                        },
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TextInputLogin(
-                        controller: _passwordController,
-                        decoration: const InputDecoration(
+                        SizedBox(
+                          height: 20,
+                        ),
+                        TextInputLogin(
+                          controller: _passwordController,
+                          isPassword: true,
                           icon: Icon(
                             Icons.lock,
                             color: AppColors.cura_orange,
                             size: 25,
                           ),
-                          fillColor: AppColors.cura_orange,
-                          labelText: "Password",
+                          color: AppColors.cura_orange,
+                          hint: "Password",
+                          validator: (String? value) {
+                            if (value!.isEmpty) return 'Please enter some text';
+                            return null;
+                          },
                         ),
-                        validator: (String? value) {
-                          if (value!.isEmpty) return 'Please enter some text';
-                          return null;
-                        },
-                        obscureText: true,
-                      ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                AppColors.cura_orange),
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40.0),
-                                    side: BorderSide(
-                                        color: AppColors.cura_orange)))),
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            await _signInWithEmailAndPassword();
-                          }
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeScreen()),
-                              (route) => false);
-                        },
-                        child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            height: 50,
-                            child: Center(
-                              child: Text(
-                                "Login",
-                                style: TextStyle(fontSize: 22),
-                              ),
-                            )),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                Color.fromRGBO(134, 118, 102, 0.5)),
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40.0),
-                                    side: BorderSide(
-                                        color: Color.fromRGBO(
-                                            134, 118, 102, 0.5))))),
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeScreen()),
-                              (route) => false);
-                        },
-                        child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            height: 50,
-                            child: Center(
-                              child: Text(
-                                "Sign up",
-                                style: TextStyle(fontSize: 22),
-                              ),
-                            )),
-                      )
-                    ],
+                        SizedBox(
+                          height: 50,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  AppColors.cura_orange),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(40.0),
+                                      side: BorderSide(
+                                          color: AppColors.cura_orange)))),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              _signInWithEmailAndPassword().then((success) => {
+                                    if (success)
+                                      {
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    HomeScreen()),
+                                            (route) => false)
+                                      }
+                                  });
+                            }
+                          },
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              height: 50,
+                              child: Center(
+                                child: Text(
+                                  "Login",
+                                  style: TextStyle(fontSize: 22),
+                                ),
+                              )),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  Color.fromRGBO(134, 118, 102, 0.5)),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(40.0),
+                                      side: BorderSide(
+                                          color: Color.fromRGBO(
+                                              134, 118, 102, 0.5))))),
+                          onPressed: () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()),
+                                (route) => false);
+                          },
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              height: 50,
+                              child: Center(
+                                child: Text(
+                                  "Sign up",
+                                  style: TextStyle(fontSize: 22),
+                                ),
+                              )),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ]),
+                ]),
+          ),
         ));
   }
 
@@ -174,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   // Example code of how to sign in with email and password.
-  Future<void> _signInWithEmailAndPassword() async {
+  Future<bool> _signInWithEmailAndPassword() async {
     try {
       final User user = (await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
@@ -182,8 +185,10 @@ class _LoginScreenState extends State<LoginScreen> {
       ))
           .user!;
       print('${user.email} signed in');
+      return true;
     } catch (e) {
       print('Failed to sign in with Email & Password');
+      return false;
     }
   }
 }

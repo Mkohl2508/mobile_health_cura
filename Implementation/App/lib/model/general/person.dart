@@ -1,4 +1,4 @@
-import 'package:cura/model/residence/Residence.dart';
+import 'package:cura/model/residence/residence.dart';
 
 class Person {
   final String id;
