@@ -11,8 +11,15 @@ class _PatientRecordScreenState extends State<PatientRecordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('PatienFileScreen'),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Image(
+              image: AssetImage("assets/cura_header.png"),
+            ),
+          ),
+        ),
       ),
     );
   }

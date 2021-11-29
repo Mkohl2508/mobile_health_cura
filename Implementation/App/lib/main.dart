@@ -1,3 +1,4 @@
+import 'package:cura/model/residence/residence.dart';
 import 'package:cura/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
