@@ -6,11 +6,17 @@ class Patient extends Person {
   final Room room;
   final PatientFile patientFile;
   Patient(
-      {id,
-      name,
-      birthDate,
-      residence,
+      {required id,
+      required firstName,
+      required birthDate,
+      required residence,
+      required surname,
       required this.room,
       required this.patientFile})
-      : super(id: id, name: name, birthDate: birthDate, residence: residence);
+      : super(
+            id: id,
+            firstName: firstName,
+            birthDate: birthDate,
+            residence: residence,
+            surname: surname);
 }

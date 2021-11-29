@@ -4,6 +4,18 @@ class Doctor extends Person {
   final String degree;
   final String? type;
 
-  Doctor({id, name, birthDate, residence, this.type, required this.degree})
-      : super(id: id, name: name, birthDate: birthDate, residence: residence);
+  Doctor(
+      {required id,
+      required firstName,
+      required birthDate,
+      required residence,
+      required surname,
+      this.type,
+      required this.degree})
+      : super(
+            id: id,
+            firstName: firstName,
+            birthDate: birthDate,
+            residence: residence,
+            surname: surname);
 }
