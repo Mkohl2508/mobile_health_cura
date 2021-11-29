@@ -6,13 +6,15 @@ class TextInputLogin extends StatefulWidget {
   final String? textHint;
   final bool isPassword;
   final TextEditingController? controller;
+  final String? Function(String?)? validator;
   const TextInputLogin(
       {Key? key,
       Icon? icon,
       Color? color,
       String? hint,
       bool isPassword = false,
-      this.controller})
+      this.controller,
+      this.validator})
       : startIcon = icon,
         textHint = hint,
         verticalDevColor = color,
@@ -22,7 +24,7 @@ class TextInputLogin extends StatefulWidget {
 
   @override
   _TextInputLoginState createState() => _TextInputLoginState(
-      startIcon, verticalDevColor, textHint, isPassword, controller);
+      startIcon, verticalDevColor, textHint, isPassword, controller, validator);
 }
 
 class _TextInputLoginState extends State<TextInputLogin> {
@@ -31,9 +33,10 @@ class _TextInputLoginState extends State<TextInputLogin> {
   final String? textHint;
   final bool isPassword;
   final TextEditingController? controller;
+  final String? Function(String?)? validator;
 
   _TextInputLoginState(this.startIcon, this.verticalDevColor, this.textHint,
-      this.isPassword, this.controller);
+      this.isPassword, this.controller, this.validator);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +57,8 @@ class _TextInputLoginState extends State<TextInputLogin> {
           Expanded(
               child: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
-            child: TextField(
+            child: TextFormField(
+              validator: validator,
               obscureText: isPassword,
               enableSuggestions: !isPassword,
               autocorrect: !isPassword,
