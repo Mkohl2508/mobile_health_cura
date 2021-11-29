@@ -1,6 +1,6 @@
 import 'package:cura/model/general/nurse.dart';
 import 'package:cura/model/patient/patient.dart';
-import 'package:cura/model/residence/Residence.dart';
+import 'package:cura/model/residence/residence.dart';
 
 class OldPeopleHome {
   final String id;
