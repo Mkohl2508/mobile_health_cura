@@ -1,17 +1,14 @@
 import 'package:cura/model/general/person.dart';
-import 'package:cura/model/general/room.dart';
-import 'package:cura/model/patient/patient_file.dart';
+import 'package:cura/model/patient/patient_record.dart';
 
 class Patient extends Person {
-  final Room room;
-  final PatientFile patientFile;
+  final PatientRecord patientFile;
   Patient(
       {required id,
       required firstName,
       required birthDate,
       required residence,
       required surname,
-      required this.room,
       required this.patientFile})
       : super(
             id: id,

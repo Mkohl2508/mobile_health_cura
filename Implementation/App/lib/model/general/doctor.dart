@@ -10,6 +10,7 @@ class Doctor extends Person {
       required birthDate,
       required residence,
       required surname,
+      required phoneNumber,
       this.type,
       required this.degree})
       : super(
@@ -17,5 +18,11 @@ class Doctor extends Person {
             firstName: firstName,
             birthDate: birthDate,
             residence: residence,
-            surname: surname);
+            surname: surname,
+            phoneNumber: phoneNumber);
+
+  @override
+  String fullName() {
+    return degree + " " + firstName + " " + surname;
+  }
 }

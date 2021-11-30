@@ -1,9 +1,11 @@
+import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/patient_record_screen.dart';
 import 'package:flutter/material.dart';
 
 class PatientScreen extends StatefulWidget {
-  const PatientScreen({Key? key}) : super(key: key);
+  final Patient patient;
+  const PatientScreen({Key? key, required this.patient}) : super(key: key);
 
   @override
   _PatientScreenState createState() => _PatientScreenState();
@@ -54,7 +56,7 @@ class _PatientScreenState extends State<PatientScreen> {
                           height: 5,
                         ),
                         Text(
-                          "Ulrike Steinbock",
+                          widget.patient.fullName(),
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                       ],
@@ -75,7 +77,7 @@ class _PatientScreenState extends State<PatientScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        Text("04.09.1939",
+                        Text(widget.patient.formattedBirthday(),
                             style: TextStyle(color: Colors.grey[700])),
                       ],
                     ),
@@ -96,7 +98,7 @@ class _PatientScreenState extends State<PatientScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        Text("Bahnhofstraße 113, 12555 Berlin",
+                        Text(widget.patient.residence.getAddress(),
                             style: TextStyle(
                                 color: Colors.grey[700], height: 1.5)),
                       ],
@@ -134,7 +136,8 @@ class _PatientScreenState extends State<PatientScreen> {
                           height: 5,
                         ),
                         Text(
-                          "Dr. Alfred Petermann",
+                          widget.patient.patientFile.attendingDoctor!
+                              .fullName(),
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                       ],
@@ -155,7 +158,9 @@ class _PatientScreenState extends State<PatientScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        Text("15.02.1973",
+                        Text(
+                            widget.patient.patientFile.attendingDoctor!
+                                .formattedBirthday(),
                             style: TextStyle(color: Colors.grey[700])),
                       ],
                     ),
@@ -176,7 +181,10 @@ class _PatientScreenState extends State<PatientScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        Text("Bergheimweg 2, 12031 Berlin",
+                        Text(
+                            widget
+                                .patient.patientFile.attendingDoctor!.residence
+                                .getAddress(),
                             style: TextStyle(
                                 color: Colors.grey[700], height: 1.5)),
                       ],
@@ -198,7 +206,9 @@ class _PatientScreenState extends State<PatientScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        Text("+49 17392348382",
+                        Text(
+                            widget.patient.patientFile.attendingDoctor!
+                                .phoneNumber!,
                             style: TextStyle(
                                 color: Colors.grey[700], height: 1.5)),
                       ],

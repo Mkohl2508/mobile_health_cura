@@ -4,7 +4,7 @@ import 'package:cura/model/general/nurse.dart';
 import 'package:cura/model/general/old_people_home.dart';
 import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
-import 'package:cura/model/patient/patient_file.dart';
+import 'package:cura/model/patient/patient_record.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/model/residence/residence.dart';
@@ -47,6 +47,7 @@ Residence _initResidence() {
 Doctor _initDoctor() {
   return Doctor(
       id: "1doctor",
+      phoneNumber: "+49 15204381194",
       firstName: "Peter",
       surname: "Lustig",
       degree: "Dr. med.",
@@ -55,26 +56,26 @@ Doctor _initDoctor() {
       residence: _initResidence());
 }
 
-PatientFile _initPatientFile() {
-  return PatientFile(
+PatientRecord _initPatientFile() {
+  return PatientRecord(
       id: "1patientFile",
       wounds: [_initWound()],
       attendingDoctor: _initDoctor());
 }
 
-Room _initRoom() {
-  return Room(number: 1, name: "Regenbogen Raum");
-}
-
 Patient _initPatient() {
   return Patient(
-      id: "1patient",
-      birthDate: DateTime(1937, 11, 01),
-      firstName: "Ullricke",
-      surname: "Steinbock",
-      patientFile: _initPatientFile(),
-      residence: _initResidence(),
-      room: _initRoom());
+    id: "1patient",
+    birthDate: DateTime(1937, 11, 01),
+    firstName: "Ullricke",
+    surname: "Steinbock",
+    patientFile: _initPatientFile(),
+    residence: _initResidence(),
+  );
+}
+
+Room _initRoom() {
+  return Room(number: 1, name: "Regenbogen Raum", patients: [_initPatient()]);
 }
 
 Nurse _initNurse() {
@@ -84,6 +85,7 @@ Nurse _initNurse() {
     surname: "Splitter",
     birthDate: DateTime(1991, 04, 20),
     residence: _initResidence(),
+    phoneNumber: "+49 152137345",
   );
 }
 
@@ -93,24 +95,34 @@ OldPeopleHome _initOldPeopleHome() {
       name: "Alte Mensa",
       residence: _initResidence(),
       nurses: [_initNurse()],
-      patients: [_initPatient()]);
+      rooms: [_initRoom()]);
 }
 
 Future<void> initMasterContext(BuildContext context) async {
   globals.masterContext.oldPeopleHomesList.add(_initOldPeopleHome());
-  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-    return HomeScreen();
-  }));
+  Future.delayed(Duration(seconds: 3), () {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return HomeScreen();
+    }));
+  });
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     // init mock data
+    initMasterContext(context);
     return Scaffold(
-      backgroundColor: Colors.transparent,
       body: Center(
-        child: CircularProgressIndicator(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("Loading..."),
+            SizedBox(height: 20),
+            CircularProgressIndicator(),
+          ],
+        ),
       ),
     );
   }

@@ -13,4 +13,8 @@ class Residence {
       required this.street,
       required this.zipCode,
       required this.country});
+
+  String getAddress() {
+    return "$street, $zipCode $city";
+  }
 }

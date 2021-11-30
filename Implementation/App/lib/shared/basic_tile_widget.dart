@@ -12,16 +12,14 @@ class BasicTileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = tile.title;
     final tiles = tile.tiles;
+    final function = tile.function;
 
     if (tiles.isEmpty) {
       return Container(
         decoration: BoxDecoration(
             color: Colors.white, borderRadius: BorderRadius.circular(10)),
         child: ListTile(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => PatientScreen()));
-          },
+          onTap: function,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

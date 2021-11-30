@@ -9,11 +9,13 @@ class Nurse extends Person {
       required surname,
       required birthDate,
       required residence,
+      required phoneNumber,
       this.role})
       : super(
             id: id,
             firstName: firstName,
             surname: surname,
             birthDate: birthDate,
-            residence: residence);
+            residence: residence,
+            phoneNumber: phoneNumber);
 }
