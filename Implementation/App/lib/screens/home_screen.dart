@@ -3,6 +3,7 @@ import 'package:cura/screens/calendar_view_screen.dart';
 import 'package:cura/screens/notification_screen.dart';
 import 'package:cura/screens/patient_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 size: 30,
                 color: Colors.white,
               ),
-              backgroundColor: AppColors.cura_brown,
+              backgroundColor: AppColors.cura_darkBlue,
               onPressed: () {},
             )
           : null,
@@ -38,18 +39,15 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Image(
-                image: AssetImage("assets/cura_header.png"),
-              ),
-            ),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: SvgPicture.asset("assets/cura_header.svg",
+                    color: Color(0xFF0077B6))),
           ),
           tabs[_currentIndex],
         ],
       ),
-      backgroundColor: AppColors.cura_background,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: AppColors.cura_orange,
+        backgroundColor: AppColors.cura_cyan,
         selectedItemColor: Colors.white,
         iconSize: 20,
         selectedIconTheme: IconThemeData(size: 30),

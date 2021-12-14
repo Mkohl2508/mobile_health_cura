@@ -30,13 +30,12 @@ class BasicTileWidget extends StatelessWidget {
     } else {
       return Container(
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(10)),
-        margin: EdgeInsets.only(left: 35, right: 35, top: 25),
+            color: AppColors.cure_brightBlue,
+            borderRadius: BorderRadius.circular(10)),
+        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
         child: ExpansionTile(
-          collapsedIconColor: AppColors.cura_brown,
-          iconColor: AppColors.cura_orange,
-          collapsedTextColor: AppColors.cura_brown,
-          textColor: AppColors.cura_orange,
+          iconColor: AppColors.cura_cyan,
+          textColor: AppColors.cura_cyan,
           title: Padding(
             padding: const EdgeInsets.only(left: 25),
             child: Text(

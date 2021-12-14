@@ -42,7 +42,7 @@ class _PatienListScreenState extends State<PatienListScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: MediaQuery.of(context).size.height * 0.73,
+        height: MediaQuery.of(context).size.height * 0.74,
         child: ListView(
           children:
               _initTiles().map((tile) => BasicTileWidget(tile: tile)).toList(),
