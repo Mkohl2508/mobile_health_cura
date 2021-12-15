@@ -4,6 +4,7 @@ import 'package:cura/screens/patient_screen.dart';
 import 'package:cura/shared/basic_tile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cura/globals.dart' as globals;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatienListScreen extends StatefulWidget {
   const PatienListScreen({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class PatienListScreen extends StatefulWidget {
 
 class _PatienListScreenState extends State<PatienListScreen> {
   List<BasicTile> _initTiles() {
+    get_rooms();
     final roomTiles = <BasicTile>[];
     for (var room in globals.masterContext.getById("1oldPeopleHome")!.rooms) {
       final patientTiles = <BasicTile>[];
@@ -35,6 +37,17 @@ class _PatienListScreenState extends State<PatienListScreen> {
       roomTiles.add(roomTile);
     }
     return roomTiles;
+  }
+
+  Future get_rooms() async {
+    await FirebaseFirestore.instance
+        .collection("NursingHome")
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        print(doc.data());
+      });
+    });
   }
 
   //final List<bool> _isExpanded; //= List.generate(numOfRooms, (_) => false);
