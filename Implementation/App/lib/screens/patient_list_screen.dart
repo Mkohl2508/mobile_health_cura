@@ -14,8 +14,7 @@ class PatienListScreen extends StatefulWidget {
 }
 
 class _PatienListScreenState extends State<PatienListScreen> {
-  List<BasicTile> _initTiles() {
-    get_rooms();
+  List<BasicTile> _initTiles(Map<String, dynamic> data) {
     final roomTiles = <BasicTile>[];
     for (var room in globals.masterContext.getById("1oldPeopleHome")!.rooms) {
       final patientTiles = <BasicTile>[];
@@ -39,26 +38,39 @@ class _PatienListScreenState extends State<PatienListScreen> {
     return roomTiles;
   }
 
-  Future get_rooms() async {
-    await FirebaseFirestore.instance
-        .collection("NursingHome")
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        print(doc.data());
-      });
-    });
-  }
-
   //final List<bool> _isExpanded; //= List.generate(numOfRooms, (_) => false);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: MediaQuery.of(context).size.height * 0.73,
-        child: ListView(
-          children:
-              _initTiles().map((tile) => BasicTileWidget(tile: tile)).toList(),
-        ));
+    CollectionReference home =
+        FirebaseFirestore.instance.collection('NursingHome');
+
+    return FutureBuilder<DocumentSnapshot>(
+      future: home.doc("Uoto3xaa5ZL9N2mMjPhG").get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text("Something went wrong");
+        }
+
+        if (snapshot.hasData && !snapshot.data!.exists) {
+          return Text("Document does not exist");
+        }
+
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+          return Container(
+              height: MediaQuery.of(context).size.height * 0.73,
+              child: ListView(
+                children: _initTiles(data)
+                    .map((tile) => BasicTileWidget(tile: tile))
+                    .toList(),
+              ));
+        }
+
+        return Text("loading");
+      },
+    );
   }
 }
