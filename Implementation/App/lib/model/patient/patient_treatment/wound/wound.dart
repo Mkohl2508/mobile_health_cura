@@ -1,4 +1,5 @@
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
+import 'package:intl/intl.dart';
 
 class Wound {
   final String id;
@@ -16,4 +17,8 @@ class Wound {
       required this.startDate,
       List<WoundEntry>? woundEntrys})
       : woundEntrys = woundEntrys ?? [];
+
+  String formattedDate() {
+    return DateFormat('dd.MM.yyyy').format(startDate);
+  }
 }

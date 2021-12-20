@@ -30,9 +30,6 @@ class CuraApp extends StatelessWidget {
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
           primarySwatch: Colors.blue,
-          textTheme: Theme.of(context).textTheme.apply(
-              bodyColor: Color.fromRGBO(134, 118, 102, 1),
-              displayColor: Color.fromRGBO(134, 118, 102, 1)),
         ),
         home: LoginScreen());
   }
