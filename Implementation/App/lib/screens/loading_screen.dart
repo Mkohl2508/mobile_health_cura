@@ -78,6 +78,10 @@ Room _initRoom() {
   return Room(number: 1, name: "Regenbogen Raum", patients: [_initPatient()]);
 }
 
+Room _initRoom2() {
+  return Room(number: 2, name: "Tennis Raum", patients: [_initPatient()]);
+}
+
 Nurse _initNurse() {
   return Nurse(
     id: "1nurse",
@@ -95,7 +99,7 @@ OldPeopleHome _initOldPeopleHome() {
       name: "Alte Mensa",
       residence: _initResidence(),
       nurses: [_initNurse()],
-      rooms: [_initRoom()]);
+      rooms: [_initRoom(), _initRoom2()]);
 }
 
 Future<void> initMasterContext(BuildContext context) async {

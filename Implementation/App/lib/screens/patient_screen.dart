@@ -221,7 +221,9 @@ class _PatientScreenState extends State<PatientScreen> {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PatientRecordScreen()));
+                    builder: (context) => PatientRecordScreen(
+                          patient: widget.patient,
+                        )));
               },
               child: Container(
                 width: 700,
@@ -230,7 +232,7 @@ class _PatientScreenState extends State<PatientScreen> {
                 child: Row(
                   children: [
                     Container(
-                      color: AppColors.cura_orange,
+                      color: AppColors.cura_cyan,
                       width: 50,
                       child: Center(
                         child: Icon(

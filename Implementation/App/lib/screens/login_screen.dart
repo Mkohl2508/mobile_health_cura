@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cura/utils/firebase_auth.dart';
 import 'package:cura/utils/validator.dart';
+import 'package:flutter_svg/svg.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -45,11 +46,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 35, top: 20),
-                    child: Image(
-                      image: AssetImage("assets/cura_logo.png"),
-                    ),
-                  ),
+                      padding: const EdgeInsets.only(left: 35, top: 20),
+                      child: SvgPicture.asset("assets/cura_logo.svg",
+                          color: Color(0xFF0077B6))),
                   SizedBox(
                     height: 120,
                   ),
@@ -65,10 +64,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _emailController,
                           icon: Icon(
                             Icons.person,
-                            color: AppColors.cura_orange,
+                            color: AppColors.cura_cyan,
                             size: 25,
                           ),
-                          color: AppColors.cura_orange,
+                          color: AppColors.cura_cyan,
                           hint: "Username",
                           validator: (String? value) {
                             if (value!.isEmpty) return 'Please enter some text';
@@ -83,10 +82,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           isPassword: true,
                           icon: Icon(
                             Icons.lock,
-                            color: AppColors.cura_orange,
+                            color: AppColors.cura_cyan,
                             size: 25,
                           ),
-                          color: AppColors.cura_orange,
+                          color: AppColors.cura_cyan,
                           hint: "Password",
                           validator: (String? value) {
                             if (value!.isEmpty) return 'Please enter some text';
@@ -99,13 +98,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         ElevatedButton(
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
-                                  AppColors.cura_orange),
+                                  AppColors.cura_cyan),
                               shape: MaterialStateProperty.all<
                                       RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(40.0),
                                       side: BorderSide(
-                                          color: AppColors.cura_orange)))),
+                                          color: AppColors.cura_cyan)))),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               _signInWithEmailAndPassword().then((success) => {
