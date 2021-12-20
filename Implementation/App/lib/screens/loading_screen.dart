@@ -35,6 +35,21 @@ Wound _initWound() {
       woundEntrys: [entry]);
 }
 
+Wound _initWound2() {
+  WoundEntry entry = WoundEntry(
+      id: "2woundEntry",
+      date: DateTime(2021, 12, 12),
+      size: 5.10,
+      status: "entzündet");
+  return Wound(
+      id: "2wound",
+      location: "Rechter Arm",
+      type: "Schürfwunde",
+      isHealed: false,
+      startDate: DateTime(2021, 12, 12),
+      woundEntrys: [entry]);
+}
+
 Residence _initResidence() {
   return Residence(
       id: "1residence",
@@ -59,7 +74,7 @@ Doctor _initDoctor() {
 PatientRecord _initPatientFile() {
   return PatientRecord(
       id: "1patientFile",
-      wounds: [_initWound()],
+      wounds: [_initWound(), _initWound2()],
       attendingDoctor: _initDoctor());
 }
 
