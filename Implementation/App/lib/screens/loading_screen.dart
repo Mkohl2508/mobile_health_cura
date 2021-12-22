@@ -22,14 +22,6 @@ class LoadingScreen extends StatefulWidget {
   _LoadingScreenState createState() => _LoadingScreenState();
 }
 
-final Room dummyRoom = Room(number: 0, name: "dummy", patients: []);
-final OldPeopleHome dummyHome = OldPeopleHome(
-    id: "dummy",
-    name: "dummy",
-    residence: _initResidence(),
-    nurses: [],
-    rooms: [_initRoom2()]);
-
 Wound _initWound() {
   WoundEntry entry = WoundEntry(
       id: "1woundEntry",
@@ -73,15 +65,20 @@ PatientRecord _initPatientFile() {
       attendingDoctor: _initDoctor());
 }
 
-Patient _initPatient() {
-  return Patient(
-    id: "1patient",
-    birthDate: DateTime(1937, 11, 01),
-    firstName: "Ullricke",
-    surname: "Steinbock",
-    patientFile: _initPatientFile(),
-    residence: _initResidence(),
-  );
+Future<List<Patient>> _initPatient(roomID) async {
+  List<Patient> initPatients = [];
+  List<dynamic> patients = await QueryWrapper.getPatients(roomID);
+  for (var patient in patients) {
+    initPatients.add(Patient(
+      id: patient.id,
+      birthDate: patient.data()['birthDate'].toDate(),
+      firstName: patient.data()['firstName'],
+      surname: patient.data()['surname'],
+      patientFile: _initPatientFile(),
+      residence: _initResidence(),
+    ));
+  }
+  return initPatients;
 }
 
 Future<List<Room>> _initRoom() async {
@@ -91,13 +88,13 @@ Future<List<Room>> _initRoom() async {
     initRooms.add(Room(
         number: room.data()['number'],
         name: room.data()['name'],
-        patients: [_initPatient()]));
+        patients: await _initPatient(room.id)));
   }
   return initRooms;
 }
 
 Room _initRoom2() {
-  return Room(number: 2, name: "Tennis Raum", patients: [_initPatient()]);
+  return Room(number: 2, name: "Tennis Raum", patients: []);
 }
 
 Nurse _initNurse() {
