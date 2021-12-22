@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
 class QueryWrapper {
-  final String NursingHome_ID = "Uoto3xaa5ZL9N2mMjPhG";
+  static final String NursingHome_ID = "Uoto3xaa5ZL9N2mMjPhG";
 
   static getWound() async {}
 
@@ -11,7 +14,15 @@ class QueryWrapper {
 
   static getPatient() async {}
 
-  static getRoom() async {}
+  static Future<dynamic> getRooms() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection("NursingHome")
+        .doc(NursingHome_ID)
+        .collection("Room")
+        .get();
+    return snapshot.docs;
+  }
 
   static getNurse() async {}
 

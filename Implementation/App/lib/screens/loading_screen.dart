@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/general/doctor.dart';
 import 'package:cura/model/general/master_context.dart';
 import 'package:cura/model/general/nurse.dart';
@@ -10,6 +11,7 @@ import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/model/residence/residence.dart';
 import "package:cura/globals.dart" as globals;
 import 'package:cura/screens/home_screen.dart';
+import 'package:cura/utils/query_wrapper.dart';
 
 import 'package:flutter/material.dart';
 
@@ -19,6 +21,14 @@ class LoadingScreen extends StatefulWidget {
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
 }
+
+final Room dummyRoom = Room(number: 0, name: "dummy", patients: []);
+final OldPeopleHome dummyHome = OldPeopleHome(
+    id: "dummy",
+    name: "dummy",
+    residence: _initResidence(),
+    nurses: [],
+    rooms: [_initRoom2()]);
 
 Wound _initWound() {
   WoundEntry entry = WoundEntry(
@@ -74,8 +84,16 @@ Patient _initPatient() {
   );
 }
 
-Room _initRoom() {
-  return Room(number: 1, name: "Regenbogen Raum", patients: [_initPatient()]);
+Future<List<Room>> _initRoom() async {
+  List<Room> initRooms = [];
+  List<dynamic> rooms = await QueryWrapper.getRooms();
+  for (var room in rooms) {
+    initRooms.add(Room(
+        number: room.data()['number'],
+        name: room.data()['name'],
+        patients: [_initPatient()]));
+  }
+  return initRooms;
 }
 
 Room _initRoom2() {
@@ -93,17 +111,17 @@ Nurse _initNurse() {
   );
 }
 
-OldPeopleHome _initOldPeopleHome() {
+Future<OldPeopleHome> _initOldPeopleHome() async {
   return OldPeopleHome(
       id: "1oldPeopleHome",
       name: "Alte Mensa",
       residence: _initResidence(),
       nurses: [_initNurse()],
-      rooms: [_initRoom(), _initRoom2()]);
+      rooms: await _initRoom());
 }
 
 Future<void> initMasterContext(BuildContext context) async {
-  globals.masterContext.oldPeopleHomesList.add(_initOldPeopleHome());
+  globals.masterContext.oldPeopleHomesList.add(await _initOldPeopleHome());
   Future.delayed(Duration(seconds: 3), () {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return HomeScreen();
@@ -115,19 +133,26 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     // init mock data
-    initMasterContext(context);
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text("Loading..."),
-            SizedBox(height: 20),
-            CircularProgressIndicator(),
-          ],
-        ),
-      ),
-    );
+    return FutureBuilder<void>(
+        future: initMasterContext(context),
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return HomeScreen();
+          }
+
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text("Loading..."),
+                  SizedBox(height: 20),
+                  CircularProgressIndicator(),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }
