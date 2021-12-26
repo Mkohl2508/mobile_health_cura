@@ -2,6 +2,7 @@ import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/calendar_view_screen.dart';
 import 'package:cura/screens/notification_screen.dart';
 import 'package:cura/screens/patient_list_screen.dart';
+import 'package:cura/screens/add_room_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -32,7 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white,
               ),
               backgroundColor: AppColors.cura_darkBlue,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddRoomScreen()));
+              },
             )
           : null,
       body: Column(
