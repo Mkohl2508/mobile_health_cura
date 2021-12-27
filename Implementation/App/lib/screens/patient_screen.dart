@@ -104,7 +104,7 @@ class _PatientScreenState extends State<PatientScreen> {
                         Text(
                             data["residence"]["city"] +
                                 "," +
-                                data["residence"]["zipcode"] +
+                                data["residence"]["zipCode"] +
                                 data["residence"]["street"],
                             style: TextStyle(
                                 color: Colors.grey[700], height: 1.5)),
