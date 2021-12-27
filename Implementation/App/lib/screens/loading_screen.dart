@@ -37,16 +37,19 @@ Wound _initWound() {
       woundEntrys: [entry]);
 }
 
-Residence _initResidence() {
+Future<Residence> _initResidence() async {
+  var residenceID = "77XH3QnTfa9O8hgGCpzt";
+  dynamic residence = await QueryWrapper.getResidence(residenceID);
   return Residence(
-      id: "1residence",
-      street: "Musterstraße 1",
-      zipCode: "12345",
-      city: "Musterstadt",
-      country: "Musterland");
+      id: residence.id,
+      street: residence.data()["street"],
+      zipCode: residence.data()["zipCode"],
+      city: residence.data()["city"],
+      country: residence.data()["country"]);
 }
 
-Doctor _initDoctor() {
+Future<Doctor> _initDoctor(doctorID) async {
+  dynamic doctor = await QueryWrapper.getDoctor(doctorID);
   return Doctor(
       id: "1doctor",
       phoneNumber: "+49 15204381194",
@@ -55,14 +58,14 @@ Doctor _initDoctor() {
       degree: "Dr. med.",
       birthDate: DateTime(1955, 11, 20),
       type: "Lungenfacharzt",
-      residence: _initResidence());
+      residence: await _initResidence());
 }
 
-PatientRecord _initPatientFile() {
+Future<PatientRecord> _initPatientFile() async {
   return PatientRecord(
       id: "1patientFile",
       wounds: [_initWound()],
-      attendingDoctor: _initDoctor());
+      attendingDoctor: await _initDoctor("bla"));
 }
 
 Future<List<Patient>> _initPatient(roomID) async {
@@ -74,8 +77,8 @@ Future<List<Patient>> _initPatient(roomID) async {
       birthDate: patient.data()['birthDate'].toDate(),
       firstName: patient.data()['firstName'],
       surname: patient.data()['surname'],
-      patientFile: _initPatientFile(),
-      residence: _initResidence(),
+      patientFile: await _initPatientFile(),
+      residence: await _initResidence(), //patient.data()['residence']
     ));
   }
   return initPatients;
@@ -93,27 +96,29 @@ Future<List<Room>> _initRoom() async {
   return initRooms;
 }
 
-Room _initRoom2() {
-  return Room(number: 2, name: "Tennis Raum", patients: []);
-}
-
-Nurse _initNurse() {
-  return Nurse(
-    id: "1nurse",
-    firstName: "Sophie",
-    surname: "Splitter",
-    birthDate: DateTime(1991, 04, 20),
-    residence: _initResidence(),
-    phoneNumber: "+49 152137345",
-  );
+Future<List<Nurse>> _initNurse() async {
+  List<Nurse> initNurses = [];
+  List<dynamic> nurses = await QueryWrapper.getNurses();
+  for (var nurse in nurses) {
+    initNurses.add(Nurse(
+      id: nurse.id,
+      firstName: nurse.data()['firstName'],
+      surname: nurse.data()['surname'],
+      birthDate: nurse.data()['birthDate'].toDate(),
+      residence: await _initResidence(), //nurse.data()['residence']
+      phoneNumber: nurse.data()['phoneNumber'].toString(),
+    ));
+  }
+  return initNurses;
 }
 
 Future<OldPeopleHome> _initOldPeopleHome() async {
+  dynamic nursingHome = await QueryWrapper.getNursingHome();
   return OldPeopleHome(
-      id: "1oldPeopleHome",
-      name: "Alte Mensa",
-      residence: _initResidence(),
-      nurses: [_initNurse()],
+      id: nursingHome.id,
+      name: nursingHome.data()["name"],
+      residence: await _initResidence(),
+      nurses: await _initNurse(),
       rooms: await _initRoom());
 }
 
