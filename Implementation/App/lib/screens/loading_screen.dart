@@ -73,13 +73,13 @@ Future<List<Patient>> _initPatient(roomID) async {
   List<dynamic> patients = await QueryWrapper.getPatients(roomID);
   for (var patient in patients) {
     initPatients.add(Patient(
-      id: patient.id,
-      birthDate: patient.data()['birthDate'].toDate(),
-      firstName: patient.data()['firstName'],
-      surname: patient.data()['surname'],
-      patientFile: await _initPatientFile(),
-      residence: await _initResidence(), //patient.data()['residence']
-    ));
+        id: patient.id,
+        birthDate: patient.data()['birthDate'].toDate(),
+        firstName: patient.data()['firstName'],
+        surname: patient.data()['surname'],
+        patientFile: await _initPatientFile(),
+        residence: await _initResidence(), //patient.data()['residence']
+        phoneNumber: patient.data()['phoneNumber']));
   }
   return initPatients;
 }

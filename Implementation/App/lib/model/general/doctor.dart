@@ -1,5 +1,8 @@
 import 'package:cura/model/general/person.dart';
+import 'package:json_annotation/json_annotation.dart';
+part 'doctor.g.dart';
 
+@JsonSerializable(explicitToJson: true)
 class Doctor extends Person {
   final String degree;
   final String? type;
@@ -25,4 +28,8 @@ class Doctor extends Person {
   String fullName() {
     return degree + " " + firstName + " " + surname;
   }
+
+  factory Doctor.fromJson(Map<String, dynamic> json) => _$DoctorFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DoctorToJson(this);
 }

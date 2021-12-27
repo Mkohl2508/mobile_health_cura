@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/patient_record_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PatientScreen extends StatefulWidget {
   final Patient patient;
@@ -12,8 +14,7 @@ class PatientScreen extends StatefulWidget {
 }
 
 class _PatientScreenState extends State<PatientScreen> {
-  @override
-  Widget build(BuildContext context) {
+  _initView(Map<String, dynamic> data) {
     return Scaffold(
         body: SafeArea(
       child: SingleChildScrollView(
@@ -56,7 +57,7 @@ class _PatientScreenState extends State<PatientScreen> {
                           height: 5,
                         ),
                         Text(
-                          widget.patient.fullName(),
+                          data["firstName"] + " " + data["surname"],
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                       ],
@@ -77,7 +78,9 @@ class _PatientScreenState extends State<PatientScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        Text(widget.patient.formattedBirthday(),
+                        Text(
+                            DateFormat('dd.MM.yyyy').format(DateTime.parse(
+                                data["birthDate"].toDate().toString())),
                             style: TextStyle(color: Colors.grey[700])),
                       ],
                     ),
@@ -98,7 +101,11 @@ class _PatientScreenState extends State<PatientScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        Text(widget.patient.residence.getAddress(),
+                        Text(
+                            data["residence"]["city"] +
+                                "," +
+                                data["residence"]["zipcode"] +
+                                data["residence"]["street"],
                             style: TextStyle(
                                 color: Colors.grey[700], height: 1.5)),
                       ],
@@ -280,5 +287,31 @@ class _PatientScreenState extends State<PatientScreen> {
         ),
       ),
     ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    CollectionReference patient = FirebaseFirestore.instance.collection(
+        'NursingHome/Uoto3xaa5ZL9N2mMjPhG/Room/8c3fugbbchJ9mhy5RF0H/Patient');
+    return FutureBuilder<DocumentSnapshot>(
+      future: patient.doc("Wm6hKOszycoOJyFYvxum").get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text("Something went wrong");
+        }
+
+        if (snapshot.hasData && !snapshot.data!.exists) {
+          return Text("Document does not exist");
+        }
+
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+          return _initView(data);
+        }
+        return Text("loading");
+      },
+    );
   }
 }
