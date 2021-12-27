@@ -1,0 +1,29 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'patient_record.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
+    PatientRecord(
+      id: json['id'] as String,
+      wounds: (json['wounds'] as List<dynamic>?)
+          ?.map((e) => Wound.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      medications: (json['medications'] as List<dynamic>?)
+          ?.map((e) => Medication.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      attendingDoctor: json['attendingDoctor'] == null
+          ? null
+          : Doctor.fromJson(json['attendingDoctor'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$PatientRecordToJson(PatientRecord instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'wounds': instance.wounds?.map((e) => e.toJson()).toList(),
+      'medications': instance.medications?.map((e) => e.toJson()).toList(),
+      'attendingDoctor': instance.attendingDoctor?.toJson(),
+    };

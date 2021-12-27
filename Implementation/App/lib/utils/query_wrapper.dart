@@ -8,7 +8,15 @@ class QueryWrapper {
 
   static getResidence() async {}
 
-  static getDoctor() async {}
+  static getDoctors() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection("NursingHome")
+        .doc(nursingHomeID)
+        .collection("Doctors")
+        .get();
+    return snapshot.docs;
+  }
 
   static getPatientFile() async {}
 
