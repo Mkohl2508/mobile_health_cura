@@ -15,9 +15,7 @@ PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
       medications: (json['medications'] as List<dynamic>?)
           ?.map((e) => Medication.fromJson(e as Map<String, dynamic>))
           .toList(),
-      attendingDoctor: json['attendingDoctor'] == null
-          ? null
-          : Doctor.fromJson(json['attendingDoctor'] as Map<String, dynamic>),
+      attendingDoctor: PatientRecord.fromJsonId(json['attendingDoctor']),
     );
 
 Map<String, dynamic> _$PatientRecordToJson(PatientRecord instance) =>
