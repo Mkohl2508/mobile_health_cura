@@ -1,5 +1,9 @@
 // ignore_for_file: file_names
 
+import 'package:json_annotation/json_annotation.dart';
+part 'residence.g.dart';
+
+@JsonSerializable()
 class Residence {
   final String id;
   final String city;
@@ -17,4 +21,9 @@ class Residence {
   String getAddress() {
     return "$street, $zipCode $city";
   }
+
+  factory Residence.fromJson(Map<String, dynamic> json) =>
+      _$ResidenceFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ResidenceToJson(this);
 }
