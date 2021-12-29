@@ -55,19 +55,13 @@ Wound _initWound() {
 }
 
 Wound _initWound2() {
-  WoundEntry entry = WoundEntry(
-      id: "2woundEntry",
-      date: DateTime(2021, 12, 12),
-      images: [],
-      size: 5.10,
-      status: "entzündet");
   return Wound(
       id: "2wound",
       location: "Rechter Arm",
       type: "Schürfwunde",
       isHealed: false,
       startDate: DateTime(2021, 12, 12),
-      woundEntrys: [entry]);
+      woundEntrys: []);
 }
 
 Residence _initResidence() {
