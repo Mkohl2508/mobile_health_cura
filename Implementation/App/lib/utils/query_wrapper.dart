@@ -4,100 +4,136 @@ class QueryWrapper {
   static const String nursingHomeID = "Uoto3xaa5ZL9N2mMjPhG";
 
   static getDoctors() async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
+    return await FirebaseFirestore.instance
         .collection("NursingHome")
         .doc(nursingHomeID)
         .collection("Doctors")
-        .get();
-    return snapshot.docs;
+        .get()
+        .then((value) {
+      return value.docs;
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
   }
 
   static getDoctor(doctorID) async {
-    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
+    return await FirebaseFirestore.instance
         .collection("NursingHome")
         .doc(nursingHomeID)
         .collection("Doctors")
         .doc(doctorID)
-        .get();
-    return snapshot.data();
+        .get()
+        .then((value) {
+      return value.data();
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
   }
 
   static getPatients(roomID) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
+    return await FirebaseFirestore.instance
         .collection("NursingHome")
         .doc(nursingHomeID)
         .collection("Room")
         .doc(roomID)
         .collection("Patient")
-        .get();
-    return snapshot.docs;
+        .get()
+        .then((value) {
+      return value.docs;
+    }).catchError((e) {
+      print('Got error: $e'); // Finally, callback fires.
+      return 42; // Future completes with 42.
+    });
   }
 
   static getPatient(patientId, roomID) async {
-    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
+    return await FirebaseFirestore.instance
         .collection("NursingHome")
         .doc(nursingHomeID)
         .collection("Room")
         .doc(roomID)
         .collection("Patient")
         .doc(patientId)
-        .get();
-    return snapshot.data();
+        .get()
+        .then((value) {
+      return value.data();
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
   }
 
   static Future<dynamic> getRooms() async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
+    return await FirebaseFirestore.instance
         .collection("NursingHome")
         .doc(nursingHomeID)
         .collection("Room")
-        .get();
-    return snapshot.docs;
+        .get()
+        .then((value) {
+      return value.docs;
+    }).catchError((e) {
+      print('Got error: $e'); // Finally, callback fires.
+      return 42; // Future completes with 42.
+    });
   }
 
   static Future<dynamic> getRoom(roomID) async {
-    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
+    return await FirebaseFirestore.instance
         .collection("NursingHome")
         .doc(nursingHomeID)
         .collection("Room")
         .doc(roomID)
-        .get();
-    return snapshot.data();
+        .get()
+        .then((value) {
+      return value.data();
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
   }
 
   static getNurses() async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
+    return await FirebaseFirestore.instance
         .collection("NursingHome")
         .doc(nursingHomeID)
         .collection("Nurses")
-        .get();
-    return snapshot.docs;
+        .get()
+        .then((value) {
+      return value.docs;
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
   }
 
   static getNurse(nurseID) async {
-    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
+    return await FirebaseFirestore.instance
         .collection("NursingHome")
         .doc(nursingHomeID)
         .collection("Nurses")
         .doc(nurseID)
-        .get();
-    return snapshot.data();
+        .get()
+        .then((value) {
+      return value.data();
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
   }
 
   static getNursingHome() async {
-    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
+    return await FirebaseFirestore.instance
         .collection("NursingHome")
         .doc(nursingHomeID)
-        .get();
-    return snapshot.data();
+        .get()
+        .then((value) {
+      return value.data();
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
   }
 
   static postWound() async {}

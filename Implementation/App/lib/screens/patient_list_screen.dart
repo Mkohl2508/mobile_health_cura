@@ -16,7 +16,8 @@ class PatienListScreen extends StatefulWidget {
 class _PatienListScreenState extends State<PatienListScreen> {
   List<BasicTile> _initTiles() {
     final roomTiles = <BasicTile>[];
-    for (var room in globals.masterContext.getById("1oldPeopleHome")!.rooms) {
+    for (var room
+        in globals.masterContext.getById("Uoto3xaa5ZL9N2mMjPhG")!.rooms) {
       final patientTiles = <BasicTile>[];
       for (var patient in room.patients) {
         patientTiles.add(BasicTile(

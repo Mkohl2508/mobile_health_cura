@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/patient_record_screen.dart';
+import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,7 +25,15 @@ class _PatientScreenState extends State<PatientScreen> {
           children: [
             Center(
                 child: Image(
-              image: AssetImage("assets/old_lady.jpg"),
+              image: FirebaseImage(
+                  'gs://mobile-health-cura.appspot.com/Mueller/old_lady.jpg',
+                  shouldCache:
+                      true, // The image should be cached (default: True)
+                  maxSizeBytes:
+                      3000 * 1000, // 3MB max file size (default: 2.5MB)
+                  cacheRefreshStrategy:
+                      CacheRefreshStrategy.NEVER // Switch off update checking
+                  ),
             )),
             SizedBox(height: 20),
             Padding(
