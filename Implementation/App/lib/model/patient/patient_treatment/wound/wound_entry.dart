@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import 'package:json_annotation/json_annotation.dart';
 part 'wound_entry.g.dart';
 
@@ -17,12 +19,18 @@ class WoundEntry {
   final DateTime date;
   final double size;
   final String status;
+  final List<String> images;
 
   WoundEntry(
       {required this.id,
       required this.date,
       required this.size,
-      required this.status});
+      required this.status,
+      required this.images});
+
+  String formattedDate() {
+    return DateFormat('dd.MM.yyyy').format(date);
+  }
 
   factory WoundEntry.fromJson(Map<String, dynamic> json) =>
       _$WoundEntryFromJson(json);

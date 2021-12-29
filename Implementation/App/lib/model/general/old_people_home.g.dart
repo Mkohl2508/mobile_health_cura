@@ -10,13 +10,10 @@ OldPeopleHome _$OldPeopleHomeFromJson(Map<String, dynamic> json) =>
     OldPeopleHome(
       id: json['id'] as String,
       name: json['name'] as String,
-      rooms: (json['rooms'] as List<dynamic>)
-          .map((e) => Room.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      nurses: (json['nurses'] as List<dynamic>)
-          .map((e) => Nurse.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      rooms: OldPeopleHome.emptyRooms(json['rooms']),
+      nurses: OldPeopleHome.emptyNurses(json['nurses']),
       residence: Residence.fromJson(json['residence'] as Map<String, dynamic>),
+      doctors: OldPeopleHome.emptyDoctors(json['doctors']),
     );
 
 Map<String, dynamic> _$OldPeopleHomeToJson(OldPeopleHome instance) =>
@@ -26,4 +23,5 @@ Map<String, dynamic> _$OldPeopleHomeToJson(OldPeopleHome instance) =>
       'rooms': instance.rooms.map((e) => e.toJson()).toList(),
       'nurses': instance.nurses.map((e) => e.toJson()).toList(),
       'residence': instance.residence.toJson(),
+      'doctors': instance.doctors.map((e) => e.toJson()).toList(),
     };
