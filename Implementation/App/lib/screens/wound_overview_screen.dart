@@ -1,6 +1,7 @@
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/widget/AppColors.dart';
+import 'package:cura/screens/wound_information_screen.dart';
 import 'package:cura/shared/icon_tile_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,14 @@ class _WoundOverviewState extends State<WoundOverviewScreen> {
     int woundCounter = 1;
     for (var wound in wounds) {
       widgets.add(IconTileWidget(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return WoundInformationScreen(
+              patientName: widget.patient.fullName(),
+              woundEntrys: wound.woundEntrys!,
+            );
+          }));
+        },
         leadingWidget: Text(
           woundCounter.toString(),
           style: TextStyle(

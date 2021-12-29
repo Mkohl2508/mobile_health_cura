@@ -1,5 +1,4 @@
 import 'package:cura/model/general/doctor.dart';
-import 'package:cura/model/general/master_context.dart';
 import 'package:cura/model/general/nurse.dart';
 import 'package:cura/model/general/old_people_home.dart';
 import 'package:cura/model/general/room.dart';
@@ -25,6 +24,26 @@ Wound _initWound() {
       id: "1woundEntry",
       date: DateTime(2021, 11, 20),
       size: 5.10,
+      images: [
+        "https://www.haeusliche-pflege.net/-/media/ahi/alle-netzwerke/digital/produkte-digital/elearning/0038_Expertenstandard-Pflege-von-Menschen-mit-chronischen-Wunden.png?bc=White&as=0&w=1000&hash=12DFA01B2A8FD46990BB13A311A3DE7C"
+      ],
+      status: "blutend");
+  WoundEntry entry2 = WoundEntry(
+      id: "2woundEntry",
+      date: DateTime(2021, 11, 18),
+      size: 5.10,
+      images: [
+        'https://www.draco.de/fileadmin/_processed_/4/3/csm_chronische-wunde_2313ccd551.jpg',
+        'https://www.hartmann.info/-/media/wound/img/homesite-wunde_teaser_ulcus-cruris-venosum_phi21_02_03.png?h=270&iar=0&mw=868&w=525&rev=79ba654e383d4e8ba3006f3d8f7f481a&sc_lang=de-de&hash=D943076C221F102F181352CCE6102904',
+      ],
+      status: "blutend");
+  WoundEntry entry3 = WoundEntry(
+      id: "3woundEntry",
+      date: DateTime(2021, 11, 23),
+      size: 5.10,
+      images: [
+        "https://www.heh-bs.de/fileadmin/_processed_/5/0/csm_Chronische_Wunden_eigenes_46562dff92.jpg"
+      ],
       status: "blutend");
   return Wound(
       id: "1wound",
@@ -32,13 +51,14 @@ Wound _initWound() {
       type: "Platzwunde",
       isHealed: false,
       startDate: DateTime(2021, 11, 20),
-      woundEntrys: [entry]);
+      woundEntrys: [entry, entry2, entry3]);
 }
 
 Wound _initWound2() {
   WoundEntry entry = WoundEntry(
       id: "2woundEntry",
       date: DateTime(2021, 12, 12),
+      images: [],
       size: 5.10,
       status: "entzündet");
   return Wound(
