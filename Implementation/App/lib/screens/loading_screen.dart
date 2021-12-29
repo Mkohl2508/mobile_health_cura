@@ -1,14 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/general/doctor.dart';
-import 'package:cura/model/general/master_context.dart';
 import 'package:cura/model/general/nurse.dart';
 import 'package:cura/model/general/old_people_home.dart';
 import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_record.dart';
-import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
-import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
-import 'package:cura/model/residence/residence.dart';
 import "package:cura/globals.dart" as globals;
 import 'package:cura/screens/home_screen.dart';
 import 'package:cura/utils/query_wrapper.dart';
@@ -22,99 +17,99 @@ class LoadingScreen extends StatefulWidget {
   _LoadingScreenState createState() => _LoadingScreenState();
 }
 
-Wound _initWound() {
-  WoundEntry entry = WoundEntry(
-      id: "1woundEntry",
-      date: DateTime(2021, 11, 20),
-      size: 5.10,
-      status: "blutend");
-  return Wound(
-      id: "1wound",
-      location: "Unterer Rücken",
-      type: "Platzwunde",
-      isHealed: false,
-      startDate: DateTime(2021, 11, 20),
-      woundEntrys: [entry]);
+Future<List<Doctor>> _initDoctors() async {
+  List<Doctor> doctors = [];
+  List<dynamic> doctorsIds = await QueryWrapper.getDoctors();
+  for (var doctorId in doctorsIds) {
+    Map<String, dynamic> doctorData = await QueryWrapper.getDoctor(doctorId.id);
+    Doctor doctor = Doctor.fromJson(doctorData);
+
+    doctors.add(doctor);
+  }
+  return doctors;
 }
 
-Residence _initResidence() {
-  return Residence(
-      id: "1residence",
-      street: "Musterstraße 1",
-      zipCode: "12345",
-      city: "Musterstadt",
-      country: "Musterland");
-}
-
-Doctor _initDoctor() {
-  return Doctor(
-      id: "1doctor",
-      phoneNumber: "+49 15204381194",
-      firstName: "Peter",
-      surname: "Lustig",
-      degree: "Dr. med.",
-      birthDate: DateTime(1955, 11, 20),
-      type: "Lungenfacharzt",
-      residence: _initResidence());
-}
-
-PatientRecord _initPatientFile() {
-  return PatientRecord(
-      id: "1patientFile",
-      wounds: [_initWound()],
-      attendingDoctor: _initDoctor());
-}
-
-Future<List<Patient>> _initPatient(roomID) async {
+Future<List<Patient>> _initPatient(roomID, doctors) async {
   List<Patient> initPatients = [];
-  List<dynamic> patients = await QueryWrapper.getPatients(roomID);
-  for (var patient in patients) {
-    initPatients.add(Patient(
-        id: patient.id,
-        birthDate: patient.data()['birthDate'].toDate(),
-        firstName: patient.data()['firstName'],
-        surname: patient.data()['surname'],
-        patientFile: _initPatientFile(),
-        residence: _initResidence(),
-        phoneNumber: patient.data()['phoneNumber']));
+  List<dynamic> patientsIds = await QueryWrapper.getPatients(roomID);
+  for (var patientId in patientsIds) {
+    Map<String, dynamic> patientData =
+        await QueryWrapper.getPatient(patientId.id, roomID);
+    Patient patient = Patient.fromJson(patientData);
+    PatientRecord patientRecord =
+        addDoctorToPatientRecord(patient.patientFile, doctors);
+
+    initPatients.add(finalPatient(patient, patientRecord));
   }
   return initPatients;
 }
 
-Future<List<Room>> _initRoom() async {
+PatientRecord addDoctorToPatientRecord(patientFile, doctors) {
+  return PatientRecord(
+      id: patientFile.id,
+      wounds: patientFile.wounds,
+      medications: patientFile.medications,
+      attendingDoctor:
+          findAttentingDoctor(patientFile.attendingDoctor!.id, doctors));
+}
+
+Doctor? findAttentingDoctor(doctorId, doctors) {
+  for (var doctor in doctors) {
+    if (doctor.id == doctorId) {
+      return doctor;
+    }
+  }
+}
+
+Patient finalPatient(patient, patientRecord) {
+  return Patient(
+      id: patient.id,
+      firstName: patient.firstName,
+      birthDate: patient.birthDate,
+      residence: patient.residence,
+      surname: patient.surname,
+      phoneNumber: patient.phoneNumber,
+      patientFile: patientRecord);
+}
+
+Future<List<Room>> _initRooms(doctors) async {
   List<Room> initRooms = [];
   List<dynamic> rooms = await QueryWrapper.getRooms();
-  for (var room in rooms) {
+  for (var roomId in rooms) {
+    Map<String, dynamic> roomData = await QueryWrapper.getRoom(roomId.id);
+    Room room = Room.fromJson(roomData);
+
     initRooms.add(Room(
-        number: room.data()['number'],
-        name: room.data()['name'],
-        patients: await _initPatient(room.id)));
+        number: room.number,
+        name: room.name,
+        patients: await _initPatient(roomId.id, doctors)));
   }
   return initRooms;
 }
 
-Room _initRoom2() {
-  return Room(number: 2, name: "Tennis Raum", patients: []);
-}
+Future<List<Nurse>> _initNurses() async {
+  List<Nurse> nurses = [];
+  List<dynamic> nursesIds = await QueryWrapper.getNurses();
+  for (var nurseId in nursesIds) {
+    Map<String, dynamic> nurseData = await QueryWrapper.getNurse(nurseId.id);
+    Nurse nurse = Nurse.fromJson(nurseData);
 
-Nurse _initNurse() {
-  return Nurse(
-    id: "1nurse",
-    firstName: "Sophie",
-    surname: "Splitter",
-    birthDate: DateTime(1991, 04, 20),
-    residence: _initResidence(),
-    phoneNumber: "+49 152137345",
-  );
+    nurses.add(nurse);
+  }
+  return nurses;
 }
 
 Future<OldPeopleHome> _initOldPeopleHome() async {
+  Map<String, dynamic> oldPeopleHomeData = await QueryWrapper.getNursingHome();
+  OldPeopleHome oldPeopleHome = OldPeopleHome.fromJson(oldPeopleHomeData);
+  List<Doctor> doctors = await _initDoctors();
   return OldPeopleHome(
-      id: "1oldPeopleHome",
-      name: "Alte Mensa",
-      residence: _initResidence(),
-      nurses: [_initNurse()],
-      rooms: await _initRoom());
+      id: oldPeopleHome.id,
+      name: oldPeopleHome.name,
+      doctors: doctors,
+      nurses: await _initNurses(),
+      rooms: await _initRooms(doctors),
+      residence: oldPeopleHome.residence);
 }
 
 Future<void> initMasterContext(BuildContext context) async {

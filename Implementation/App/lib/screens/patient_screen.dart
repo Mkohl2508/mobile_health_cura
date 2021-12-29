@@ -103,8 +103,9 @@ class _PatientScreenState extends State<PatientScreen> {
                         ),
                         Text(
                             data["residence"]["city"] +
-                                "," +
-                                data["residence"]["zipcode"] +
+                                ", " +
+                                data["residence"]["zipCode"] +
+                                ", " +
                                 data["residence"]["street"],
                             style: TextStyle(
                                 color: Colors.grey[700], height: 1.5)),
@@ -308,6 +309,7 @@ class _PatientScreenState extends State<PatientScreen> {
         if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
+          Patient patient = Patient.fromJson(data);
           return _initView(data);
         }
         return Text("loading");

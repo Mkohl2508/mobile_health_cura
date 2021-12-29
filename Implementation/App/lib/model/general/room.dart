@@ -1,13 +1,14 @@
-// ignore_for_file: file_names
-
 import 'package:cura/model/patient/patient.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'room.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Room {
+  static List<Patient> emptyPatients(dynamic value) => <Patient>[];
+
   final int number;
   final String? name;
+  @JsonKey(fromJson: emptyPatients, includeIfNull: false)
   final List<Patient> patients;
 
   Room({required this.number, this.name, required this.patients});
