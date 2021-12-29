@@ -11,6 +11,8 @@ WoundEntry _$WoundEntryFromJson(Map<String, dynamic> json) => WoundEntry(
       date: firestoreDateTimeFromJson(json['date']),
       size: (json['size'] as num).toDouble(),
       status: json['status'] as String,
+      images:
+          (json['images'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$WoundEntryToJson(WoundEntry instance) =>
@@ -19,4 +21,5 @@ Map<String, dynamic> _$WoundEntryToJson(WoundEntry instance) =>
       'date': firestoreDateTimeToJson(instance.date),
       'size': instance.size,
       'status': instance.status,
+      'images': instance.images,
     };
