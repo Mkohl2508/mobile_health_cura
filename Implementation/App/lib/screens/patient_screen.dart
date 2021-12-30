@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/patient_record_screen.dart';
-import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:intl/intl.dart';
 
 class PatientScreen extends StatefulWidget {
@@ -24,17 +24,12 @@ class _PatientScreenState extends State<PatientScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-                child: Image(
-              image: FirebaseImage(
-                  'gs://mobile-health-cura.appspot.com/Mueller/old_lady.jpg',
-                  shouldCache:
-                      true, // The image should be cached (default: True)
-                  maxSizeBytes:
-                      3000 * 1000, // 3MB max file size (default: 2.5MB)
-                  cacheRefreshStrategy:
-                      CacheRefreshStrategy.NEVER // Switch off update checking
-                  ),
-            )),
+              child: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image:
+                    'https://firebasestorage.googleapis.com/v0/b/mobile-health-cura.appspot.com/o/Mueller%2Fold_lady.jpg?alt=media&token=f35f17c5-a2f9-4c02-bff3-a7d9bbfb8b5d',
+              ),
+            ),
             SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.all(20.0),
