@@ -5,7 +5,6 @@ import 'package:cura/screens/patient_record_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:intl/intl.dart';
-import 'dart:io';
 
 class PatientScreen extends StatefulWidget {
   final Patient patient;
