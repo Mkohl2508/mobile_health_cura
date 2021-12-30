@@ -68,9 +68,7 @@ Future<List<Doctor>> _initDoctors() async {
   List<Doctor> doctors = [];
   List<dynamic> doctorsIds = await QueryWrapper.getDoctors();
   for (var doctorId in doctorsIds) {
-    Map<String, dynamic> doctorData = await QueryWrapper.getDoctor(doctorId.id);
-    Doctor doctor = Doctor.fromJson(doctorData);
-
+    Doctor doctor = await QueryWrapper.getDoctor(doctorId.id);
     doctors.add(doctor);
   }
   return doctors;
@@ -80,9 +78,7 @@ Future<List<Patient>> _initPatient(roomID, doctors) async {
   List<Patient> initPatients = [];
   List<dynamic> patientsIds = await QueryWrapper.getPatients(roomID);
   for (var patientId in patientsIds) {
-    Map<String, dynamic> patientData =
-        await QueryWrapper.getPatient(patientId.id, roomID);
-    Patient patient = Patient.fromJson(patientData);
+    Patient patient = await QueryWrapper.getPatient(patientId.id, roomID);
     PatientRecord patientRecord =
         addDoctorToPatientRecord(patient.patientFile, doctors);
 
@@ -123,9 +119,7 @@ Future<List<Room>> _initRooms(doctors) async {
   List<Room> initRooms = [];
   List<dynamic> rooms = await QueryWrapper.getRooms();
   for (var roomId in rooms) {
-    Map<String, dynamic> roomData = await QueryWrapper.getRoom(roomId.id);
-    Room room = Room.fromJson(roomData);
-
+    Room room = await QueryWrapper.getRoom(roomId.id);
     initRooms.add(Room(
         number: room.number,
         name: room.name,
@@ -138,17 +132,14 @@ Future<List<Nurse>> _initNurses() async {
   List<Nurse> nurses = [];
   List<dynamic> nursesIds = await QueryWrapper.getNurses();
   for (var nurseId in nursesIds) {
-    Map<String, dynamic> nurseData = await QueryWrapper.getNurse(nurseId.id);
-    Nurse nurse = Nurse.fromJson(nurseData);
-
+    Nurse nurse = await QueryWrapper.getNurse(nurseId.id);
     nurses.add(nurse);
   }
   return nurses;
 }
 
 Future<OldPeopleHome> _initOldPeopleHome() async {
-  Map<String, dynamic> oldPeopleHomeData = await QueryWrapper.getNursingHome();
-  OldPeopleHome oldPeopleHome = OldPeopleHome.fromJson(oldPeopleHomeData);
+  OldPeopleHome oldPeopleHome = await QueryWrapper.getNursingHome();
   List<Doctor> doctors = await _initDoctors();
   return OldPeopleHome(
       id: oldPeopleHome.id,
