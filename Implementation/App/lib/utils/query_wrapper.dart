@@ -87,7 +87,7 @@ class QueryWrapper {
       return value.docs;
     }).catchError((e) {
       print('Got error: $e'); // Finally, callback fires.
-      return 42; // Future completes with 42.  globals.masterContext.oldPeopleHomesList.add(await _initOldPeopleHome());
+      return 42; // Future completes with 42.
     });
   }
 
