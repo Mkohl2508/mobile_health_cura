@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class QueryWrapper {
   static const String nursingHomeID = "Uoto3xaa5ZL9N2mMjPhG";
@@ -138,7 +141,21 @@ class QueryWrapper {
 
   static postWound() async {}
 
-  static postWoundEntry() async {}
+  static postWoundEntry(File img) async {
+    final _storage = FirebaseStorage.instance;
+
+    var snapshot = await _storage.ref().child("Test/img").putFile(img);
+    var downloadURL = await snapshot.ref.getDownloadURL();
+
+    return await FirebaseFirestore.instance
+        .collection("Test")
+        .add({"url": downloadURL.toString()}).then((value) {
+      return value;
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
+  }
 
   static postDoctor() async {}
 
