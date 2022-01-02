@@ -2,6 +2,7 @@ import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/model/widget/BasicTile.dart';
 import 'package:cura/screens/patient_screen.dart';
 import 'package:cura/shared/basic_tile_widget.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:cura/globals.dart' as globals;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,7 +18,7 @@ class _PatienListScreenState extends State<PatienListScreen> {
   List<BasicTile> _initTiles() {
     final roomTiles = <BasicTile>[];
     for (var room
-        in globals.masterContext.getById("Uoto3xaa5ZL9N2mMjPhG")!.rooms) {
+        in globals.masterContext.getById(QueryWrapper.nursingHomeID)!.rooms) {
       final patientTiles = <BasicTile>[];
       for (var patient in room.patients) {
         patientTiles.add(BasicTile(
