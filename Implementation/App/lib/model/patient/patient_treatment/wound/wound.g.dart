@@ -12,6 +12,8 @@ Wound _$WoundFromJson(Map<String, dynamic> json) => Wound(
       type: json['type'] as String,
       isHealed: json['isHealed'] as bool,
       startDate: firestoreDateTimeFromJson(json['startDate']),
+      isChronic: json['isChronic'] as bool?,
+      form: $enumDecodeNullable(_$FormEnumEnumMap, json['form']),
       woundEntrys: (json['woundEntrys'] as List<dynamic>?)
           ?.map((e) => WoundEntry.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -24,4 +26,12 @@ Map<String, dynamic> _$WoundToJson(Wound instance) => <String, dynamic>{
       'isHealed': instance.isHealed,
       'startDate': firestoreDateTimeToJson(instance.startDate),
       'woundEntrys': instance.woundEntrys?.map((e) => e.toJson()).toList(),
+      'isChronic': instance.isChronic,
+      'form': _$FormEnumEnumMap[instance.form],
     };
+
+const _$FormEnumEnumMap = {
+  FormEnum.ellipse: 'ellipse',
+  FormEnum.rectangle: 'rectangle',
+  FormEnum.undefined: 'undefined',
+};
