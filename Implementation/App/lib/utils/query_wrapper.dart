@@ -76,9 +76,9 @@ class QueryWrapper {
   static getPatient(patientId, roomID) async {
     return await patientsRef(roomID).doc(patientId).get().then((value) {
       return value.data();
-    }).catchError((e) {
-      print('Got error:$e');
-      return 42;
+    }).catchError((Object e) {
+      print('Got error: $e'); // Finally, callback fires.
+      return null; // Future completes with 42.
     });
   }
 

@@ -15,7 +15,7 @@ class PatientScreen extends StatefulWidget {
 }
 
 class _PatientScreenState extends State<PatientScreen> {
-  _initView(Map<String, dynamic> data) {
+  _initView() {
     return Scaffold(
         body: SafeArea(
       child: SingleChildScrollView(
@@ -61,7 +61,7 @@ class _PatientScreenState extends State<PatientScreen> {
                           height: 5,
                         ),
                         Text(
-                          data["firstName"] + " " + data["surname"],
+                          widget.patient.fullName(),
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                       ],
@@ -82,9 +82,7 @@ class _PatientScreenState extends State<PatientScreen> {
                         SizedBox(
                           height: 5,
                         ),
-                        Text(
-                            DateFormat('dd.MM.yyyy').format(DateTime.parse(
-                                data["birthDate"].toDate().toString())),
+                        Text(widget.patient.formattedBirthday(),
                             style: TextStyle(color: Colors.grey[700])),
                       ],
                     ),
@@ -106,11 +104,7 @@ class _PatientScreenState extends State<PatientScreen> {
                           height: 5,
                         ),
                         Text(
-                            data["residence"]["city"] +
-                                ", " +
-                                data["residence"]["zipCode"] +
-                                ", " +
-                                data["residence"]["street"],
+                            "${widget.patient.residence.street}, ${widget.patient.residence.zipCode} ${widget.patient.residence.city}",
                             style: TextStyle(
                                 color: Colors.grey[700], height: 1.5)),
                       ],
@@ -296,28 +290,6 @@ class _PatientScreenState extends State<PatientScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference patient = FirebaseFirestore.instance.collection(
-        'NursingHome/Uoto3xaa5ZL9N2mMjPhG/Room/8c3fugbbchJ9mhy5RF0H/Patient');
-    return FutureBuilder<DocumentSnapshot>(
-      future: patient.doc("Wm6hKOszycoOJyFYvxum").get(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return Text("Something went wrong");
-        }
-
-        if (snapshot.hasData && !snapshot.data!.exists) {
-          return Text("Document does not exist");
-        }
-
-        if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data =
-              snapshot.data!.data() as Map<String, dynamic>;
-          Patient patient = Patient.fromJson(data);
-          return _initView(data);
-        }
-        return Text("loading");
-      },
-    );
+    return _initView();
   }
 }
