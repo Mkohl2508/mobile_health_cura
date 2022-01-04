@@ -27,7 +27,8 @@ class _WoundOverviewState extends State<WoundOverviewScreen> {
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return WoundInformationScreen(
-              patientName: widget.patient.fullName(),
+              patient: widget.patient,
+              wound: wound,
               woundEntrys: wound.woundEntrys!,
             );
           }));

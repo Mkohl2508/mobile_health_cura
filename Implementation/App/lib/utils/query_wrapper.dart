@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cura/model/general/doctor.dart';
 import 'package:cura/model/general/nurse.dart';
@@ -10,7 +11,8 @@ import "package:cura/globals.dart" as globals;
 import 'package:cura/model/patient/patient.dart';
 
 class QueryWrapper {
-  static const String nursingHomeID = "Uoto3xaa5ZL9N2mMjPhG";
+  static const String nursingHomeID =
+      "gjsrMjy7BzLeWQD844kx"; //"Uoto3xaa5ZL9N2mMjPhG";
 
   static final nursingHomeRef = FirebaseFirestore.instance
       .collection('NursingHome')
@@ -132,15 +134,33 @@ class QueryWrapper {
 
   static postWound(roomId, patientId) async {}
 
-  static postWoundEntry(File img) async {
+  static postWoundEntry(
+      File img, Patient patient, String woundIndex, int woundEntryIndex) async {
     final _storage = FirebaseStorage.instance;
 
-    var snapshot = await _storage.ref().child("Test/img").putFile(img);
+    // Upload image and receive image URL
+    var snapshot = await _storage
+        .ref()
+        .child(
+            "${patient.surname}_${patient.firstName}/$woundIndex/${woundEntryIndex.toString()}")
+        .putFile(img);
     var downloadURL = await snapshot.ref.getDownloadURL();
 
-    return await FirebaseFirestore.instance
-        .collection("Test")
-        .add({"url": downloadURL.toString()}).then((value) {
+    // Get wound entry and add the image URL to local model
+    Wound wound = patient.patientFile.wounds!
+        .firstWhere((element) => element.id == woundIndex);
+    wound.getWoundEntries()![woundEntryIndex].add(downloadURL);
+
+    // Update the database
+    var patiento = patient.patientFile.toJson();
+    return await patientsRef("baudU9swVEavwqA3ua3G").doc(patient.id).update({
+      "patientFile": {
+        "id": patiento["id"],
+        "wounds": patiento["wounds"],
+        "medication": [{}],
+        "attendingDoctor": patiento["attendingDoctor"]["id"]
+      }
+    }).then((value) {
       return value;
     }).catchError((e) {
       print('Got error:$e');
