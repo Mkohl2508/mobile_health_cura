@@ -1,3 +1,4 @@
+import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/wound_overview_screen.dart';
@@ -6,8 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PatientRecordScreen extends StatefulWidget {
   final Patient patient;
+  final Room room;
 
-  const PatientRecordScreen({Key? key, required this.patient})
+  const PatientRecordScreen(
+      {Key? key, required this.patient, required this.room})
       : super(key: key);
 
   @override
@@ -95,6 +98,7 @@ class _PatientRecordScreenState extends State<PatientRecordScreen> {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => WoundOverviewScreen(
                             patient: widget.patient,
+                            room: widget.room,
                           )));
                 },
                 child: Container(

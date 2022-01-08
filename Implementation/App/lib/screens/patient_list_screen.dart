@@ -28,6 +28,7 @@ class _PatienListScreenState extends State<PatienListScreen> {
                     MaterialPageRoute(
                         builder: (context) => PatientScreen(
                               patient: patient,
+                              room: room,
                             )));
               }));
         }

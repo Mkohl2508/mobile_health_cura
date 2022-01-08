@@ -134,8 +134,8 @@ class QueryWrapper {
 
   static postWound(roomId, patientId) async {}
 
-  static postWoundEntry(
-      File img, Patient patient, String woundIndex, int woundEntryIndex) async {
+  static postWoundEntry(File img, Patient patient, Room room, String woundIndex,
+      int woundEntryIndex) async {
     final _storage = FirebaseStorage.instance;
 
     // Upload image and receive image URL
@@ -153,7 +153,7 @@ class QueryWrapper {
 
     // Update the database
     var patiento = patient.patientFile.toJson();
-    return await patientsRef("baudU9swVEavwqA3ua3G").doc(patient.id).update({
+    return await patientsRef(room.number.toString()).doc(patient.id).update({
       "patientFile": {
         "id": patiento["id"],
         "wounds": patiento["wounds"],
