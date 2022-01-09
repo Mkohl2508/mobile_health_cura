@@ -1,5 +1,8 @@
-import 'package:cura/model/widget/AppColors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cura/model/general/room.dart';
 import 'package:flutter/material.dart';
+import 'package:cura/model/widget/AppColors.dart';
+import 'package:cura/globals.dart' as globals;
 
 class AddRoomScreen extends StatefulWidget {
   const AddRoomScreen({Key? key}) : super(key: key);
@@ -9,6 +12,11 @@ class AddRoomScreen extends StatefulWidget {
 }
 
 class _AddRoomScreenState extends State<AddRoomScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  String? roomName = '';
+  int? roomNumber = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,47 +27,57 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
         body: Padding(
             padding: const EdgeInsets.all(30.0),
             child: Form(
+                key: _formKey,
                 child: Column(children: [
-              TextFormField(
-                decoration: InputDecoration(
-                    hintText: 'Name',
-                    labelText: 'Room Name',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0))),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    hintText: 'Number',
-                    labelText: 'Room Number',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0))),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(AppColors.cura_cyan),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40.0),
-                            side: BorderSide(color: AppColors.cura_cyan)))),
-                onPressed: () {},
-                child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    height: 50,
-                    child: Center(
-                      child: Text(
-                        "Save",
-                        style: TextStyle(fontSize: 22),
-                      ),
-                    )),
-              )
-            ]))));
+                  TextFormField(
+                      validator: (val) => val!.isEmpty ? 'Enter a Name' : null,
+                      decoration: InputDecoration(
+                          hintText: 'Name',
+                          labelText: 'Room Name',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0))),
+                      onChanged: (val) {
+                        setState(() => roomName = val);
+                      }),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                      validator: (val) =>
+                          val!.isEmpty ? 'Enter a Roomnumber' : null,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          hintText: 'Number',
+                          labelText: 'Room Number',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0))),
+                      onChanged: (val) {
+                        setState(() => roomNumber = int.parse(val));
+                      }),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(AppColors.cura_cyan),
+                        shape: MaterialStateProperty
+                            .all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40.0),
+                                side: BorderSide(color: AppColors.cura_cyan)))),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {}
+                    },
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            "Save",
+                            style: TextStyle(fontSize: 22),
+                          ),
+                        )),
+                  )
+                ]))));
   }
 }
