@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cura/model/enums/phase_enum.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/full_screen_screen.dart';
+//import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class AddWoundEntryScreen extends StatefulWidget {
   const AddWoundEntryScreen({Key? key}) : super(key: key);
@@ -15,11 +18,15 @@ class AddWoundEntryScreen extends StatefulWidget {
 }
 
 class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
-  List<File> _images = [];
+  final List<File> _images = [];
   int _currentPic = 0;
   final CarouselController _controller = CarouselController();
 
   String currentDate = DateFormat('dd.MM.yyyy').format(DateTime.now());
+
+  final PhaseEnum? _phase = null;
+
+  double _painLevel = 0;
 
   @override
   void dispose() {
@@ -86,6 +93,8 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
         child: SingleChildScrollView(
           child: Container(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 17),
                 Container(
@@ -163,7 +172,7 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                       );
                     }).toList()),
                 SizedBox(
-                  height: 5,
+                  height: 20,
                 ),
                 Center(
                   child: ElevatedButton(
@@ -187,16 +196,206 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                           children: [
                             Icon(
                               Icons.photo_camera,
-                              size: 30,
+                              size: 26,
                             ),
                             SizedBox(
                               width: 10,
                             ),
-                            Text("Add"),
+                            Text("Add picture"),
                           ],
                         ))),
                   ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Text(
+                    "Pain level",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SfSlider(
+                  value: _painLevel,
+                  onChanged: (value) {
+                    setState(() {
+                      _painLevel = value;
+                    });
+                  },
+                  min: 0,
+                  max: 10,
+                  showLabels: true,
+                  showDividers: true,
+                  showTicks: true,
+                  interval: 2,
+                  stepSize: 1,
+                  minorTicksPerInterval: 1,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Text(
+                    "Wound information",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 10.0),
+                        hintText: 'Yes/No',
+                        labelText: 'Is the wound open?',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 10.0),
+                        hintText: 'Select a phase',
+                        labelText: 'Phase of healing',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 10.0),
+                        hintText: 'in cm',
+                        labelText: 'Wound length',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 10.0),
+                        hintText: 'in cm',
+                        labelText: 'Wound width',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 10.0),
+                        hintText: 'in cm',
+                        labelText: 'Wound depth',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 10.0),
+                        hintText: 'Select a edge',
+                        labelText: 'Wound edges',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 10.0),
+                        hintText: 'Yes/No',
+                        labelText: 'Is the wound smelly?',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 10.0),
+                        hintText: 'Select a exudate',
+                        labelText: 'Wound exudate',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0))),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(AppColors.cura_cyan),
+                        shape: MaterialStateProperty
+                            .all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40.0),
+                                side: BorderSide(color: AppColors.cura_cyan)))),
+                    onPressed: () {},
+                    child: Container(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: 60,
+                        child: Center(
+                            child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.save,
+                              size: 26,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Save"),
+                          ],
+                        ))),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
                 )
+                /* DropDownFormField(
+                    value: _phase,
+                    required: true,
+                    hintText: "Choose a wound phase",
+                    titleText: "Wound phase",
+                    onChanged: (value) {
+                      setState(() {
+                        _phase = value;
+                      });
+                    },
+                    dataSource: PhaseEnum.values)*/
               ],
             ),
           ),
