@@ -1,7 +1,11 @@
 import 'package:cura/model/general/room.dart';
+import 'package:cura/model/patient/patient_record.dart';
+import 'package:cura/model/residence/residence.dart';
 import 'package:flutter/material.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/globals.dart' as globals;
+import 'package:cura/model/patient/patient.dart';
+import 'package:cura/screens/home_screen.dart';
 
 class AddPatientScreen extends StatefulWidget {
   const AddPatientScreen({Key? key}) : super(key: key);
@@ -16,9 +20,10 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
       globals.masterContext.getById("Uoto3xaa5ZL9N2mMjPhG")!.rooms;
 
   //form values
-  String? _name;
+  String _firstName = '';
+  String _lastName = '';
   int? _currentRoomNumber;
-  DateTime? _birthday;
+  DateTime _birthday = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +47,17 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                       ),
                       TextFormField(
                           validator: (val) =>
-                              val!.isEmpty ? 'Enter a firs name' : null,
+                              val!.isEmpty ? 'Enter a first name' : null,
                           decoration: InputDecoration(
                               hintText: 'First Name',
                               labelText: 'First Name',
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8.0))),
-                          onChanged: (val) {}),
+                          onChanged: (val) {
+                            setState(() {
+                              _firstName = val;
+                            });
+                          }),
                       SizedBox(
                         height: 20,
                       ),
@@ -60,7 +69,11 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                               labelText: 'Last Name',
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8.0))),
-                          onChanged: (val) {}),
+                          onChanged: (val) {
+                            setState(() {
+                              _lastName = val;
+                            });
+                          }),
                       SizedBox(
                         height: 20,
                       ),
@@ -106,7 +119,26 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                                     side: BorderSide(
                                         color: AppColors.cura_cyan)))),
                         onPressed: () async {
-                          if (_formKey.currentState!.validate()) {}
+                          if (_formKey.currentState!.validate()) {
+                            Patient newPerson = Patient(
+                                id: '1',
+                                firstName: _firstName,
+                                surname: _lastName,
+                                birthDate: _birthday,
+                                residence: Residence(
+                                    id: '1',
+                                    city: 'placeholder',
+                                    street: 'placeholder',
+                                    zipCode: 'placeholder',
+                                    country: 'placeholder'),
+                                phoneNumber: '0000000',
+                                patientFile: PatientRecord(id: '1'));
+                            //globals.masterContext.oldPeopleHomesList[0].
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()));
+                          }
                         },
                         child: SizedBox(
                             width: MediaQuery.of(context).size.width * 0.5,
