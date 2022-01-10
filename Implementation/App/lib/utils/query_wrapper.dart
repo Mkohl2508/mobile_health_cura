@@ -10,6 +10,7 @@ import 'package:cura/model/general/old_people_home.dart';
 import 'package:cura/model/general/room.dart';
 import "package:cura/globals.dart" as globals;
 import 'package:cura/model/patient/patient.dart';
+import 'package:cura/model/patient/patient_record.dart';
 
 class QueryWrapper {
   static const String nursingHomeID =
@@ -196,5 +197,24 @@ class QueryWrapper {
     globals.masterContext.oldPeopleHomesList[0].rooms.add(room);
   }
 
-  static postPatientFile() async {}
+  static postPatient(roomId, Patient patient) async {
+    roomsRef.doc(roomId).collection('Patient').add(patient.toJson());
+    Room room = await getRoom(roomId);
+    for (var element in globals.masterContext.oldPeopleHomesList[0].rooms) {
+      if (element.number == room.number) element.patients!.add(patient);
+    }
+  }
+
+  static postPatientFile(roomId, patientId, PatientRecord patientFile) async {
+    patientsRef(roomId).doc(patientId).update(patientFile.toJson());
+    Patient patient = await getPatient(roomId, patientId);
+    Room room = await getRoom(roomId);
+    for (var element in globals.masterContext.oldPeopleHomesList[0].rooms) {
+      if (element.number == room.number) {
+        for (var element in element.patients!) {
+          if (element.id == patient.id) element = patient;
+        }
+      }
+    }
+  }
 }
