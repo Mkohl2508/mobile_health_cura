@@ -1,6 +1,7 @@
 import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient_record.dart';
 import 'package:cura/model/residence/residence.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/globals.dart' as globals;
@@ -20,17 +21,14 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
       globals.masterContext.getById("Uoto3xaa5ZL9N2mMjPhG")!.rooms;
 
   //form values
-  String _firstName = '';
-  String _lastName = '';
-  int? _currentRoomNumber;
+  String? _firstName;
+  String? _lastName;
   DateTime _birthday = DateTime.now();
+  Room? _currentRoom;
+  String? _phoneNumber;
 
   @override
   Widget build(BuildContext context) {
-    List<String> roomList = createDropdownList(rooms);
-    if (roomList.isEmpty) {
-      print('empty');
-    }
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.cura_darkCyan,
@@ -90,20 +88,35 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                       SizedBox(
                         height: 30,
                       ),
+                      TextFormField(
+                          validator: (val) =>
+                              val!.isEmpty ? 'Enter a Phone Number' : null,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                              hintText: 'Phone Number',
+                              labelText: 'Phone Number',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.0))),
+                          onChanged: (val) {
+                            setState(() => _phoneNumber = val);
+                          }),
+                      SizedBox(
+                        height: 30,
+                      ),
                       DropdownButtonFormField(
                           decoration: InputDecoration(
                               hintText: 'Number',
                               labelText: 'Patient Room',
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8.0))),
-                          items: roomList.map((number) {
+                          items: rooms.map((room) {
                             return DropdownMenuItem(
-                              value: number,
-                              child: Text('Room $number'),
+                              value: room,
+                              child: Text('Room ${room.number}'),
                             );
                           }).toList(),
                           onChanged: (value) => setState(() {
-                                //_currentRoomNumber = int.tryParse(value);
+                                _currentRoom = value as Room;
                               })),
                       SizedBox(
                         height: 30,
@@ -131,9 +144,9 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                                     street: 'placeholder',
                                     zipCode: 'placeholder',
                                     country: 'placeholder'),
-                                phoneNumber: '0000000',
+                                phoneNumber: _phoneNumber,
                                 patientFile: PatientRecord(id: '1'));
-                            //globals.masterContext.oldPeopleHomesList[0].
+                            //QueryWrapper.roomsRef.
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -152,12 +165,4 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                       )
                     ])))));
   }
-}
-
-createDropdownList(List<Room> rooms) {
-  List<String>? newList = [];
-  for (var room in rooms) {
-    newList.add(room.number.toString());
-  }
-  return newList;
 }

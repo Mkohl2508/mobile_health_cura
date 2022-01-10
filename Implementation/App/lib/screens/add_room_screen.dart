@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/general/room.dart';
 import 'package:cura/screens/home_screen.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/globals.dart' as globals;
@@ -73,6 +74,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                             Room(number: _roomNumber, name: _roomName);
                         globals.masterContext.oldPeopleHomesList[0].rooms
                             .add(newRoom);
+                        QueryWrapper.roomsRef.add(newRoom);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
