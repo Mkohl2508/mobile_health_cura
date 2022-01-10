@@ -22,7 +22,7 @@ Map<String, dynamic> _$DoctorToJson(Doctor instance) => <String, dynamic>{
       'firstName': instance.firstName,
       'surname': instance.surname,
       'birthDate': firestoreDateTimeToJson(instance.birthDate),
-      'residence': firestoreResidenceToJson(instance.residence),
+      'residence': instance.residence.toJson(),
       'phoneNumber': instance.phoneNumber,
       'degree': instance.degree,
       'type': instance.type,
