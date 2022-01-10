@@ -9,8 +9,6 @@ DateTime firestoreDateTimeFromJson(dynamic value) {
   return value != null ? value.toDate() : value;
 }
 
-dynamic firestoreResidenceToJson(dynamic value) => value;
-
 Residence firestoreResidenceFromJson(dynamic value) {
   return value != null ? Residence.fromJson(value) : value;
 }
@@ -26,10 +24,7 @@ class Person {
     fromJson: firestoreDateTimeFromJson,
   )
   final DateTime birthDate;
-  @JsonKey(
-    toJson: firestoreResidenceToJson,
-    fromJson: firestoreResidenceFromJson,
-  )
+  @JsonKey(fromJson: firestoreResidenceFromJson)
   final Residence residence;
   final String? phoneNumber;
 
