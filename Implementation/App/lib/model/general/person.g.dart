@@ -20,6 +20,6 @@ Map<String, dynamic> _$PersonToJson(Person instance) => <String, dynamic>{
       'firstName': instance.firstName,
       'surname': instance.surname,
       'birthDate': firestoreDateTimeToJson(instance.birthDate),
-      'residence': firestoreResidenceToJson(instance.residence),
+      'residence': instance.residence.toJson(),
       'phoneNumber': instance.phoneNumber,
     };
