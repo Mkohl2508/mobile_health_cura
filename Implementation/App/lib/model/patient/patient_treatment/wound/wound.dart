@@ -1,3 +1,4 @@
+import 'package:cura/model/enums/form_enum.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -21,6 +22,8 @@ class Wound {
   )
   final DateTime startDate;
   final List<WoundEntry>? woundEntrys;
+  final bool? isChronic;
+  final FormEnum? form;
 
   Wound(
       {required this.id,
@@ -28,6 +31,8 @@ class Wound {
       required this.type,
       required this.isHealed,
       required this.startDate,
+      this.isChronic,
+      this.form,
       List<WoundEntry>? woundEntrys})
       : woundEntrys = woundEntrys ?? [];
 

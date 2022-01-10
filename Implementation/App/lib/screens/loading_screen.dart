@@ -1,3 +1,7 @@
+import 'package:cura/model/enums/edge_enum.dart';
+import 'package:cura/model/enums/exudate_enum.dart';
+import 'package:cura/model/enums/form_enum.dart';
+import 'package:cura/model/enums/phase_enum.dart';
 import 'package:cura/model/general/doctor.dart';
 import 'package:cura/model/general/nurse.dart';
 import 'package:cura/model/general/old_people_home.dart';
@@ -23,6 +27,11 @@ Wound _initWound() {
   WoundEntry entry = WoundEntry(
       id: "1woundEntry",
       date: DateTime(2021, 11, 20),
+      edge: EdgeEnum.defined,
+      exudate: ExudateEnum.serosanguinous,
+      isOpen: true,
+      isSmelly: false,
+      phase: PhaseEnum.hemostasis,
       size: 5.10,
       images: [
         "https://www.haeusliche-pflege.net/-/media/ahi/alle-netzwerke/digital/produkte-digital/elearning/0038_Expertenstandard-Pflege-von-Menschen-mit-chronischen-Wunden.png?bc=White&as=0&w=1000&hash=12DFA01B2A8FD46990BB13A311A3DE7C"
@@ -30,6 +39,11 @@ Wound _initWound() {
       status: "blutend");
   WoundEntry entry2 = WoundEntry(
       id: "2woundEntry",
+      edge: EdgeEnum.defined,
+      exudate: ExudateEnum.serosanguinous,
+      isOpen: true,
+      isSmelly: false,
+      phase: PhaseEnum.hemostasis,
       date: DateTime(2021, 11, 18),
       size: 5.10,
       images: [
@@ -38,6 +52,11 @@ Wound _initWound() {
       ],
       status: "blutend");
   WoundEntry entry3 = WoundEntry(
+      edge: EdgeEnum.defined,
+      exudate: ExudateEnum.serosanguinous,
+      isOpen: true,
+      isSmelly: false,
+      phase: PhaseEnum.inflammatory,
       id: "3woundEntry",
       date: DateTime(2021, 11, 23),
       size: 5.10,
@@ -50,6 +69,8 @@ Wound _initWound() {
       location: "Unterer Rücken",
       type: "Platzwunde",
       isHealed: false,
+      form: FormEnum.ellipse,
+      isChronic: false,
       startDate: DateTime(2021, 11, 20),
       woundEntrys: [entry, entry2, entry3]);
 }
@@ -61,6 +82,8 @@ Wound _initWound2() {
       type: "Schürfwunde",
       isHealed: false,
       startDate: DateTime(2021, 12, 12),
+      form: FormEnum.ellipse,
+      isChronic: false,
       woundEntrys: []);
 }
 
@@ -150,39 +173,54 @@ Future<OldPeopleHome> _initOldPeopleHome() async {
       residence: oldPeopleHome.residence);
 }
 
-Future<void> initMasterContext(BuildContext context) async {
-  globals.masterContext.oldPeopleHomesList.add(await _initOldPeopleHome());
-  Future.delayed(Duration(seconds: 3), () {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return HomeScreen();
-    }));
-  });
+Future<OldPeopleHome> initMasterContext() async {
+  return await _initOldPeopleHome();
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     // init mock data
-    return FutureBuilder<void>(
-        future: initMasterContext(context),
-        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return HomeScreen();
-          }
-
-          return Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("Loading..."),
-                  SizedBox(height: 20),
-                  CircularProgressIndicator(),
-                ],
-              ),
-            ),
-          );
-        });
+    return Scaffold(
+      body: Center(
+        child: FutureBuilder<OldPeopleHome>(
+            future: initMasterContext(),
+            builder:
+                (BuildContext context, AsyncSnapshot<OldPeopleHome> snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data != null) {
+                  globals.masterContext.oldPeopleHomesList.add(snapshot.data!);
+                }
+                return HomeScreen();
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                      CircularProgressIndicator(),
+                      Text("Loading..."),
+                    ]));
+              } else if (snapshot.hasError) {
+                return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("Error: " + snapshot.error.toString()),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoadingScreen()));
+                          },
+                          icon: Icon(Icons.update))
+                    ]);
+              } else {
+                return Text("Error");
+              }
+            }),
+      ),
+    );
   }
 }
