@@ -68,7 +68,7 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                           patient: widget.patient,
                           room: widget.room,
                           woundIndex: widget.wound.id,
-                          woundEntryIndex: _currentIndex,
+                          woundEntry: widget.woundEntrys[_currentIndex],
                         )));
           },
           child: Icon(Icons.add),
