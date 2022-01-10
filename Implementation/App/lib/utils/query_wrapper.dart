@@ -190,7 +190,7 @@ class QueryWrapper {
   }
 
   static postRoom(Room room) async {
-    await roomsRef.add(room).catchError((e) {
+    await roomsRef.doc(room.number.toString()).set(room).catchError((e) {
       print('Got error:$e');
       return 42;
     });
@@ -198,7 +198,14 @@ class QueryWrapper {
   }
 
   static postPatient(roomId, Patient patient) async {
-    roomsRef.doc(roomId).collection('Patient').add(patient.toJson());
+    roomsRef
+        .doc(roomId)
+        .collection('Patient')
+        .add(patient.toJson())
+        .catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
     Room room = await getRoom(roomId);
     for (var element in globals.masterContext.oldPeopleHomesList[0].rooms) {
       if (element.number == room.number) element.patients!.add(patient);
