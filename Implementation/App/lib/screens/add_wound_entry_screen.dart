@@ -1,9 +1,17 @@
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cura/globals.dart';
+import 'package:cura/model/enums/edge_enum.dart';
+import 'package:cura/model/enums/enum_converter.dart';
+import 'package:cura/model/enums/exudate_enum.dart';
 import 'package:cura/model/enums/phase_enum.dart';
+import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
+import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/full_screen_screen.dart';
+import 'package:cura/screens/wound_information_screen.dart';
+import 'package:cura/utils/query_wrapper.dart';
 //import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,7 +19,12 @@ import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class AddWoundEntryScreen extends StatefulWidget {
-  const AddWoundEntryScreen({Key? key}) : super(key: key);
+  final List<WoundEntry> woundEntrys;
+  final String patientName;
+
+  const AddWoundEntryScreen(
+      {Key? key, required this.woundEntrys, required this.patientName})
+      : super(key: key);
 
   @override
   _AddWoundEntryScreenState createState() => _AddWoundEntryScreenState();
@@ -24,7 +37,15 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
 
   String currentDate = DateFormat('dd.MM.yyyy').format(DateTime.now());
 
-  final PhaseEnum? _phase = null;
+  PhaseEnum _phase = PhaseEnum.unknown;
+  EdgeEnum _edge = EdgeEnum.undefined;
+  ExudateEnum _exudate = ExudateEnum.undefined;
+  bool _isSmelly = false;
+  bool _isOpen = false;
+
+  TextEditingController _lengthController = TextEditingController();
+  TextEditingController _widthController = TextEditingController();
+  TextEditingController _depthController = TextEditingController();
 
   double _painLevel = 0;
 
@@ -246,34 +267,60 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                   height: 10,
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 10.0),
-                        hintText: 'Yes/No',
-                        labelText: 'Is the wound open?',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0))),
-                  ),
-                ),
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 10.0),
+                          hintText: "yes/no",
+                          labelText: "Is the wound open?",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0))),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value == "yes") {
+                            _isOpen = true;
+                          } else if (value == "no") {
+                            _isOpen = false;
+                          } else {
+                            throw Exception("Invalid isOpen value");
+                          }
+                        });
+                      },
+                      items: ["yes", "no"].map((item) {
+                        return DropdownMenuItem(
+                          value: item,
+                          child: Text(item.toString()),
+                        );
+                      }).toList(),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 10.0),
+                          hintText: "Choose a wound phase",
+                          labelText: "Wound phase",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0))),
+                      onChanged: (value) {
+                        setState(() {
+                          _phase =
+                              EnumConverter.stringToPhaseEnum(value.toString());
+                        });
+                      },
+                      items: getPhaseList().map((item) {
+                        return DropdownMenuItem(
+                          value: item,
+                          child: Text(item.toString()),
+                        );
+                      }).toList(),
+                    )),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 10.0),
-                        hintText: 'Select a phase',
-                        labelText: 'Phase of healing',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0))),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: TextFormField(
+                    controller: _lengthController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
@@ -287,6 +334,7 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: TextFormField(
+                    controller: _widthController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
@@ -300,6 +348,7 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: TextFormField(
+                    controller: _depthController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
@@ -311,44 +360,79 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 10.0),
-                        hintText: 'Select a edge',
-                        labelText: 'Wound edges',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0))),
-                  ),
-                ),
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 10.0),
+                          hintText: "Choose a wound edge",
+                          labelText: "Wound edge",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0))),
+                      onChanged: (value) {
+                        setState(() {
+                          _edge =
+                              EnumConverter.stringToEdgeEnum(value.toString());
+                        });
+                      },
+                      items: getEdgeList().map((item) {
+                        return DropdownMenuItem(
+                          value: item,
+                          child: Text(item.toString()),
+                        );
+                      }).toList(),
+                    )),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 10.0),
-                        hintText: 'Yes/No',
-                        labelText: 'Is the wound smelly?',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0))),
-                  ),
-                ),
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 10.0),
+                          hintText: "yes/no",
+                          labelText: "Is the wound smelly?",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0))),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value == "yes") {
+                            _isSmelly = true;
+                          } else if (value == "no") {
+                            _isSmelly = false;
+                          } else {
+                            throw Exception("Invalid isSmelly value");
+                          }
+                        });
+                      },
+                      items: ["yes", "no"].map((item) {
+                        return DropdownMenuItem(
+                          value: item,
+                          child: Text(item.toString()),
+                        );
+                      }).toList(),
+                    )),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 10.0),
-                        hintText: 'Select a exudate',
-                        labelText: 'Wound exudate',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0))),
-                  ),
-                ),
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 10.0),
+                          hintText: "Choose a wound exudate",
+                          labelText: "Wound exudate",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0))),
+                      onChanged: (value) {
+                        setState(() {
+                          _exudate = EnumConverter.stringToExudateEnum(
+                              value.toString());
+                        });
+                      },
+                      items: getExudateList().map((item) {
+                        return DropdownMenuItem(
+                          value: item,
+                          child: Text(item.toString()),
+                        );
+                      }).toList(),
+                    )),
                 SizedBox(
                   height: 20,
                 ),
@@ -361,7 +445,32 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                             .all<RoundedRectangleBorder>(RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(40.0),
                                 side: BorderSide(color: AppColors.cura_cyan)))),
-                    onPressed: () {},
+                    onPressed: () {
+                      //check the values
+                      WoundEntry entry = WoundEntry(
+                          id: "newEntry",
+                          date: DateTime.now(),
+                          size: 1,
+                          status: "status",
+                          images: [],
+                          painLevel: _painLevel.toInt(),
+                          phase: _phase,
+                          length: double.parse(_lengthController.text),
+                          width: double.parse(_widthController.text),
+                          depth: double.parse(_depthController.text),
+                          edge: _edge,
+                          isSmelly: _isSmelly,
+                          exudate: _exudate);
+
+                      widget.woundEntrys.add(entry);
+
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => WoundInformationScreen(
+                                  patientName: widget.patientName,
+                                  woundEntrys: widget.woundEntrys)));
+                    },
                     child: Container(
                         width: MediaQuery.of(context).size.width * 0.8,
                         height: 60,
@@ -384,18 +493,7 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                 ),
                 SizedBox(
                   height: 20,
-                )
-                /* DropDownFormField(
-                    value: _phase,
-                    required: true,
-                    hintText: "Choose a wound phase",
-                    titleText: "Wound phase",
-                    onChanged: (value) {
-                      setState(() {
-                        _phase = value;
-                      });
-                    },
-                    dataSource: PhaseEnum.values)*/
+                ),
               ],
             ),
           ),

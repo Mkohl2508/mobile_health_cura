@@ -53,8 +53,13 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AddWoundEntryScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddWoundEntryScreen(
+                          patientName: widget.patientName,
+                          woundEntrys: widget.woundEntrys,
+                        )));
           },
           child: Icon(Icons.add),
           backgroundColor: AppColors.cura_darkCyan),
