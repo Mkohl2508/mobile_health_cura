@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
+import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +10,16 @@ import 'add_wound_entry_screen.dart';
 import 'full_screen_screen.dart';
 
 class WoundInformationScreen extends StatefulWidget {
-  final String patientName;
+  final Patient patient;
+  final Room room;
+  final Wound wound;
   final List<WoundEntry> woundEntrys;
   const WoundInformationScreen(
-      {Key? key, required this.patientName, required this.woundEntrys})
+      {Key? key,
+      required this.patient,
+      required this.room,
+      required this.wound,
+      required this.woundEntrys})
       : super(key: key);
 
   @override
@@ -47,14 +55,21 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
         elevation: 1,
         backgroundColor: AppColors.cura_darkCyan,
         title: Text(
-          widget.patientName,
+          widget.patient.fullName(),
           style: TextStyle(),
         ),
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AddWoundEntryScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddWoundEntryScreen(
+                          patient: widget.patient,
+                          room: widget.room,
+                          woundIndex: widget.wound.id,
+                          woundEntry: widget.woundEntrys[_currentIndex],
+                        )));
           },
           child: Icon(Icons.add),
           backgroundColor: AppColors.cura_darkCyan),

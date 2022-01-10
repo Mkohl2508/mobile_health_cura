@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/patient_record_screen.dart';
@@ -8,7 +9,9 @@ import 'package:intl/intl.dart';
 
 class PatientScreen extends StatefulWidget {
   final Patient patient;
-  const PatientScreen({Key? key, required this.patient}) : super(key: key);
+  final Room room;
+  const PatientScreen({Key? key, required this.patient, required this.room})
+      : super(key: key);
 
   @override
   _PatientScreenState createState() => _PatientScreenState();
@@ -229,6 +232,7 @@ class _PatientScreenState extends State<PatientScreen> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => PatientRecordScreen(
                           patient: widget.patient,
+                          room: widget.room,
                         )));
               },
               child: Container(

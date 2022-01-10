@@ -1,14 +1,28 @@
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cura/model/general/room.dart';
+import 'package:cura/model/patient/patient.dart';
+import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/full_screen_screen.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class AddWoundEntryScreen extends StatefulWidget {
-  const AddWoundEntryScreen({Key? key}) : super(key: key);
+  final Patient patient;
+  final Room room;
+  final String woundIndex;
+  final WoundEntry woundEntry;
+  const AddWoundEntryScreen(
+      {Key? key,
+      required this.patient,
+      required this.room,
+      required this.woundIndex,
+      required this.woundEntry})
+      : super(key: key);
 
   @override
   _AddWoundEntryScreenState createState() => _AddWoundEntryScreenState();
@@ -35,6 +49,8 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
       if (!mounted) return;
       setState(() {
         if (image != null) {
+          QueryWrapper.postWoundEntry(File(image.path), widget.patient,
+              widget.room, widget.woundIndex, widget.woundEntry);
           _images.add(File(image.path));
         }
       });

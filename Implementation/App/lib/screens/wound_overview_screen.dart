@@ -1,3 +1,4 @@
+import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/widget/AppColors.dart';
@@ -7,7 +8,9 @@ import 'package:flutter/material.dart';
 
 class WoundOverviewScreen extends StatefulWidget {
   final Patient patient;
-  const WoundOverviewScreen({Key? key, required this.patient})
+  final Room room;
+  const WoundOverviewScreen(
+      {Key? key, required this.patient, required this.room})
       : super(key: key);
 
   @override
@@ -27,7 +30,9 @@ class _WoundOverviewState extends State<WoundOverviewScreen> {
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return WoundInformationScreen(
-              patientName: widget.patient.fullName(),
+              patient: widget.patient,
+              room: widget.room,
+              wound: wound,
               woundEntrys: wound.woundEntrys!,
             );
           }));

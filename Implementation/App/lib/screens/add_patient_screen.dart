@@ -1,6 +1,7 @@
 import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient_record.dart';
 import 'package:cura/model/residence/residence.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/globals.dart' as globals;
@@ -17,7 +18,7 @@ class AddPatientScreen extends StatefulWidget {
 class _AddPatientScreenState extends State<AddPatientScreen> {
   final _formKey = GlobalKey<FormState>();
   final List<Room> rooms =
-      globals.masterContext.getById("Uoto3xaa5ZL9N2mMjPhG")!.rooms;
+      globals.masterContext.getById(QueryWrapper.nursingHomeID)!.rooms;
 
   //form values
   String _firstName = '';
