@@ -6,6 +6,7 @@ import 'package:cura/model/enums/edge_enum.dart';
 import 'package:cura/model/enums/enum_converter.dart';
 import 'package:cura/model/enums/exudate_enum.dart';
 import 'package:cura/model/enums/phase_enum.dart';
+import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/model/widget/AppColors.dart';
@@ -17,13 +18,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:uuid/uuid.dart';
 
 class AddWoundEntryScreen extends StatefulWidget {
-  final List<WoundEntry> woundEntrys;
-  final String patientName;
+  final Wound wound;
+  final Patient patient;
 
   const AddWoundEntryScreen(
-      {Key? key, required this.woundEntrys, required this.patientName})
+      {Key? key, required this.wound, required this.patient})
       : super(key: key);
 
   @override
@@ -37,9 +39,9 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
 
   String currentDate = DateFormat('dd.MM.yyyy').format(DateTime.now());
 
-  PhaseEnum _phase = PhaseEnum.unknown;
-  EdgeEnum _edge = EdgeEnum.undefined;
-  ExudateEnum _exudate = ExudateEnum.undefined;
+  PhaseEnum? _phase = null;
+  EdgeEnum? _edge = null;
+  ExudateEnum? _exudate = null;
   bool _isSmelly = false;
   bool _isOpen = false;
 
@@ -259,7 +261,7 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                   child: Text(
-                    "Wound information",
+                    "Wound entry information",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -447,11 +449,30 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                                 side: BorderSide(color: AppColors.cura_cyan)))),
                     onPressed: () {
                       //check the values
+
+                      if (_phase == null) {
+                        _showSnackBar("Please choose a wound phase");
+                        return;
+                      } else if (_edge == null) {
+                        _showSnackBar("Please choose a wound edge");
+                        return;
+                      } else if (_exudate == null) {
+                        _showSnackBar("Please choose a wound exudate");
+                        return;
+                      } else if (_lengthController.text.isEmpty) {
+                        _showSnackBar("Please enter a wound length");
+                        return;
+                      } else if (_widthController.text.isEmpty) {
+                        _showSnackBar("Please enter a wound width");
+                        return;
+                      } else if (_depthController.text.isEmpty) {
+                        _showSnackBar("Please enter a wound depth");
+                        return;
+                      }
+
                       WoundEntry entry = WoundEntry(
-                          id: "newEntry",
+                          id: Uuid().v1(),
                           date: DateTime.now(),
-                          size: 1,
-                          status: "status",
                           images: [],
                           painLevel: _painLevel.toInt(),
                           phase: _phase,
@@ -460,16 +481,12 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                           depth: double.parse(_depthController.text),
                           edge: _edge,
                           isSmelly: _isSmelly,
+                          isOpen: _isOpen,
                           exudate: _exudate);
 
-                      widget.woundEntrys.add(entry);
+                      widget.wound.woundEntrys!.add(entry);
 
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => WoundInformationScreen(
-                                  patientName: widget.patientName,
-                                  woundEntrys: widget.woundEntrys)));
+                      Navigator.pop(context);
                     },
                     child: Container(
                         width: MediaQuery.of(context).size.width * 0.8,
@@ -500,5 +517,13 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
         ),
       ),
     );
+  }
+
+  void _showSnackBar(String s) {
+    final snackBar = SnackBar(
+      content: Text(s),
+      duration: Duration(seconds: 2),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

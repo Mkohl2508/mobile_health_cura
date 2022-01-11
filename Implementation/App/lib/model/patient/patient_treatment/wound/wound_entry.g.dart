@@ -9,8 +9,6 @@ part of 'wound_entry.dart';
 WoundEntry _$WoundEntryFromJson(Map<String, dynamic> json) => WoundEntry(
       id: json['id'] as String,
       date: firestoreDateTimeFromJson(json['date']),
-      size: (json['size'] as num).toDouble(),
-      status: json['status'] as String,
       images:
           (json['images'] as List<dynamic>).map((e) => e as String).toList(),
       isOpen: json['isOpen'] as bool?,
@@ -28,8 +26,6 @@ Map<String, dynamic> _$WoundEntryToJson(WoundEntry instance) =>
     <String, dynamic>{
       'id': instance.id,
       'date': firestoreDateTimeToJson(instance.date),
-      'size': instance.size,
-      'status': instance.status,
       'images': instance.images,
       'isOpen': instance.isOpen,
       'phase': _$PhaseEnumEnumMap[instance.phase],
@@ -47,6 +43,7 @@ const _$PhaseEnumEnumMap = {
   PhaseEnum.inflammatory: 'inflammatory',
   PhaseEnum.proliferative: 'proliferative',
   PhaseEnum.maturation: 'maturation',
+  PhaseEnum.unknown: 'unknown',
 };
 
 const _$EdgeEnumEnumMap = {

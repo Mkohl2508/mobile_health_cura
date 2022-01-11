@@ -1,4 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cura/model/enums/enum_converter.dart';
+import 'package:cura/model/patient/patient.dart';
+import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +11,10 @@ import 'add_wound_entry_screen.dart';
 import 'full_screen_screen.dart';
 
 class WoundInformationScreen extends StatefulWidget {
-  final String patientName;
-  final List<WoundEntry> woundEntrys;
+  final Patient patient;
+  final Wound wound;
   const WoundInformationScreen(
-      {Key? key, required this.patientName, required this.woundEntrys})
+      {Key? key, required this.patient, required this.wound})
       : super(key: key);
 
   @override
@@ -22,14 +25,15 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
   late int _currentIndex;
 
   void _sortByDate() {
-    widget.woundEntrys.sort((a, b) => a.date.compareTo(b.date));
+    widget.wound.woundEntrys!.sort((a, b) => a.date.compareTo(b.date));
   }
 
   @override
   void initState() {
     _sortByDate();
-    _currentIndex =
-        widget.woundEntrys.isNotEmpty ? widget.woundEntrys.length - 1 : 0;
+    _currentIndex = widget.wound.woundEntrys!.isNotEmpty
+        ? widget.wound.woundEntrys!.length - 1
+        : 0;
     super.initState();
   }
 
@@ -38,8 +42,8 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    WoundEntry? _currentEntry = widget.woundEntrys.isNotEmpty
-        ? widget.woundEntrys[_currentIndex]
+    WoundEntry? _currentEntry = widget.wound.woundEntrys!.isNotEmpty
+        ? widget.wound.woundEntrys![_currentIndex]
         : null;
 
     return Scaffold(
@@ -47,7 +51,7 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
         elevation: 1,
         backgroundColor: AppColors.cura_darkCyan,
         title: Text(
-          widget.patientName,
+          widget.patient.fullName(),
           style: TextStyle(),
         ),
       ),
@@ -57,9 +61,13 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => AddWoundEntryScreen(
-                          patientName: widget.patientName,
-                          woundEntrys: widget.woundEntrys,
-                        )));
+                          patient: widget.patient,
+                          wound: widget.wound,
+                        ))).whenComplete(() {
+              setState(() {
+                _currentIndex = widget.wound.woundEntrys!.length - 1;
+              });
+            });
           },
           child: Icon(Icons.add),
           backgroundColor: AppColors.cura_darkCyan),
@@ -93,7 +101,7 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 8),
                                 child: IconButton(
-                                    color: Color(0x5500B4D8),
+                                    color: Color(0xFF00B4D8),
                                     disabledColor: Color(0x5500B4D8),
                                     icon: Icon(
                                       Icons.arrow_back_ios_new,
@@ -103,7 +111,7 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                                             setState(() {
                                               if (_currentIndex > 0) {
                                                 _currentEntry =
-                                                    widget.woundEntrys[
+                                                    widget.wound.woundEntrys![
                                                         _currentIndex--];
                                               }
                                             });
@@ -121,18 +129,19 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 8),
                                 child: IconButton(
-                                    color: Color(0x5500B4D8),
+                                    color: Color(0xFF00B4D8),
                                     disabledColor: Color(0x5500B4D8),
                                     icon: Icon(Icons.arrow_forward_ios),
                                     onPressed: _currentIndex <
-                                            widget.woundEntrys.length
+                                            widget.wound.woundEntrys!.length - 1
                                         ? () {
                                             setState(() {
                                               if (_currentIndex <
-                                                  widget.woundEntrys.length -
+                                                  widget.wound.woundEntrys!
+                                                          .length -
                                                       1) {
                                                 _currentEntry =
-                                                    widget.woundEntrys[
+                                                    widget.wound.woundEntrys![
                                                         _currentIndex++];
                                               }
                                             });
@@ -289,7 +298,8 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                                     ),
                                     Text(
                                         _currentEntry!.phase != null
-                                            ? _currentEntry!.phase.toString()
+                                            ? EnumConverter.phaseEnumToString(
+                                                _currentEntry!.phase!)
                                             : "Not set",
                                         style:
                                             TextStyle(color: Colors.grey[700])),
@@ -396,7 +406,8 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                                     ),
                                     Text(
                                         _currentEntry!.edge != null
-                                            ? _currentEntry!.edge.toString()
+                                            ? EnumConverter.edgeEnumToString(
+                                                _currentEntry!.edge!)
                                             : "Not set",
                                         style: TextStyle(
                                             color: Colors.grey[700],
@@ -452,7 +463,8 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                                     ),
                                     Text(
                                         _currentEntry!.exudate != null
-                                            ? _currentEntry!.exudate.toString()
+                                            ? EnumConverter.exudateEnumToString(
+                                                _currentEntry!.exudate!)
                                             : "Not set",
                                         style: TextStyle(
                                             color: Colors.grey[700],
