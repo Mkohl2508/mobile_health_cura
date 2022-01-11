@@ -25,6 +25,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
   String _lastName = '';
   int? _currentRoomNumber;
   DateTime _birthday = DateTime.now();
+  Room? _currentRoom;
 
   @override
   Widget build(BuildContext context) {
@@ -97,14 +98,14 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                               labelText: 'Patient Room',
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8.0))),
-                          items: roomList.map((number) {
+                          items: rooms.map((room) {
                             return DropdownMenuItem(
-                              value: number,
-                              child: Text('Room $number'),
+                              value: room,
+                              child: Text('Room ${room.number.toString()}'),
                             );
                           }).toList(),
                           onChanged: (value) => setState(() {
-                                //_currentRoomNumber = int.tryParse(value);
+                                _currentRoom = value as Room;
                               })),
                       SizedBox(
                         height: 30,
@@ -120,6 +121,11 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                                     side: BorderSide(
                                         color: AppColors.cura_cyan)))),
                         onPressed: () async {
+                          if (_currentRoom == null) {
+                            // room not set
+                            return;
+                          }
+
                           if (_formKey.currentState!.validate()) {
                             Patient newPerson = Patient(
                                 id: '1',
@@ -134,11 +140,14 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                                     country: 'placeholder'),
                                 phoneNumber: '0000000',
                                 patientFile: PatientRecord(id: '1'));
+
+                            _currentRoom!.patients!.add(newPerson);
                             //globals.masterContext.oldPeopleHomesList[0].
-                            Navigator.push(
+                            Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomeScreen()));
+                                    builder: (context) => HomeScreen()),
+                                (route) => false);
                           }
                         },
                         child: SizedBox(

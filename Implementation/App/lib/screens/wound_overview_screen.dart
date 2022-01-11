@@ -2,6 +2,7 @@ import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/widget/AppColors.dart';
+import 'package:cura/screens/add_wound_screen.dart';
 import 'package:cura/screens/wound_information_screen.dart';
 import 'package:cura/shared/icon_tile_widget.dart';
 import 'package:flutter/material.dart';
@@ -31,9 +32,8 @@ class _WoundOverviewState extends State<WoundOverviewScreen> {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return WoundInformationScreen(
               patient: widget.patient,
-              room: widget.room,
               wound: wound,
-              woundEntrys: wound.woundEntrys!,
+              room: widget.room,
             );
           }));
         },
@@ -53,7 +53,7 @@ class _WoundOverviewState extends State<WoundOverviewScreen> {
           SizedBox(
             height: 5,
           ),
-          Text("First entry: ${wound.formattedDate()}")
+          Text("Created at: ${wound.formattedDate()}")
         ],
         trailingIcon: Icon(
           Icons.arrow_forward_ios,
@@ -74,6 +74,23 @@ class _WoundOverviewState extends State<WoundOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return AddWoundScreen(
+              patient: widget.patient,
+            );
+          })).then((wound) {
+            if (wound == null) {
+              return;
+            }
+            setState(() {
+              widget.patient.patientFile.wounds!.add(wound);
+            });
+          });
+        },
+      ),
       appBar: AppBar(title: Text(widget.patient.fullName())),
       body: SafeArea(
         child: SingleChildScrollView(
