@@ -13,6 +13,7 @@ import 'package:cura/globals.dart' as globals;
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/screens/home_screen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 import 'full_screen_screen.dart';
@@ -33,6 +34,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
 
   Room? _currentRoom;
   File? _profilePic;
+  DateTime? _birthdate;
 
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
@@ -214,7 +216,19 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                   ),
                   TextFormField(
                     controller: _birthdayController,
-                    keyboardType: TextInputType.datetime,
+                    keyboardType: TextInputType.none,
+                    showCursor: false,
+                    readOnly: true,
+                    onTap: () async {
+                      _birthdate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1900, 1, 1),
+                          lastDate: DateTime.now());
+
+                      _birthdayController.text =
+                          DateFormat('dd.MM.yyyy').format(_birthdate!);
+                    },
                     validator: (val) =>
                         val!.isEmpty ? 'Enter a birthdate' : null,
                     decoration: InputDecoration(
@@ -263,9 +277,17 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                           _showSnackBar("Please select a room");
                         }
 
+                        if (_profilePic == null) {
+                          _showSnackBar("Please add a profile picture");
+                        }
+
+                        String profilePicUrl = await QueryWrapper.uploadImage(
+                            _profilePic!,
+                            "${_firstNameController.text} ${_lastNameController.text}/ProfilePic");
+
                         Patient newPerson = Patient(
                             id: Uuid().v1(),
-                            profilePic: "",
+                            profilePic: profilePicUrl,
                             firstName: _firstNameController.text,
                             surname: _lastNameController.text,
                             birthDate: DateTime.parse(_birthdayController.text),
@@ -274,6 +296,9 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                                 ? null
                                 : _numberController.text,
                             patientFile: PatientRecord(id: Uuid().v1()));
+
+                        await QueryWrapper.postPatient(
+                            _currentRoom!.number.toString(), newPerson);
 
                         _currentRoom!.patients!.add(newPerson);
                         //globals.masterContext.oldPeopleHomesList[0].
