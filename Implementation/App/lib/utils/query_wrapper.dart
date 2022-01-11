@@ -198,10 +198,14 @@ class QueryWrapper {
   }
 
   static postPatient(roomId, Patient patient) async {
+    var patientJSON = patient.toJson();
+    patientJSON['patientFile']['attendingDoctor'] =
+        patientJSON['patientFile']['attendingDoctor']["id"];
     roomsRef
         .doc(roomId)
         .collection('Patient')
-        .add(patient.toJson())
+        .doc(patient.id)
+        .set(patientJSON)
         .catchError((e) {
       print('Got error:$e');
       return 42;
