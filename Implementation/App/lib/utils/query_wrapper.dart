@@ -217,26 +217,26 @@ class QueryWrapper {
         });
   }
 
-  static postWoundEntry(File img, Patient patient, Room room, String woundIndex,
-      WoundEntry woundEntry) async {
+  static Future<String> uploadImage(File img, String path) async {
     final _storage = FirebaseStorage.instance;
 
     // Upload image and receive image URL
-    var snapshot = await _storage
-        .ref()
-        .child(
-            "${patient.surname}_${patient.firstName}/$woundIndex/${woundEntry.id.toString()}/${woundEntry.images.length.toString()}")
-        .putFile(img);
+    var snapshot = await _storage.ref().child(path).putFile(img);
     var downloadURL = await snapshot.ref.getDownloadURL();
+    return downloadURL;
+  }
 
-    // Get wound entry and add the image URL to local model
-    Wound wound = patient.patientFile.wounds!
-        .firstWhere((element) => element.id == woundIndex);
-    wound
-        .getWoundEntries()!
-        .firstWhere((element) => element.id == woundEntry.id)
-        .add(downloadURL);
+  static Future<List<String>> uploadImageList(
+      List<File> images, String path) async {
+    List<String> imagesURL = [];
+    for (var i = 0; i < images.length; i++) {
+      imagesURL.add(await uploadImage(images[i], path + i.toString()));
+    }
 
+    return imagesURL;
+  }
+
+  static postWoundEntry(Patient patient, Room room) async {
     // Update the database
     var patiento = patient.patientFile.toJson();
     return await patientsRef(room.number.toString()).doc(patient.id).update({
