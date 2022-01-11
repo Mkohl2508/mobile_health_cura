@@ -15,7 +15,8 @@ Residence firestoreResidenceFromJson(dynamic value) {
 
 @JsonSerializable(explicitToJson: true)
 class Person {
-  final String id;
+  @JsonKey(includeIfNull: false)
+  String? id;
   final String firstName;
   final String surname;
 
@@ -29,7 +30,7 @@ class Person {
   final String? phoneNumber;
 
   Person(
-      {required this.id,
+      {this.id,
       required this.firstName,
       required this.surname,
       required this.birthDate,

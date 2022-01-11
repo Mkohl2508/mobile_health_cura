@@ -7,7 +7,6 @@ part of 'residence.dart';
 // **************************************************************************
 
 Residence _$ResidenceFromJson(Map<String, dynamic> json) => Residence(
-      id: json['id'] as String,
       city: json['city'] as String,
       street: json['street'] as String,
       zipCode: json['zipCode'] as String,
@@ -15,7 +14,6 @@ Residence _$ResidenceFromJson(Map<String, dynamic> json) => Residence(
     );
 
 Map<String, dynamic> _$ResidenceToJson(Residence instance) => <String, dynamic>{
-      'id': instance.id,
       'city': instance.city,
       'street': instance.street,
       'zipCode': instance.zipCode,

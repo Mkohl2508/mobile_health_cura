@@ -122,23 +122,24 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             Patient newPerson = Patient(
-                                id: '1',
                                 firstName: _firstName,
                                 surname: _lastName,
                                 birthDate: _birthday,
                                 residence: Residence(
-                                    id: '1',
                                     city: 'placeholder',
                                     street: 'placeholder',
                                     zipCode: 'placeholder',
                                     country: 'placeholder'),
                                 phoneNumber: '0000000',
-                                patientFile: PatientRecord(id: '1'));
-                            //globals.masterContext.oldPeopleHomesList[0].
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomeScreen()));
+                                roomId: rooms[0].id!,
+                                patientFile: PatientRecord());
+
+                            //Testing post new patient.
+                            QueryWrapper.postPatient(newPerson).whenComplete(
+                                () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomeScreen())));
                           }
                         },
                         child: SizedBox(

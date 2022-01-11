@@ -14,7 +14,7 @@ DateTime firestoreDateTimeFromJson(dynamic value) {
 
 @JsonSerializable()
 class WoundEntry {
-  final String id;
+  String? id;
   @JsonKey(
     toJson: firestoreDateTimeToJson,
     fromJson: firestoreDateTimeFromJson,
@@ -34,7 +34,7 @@ class WoundEntry {
   final ExudateEnum? exudate;
 
   WoundEntry(
-      {required this.id,
+      {this.id,
       required this.date,
       required this.size,
       required this.status,

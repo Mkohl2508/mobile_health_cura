@@ -67,7 +67,7 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                     builder: (context) => AddWoundEntryScreen(
                           patient: widget.patient,
                           room: widget.room,
-                          woundIndex: widget.wound.id,
+                          woundIndex: widget.wound.id!,
                           woundEntry: widget.woundEntrys[_currentIndex],
                         )));
           },

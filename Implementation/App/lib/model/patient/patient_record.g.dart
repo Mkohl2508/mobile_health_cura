@@ -8,7 +8,6 @@ part of 'patient_record.dart';
 
 PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
     PatientRecord(
-      id: json['id'] as String,
       wounds: (json['wounds'] as List<dynamic>?)
           ?.map((e) => Wound.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -20,7 +19,6 @@ PatientRecord _$PatientRecordFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$PatientRecordToJson(PatientRecord instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'wounds': instance.wounds?.map((e) => e.toJson()).toList(),
       'medications': instance.medications?.map((e) => e.toJson()).toList(),
       'attendingDoctor': instance.attendingDoctor?.toJson(),

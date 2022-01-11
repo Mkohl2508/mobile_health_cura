@@ -13,20 +13,17 @@ class PatientRecord {
         id: value,
         firstName: "",
         birthDate: DateTime.now(),
-        residence:
-            Residence(id: "", city: "", street: "", zipCode: "", country: ""),
+        residence: Residence(city: "", street: "", zipCode: "", country: ""),
         surname: "",
         phoneNumber: "",
         degree: "");
   }
 
-  final String id;
   final List<Wound>? wounds;
   final List<Medication>? medications;
   @JsonKey(fromJson: fromJsonId)
-  final Doctor? attendingDoctor;
+  Doctor? attendingDoctor;
   PatientRecord({
-    required this.id,
     this.wounds,
     this.medications,
     this.attendingDoctor,

@@ -7,7 +7,7 @@ class Nurse extends Person {
   final String? role;
 
   Nurse(
-      {required id,
+      {id,
       required firstName,
       required surname,
       required birthDate,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cura/model/patient/patient_treatment/medication.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,10 +12,11 @@ import 'package:cura/model/general/room.dart';
 import "package:cura/globals.dart" as globals;
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_record.dart';
+import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
+import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 
 class QueryWrapper {
-  static const String nursingHomeID =
-      "gjsrMjy7BzLeWQD844kx"; //"Uoto3xaa5ZL9N2mMjPhG";
+  static const String nursingHomeID = "Uoto3xaa5ZL9N2mMjPhG";
 
   static final nursingHomeRef = FirebaseFirestore.instance
       .collection('NursingHome')
@@ -134,7 +136,86 @@ class QueryWrapper {
     });
   }
 
-  static postWound(roomId, patientId) async {}
+  static postDoctor(Doctor doctor) async {
+    DocumentReference<Doctor> addedDoctor = await doctorsRef.add(doctor);
+    addedDoctor.update({'id': addedDoctor.id}).then((value) => {
+          doctor.id = addedDoctor.id,
+          globals.masterContext.oldPeopleHomesList[0].doctors.add(doctor)
+        });
+  }
+
+  static postNurse(Nurse nurse) async {
+    DocumentReference<Nurse> addedNurse = await nursesRef.add(nurse);
+    addedNurse.update({'id': addedNurse.id}).then((value) => {
+          nurse.id = addedNurse.id,
+          globals.masterContext.oldPeopleHomesList[0].nurses.add(nurse)
+        });
+  }
+
+  static Future postRoom(Room room) async {
+    DocumentReference<Room> addedRoom = await roomsRef.add(room);
+    addedRoom.update({'id': addedRoom.id}).then((value) => {
+          room.id = addedRoom.id,
+          globals.masterContext.oldPeopleHomesList[0].rooms.add(room)
+        });
+  }
+
+  static Future postPatient(Patient patient) async {
+    DocumentReference<Patient> addedPatient =
+        await patientsRef(patient.roomId).add(patient);
+    return addedPatient.update({'id': addedPatient.id}).then((value) => {
+          patient.id = addedPatient.id,
+          globals.masterContext.oldPeopleHomesList[0].rooms
+              .firstWhere((element) => element.id == patient.roomId)
+              .patients!
+              .add(patient)
+        });
+  }
+
+  static postAttendingDoctor(Doctor doctor, Patient patient) async {
+    patientsRef(patient.roomId).doc(patient.id).update({
+      'patientFile': {'attendingDoctor': doctor.id}
+    }).then((value) => {
+          globals.masterContext.oldPeopleHomesList[0].rooms
+              .firstWhere((element) => element.id == patient.roomId)
+              .patients!
+              .firstWhere((element) => element.id == patient.id)
+              .patientFile
+              .attendingDoctor = doctor
+        });
+  }
+
+  static postMedication(Medication medication, Patient patient) async {
+    patientsRef(patient.roomId).doc(patient.id).update({
+      'patientFile': {
+        'medications': FieldValue.arrayUnion([medication])
+      }
+    }).then((value) => {
+          globals.masterContext.oldPeopleHomesList[0].rooms
+              .firstWhere((element) => element.id == patient.roomId)
+              .patients!
+              .firstWhere((element) => element.id == patient.id)
+              .patientFile
+              .medications!
+              .add(medication)
+        });
+  }
+
+  static postWound(Patient patient, Wound wound) async {
+    patientsRef(patient.roomId).doc(patient.id).update({
+      'patientFile': {
+        'wounds': FieldValue.arrayUnion([wound])
+      }
+    }).then((value) => {
+          globals.masterContext.oldPeopleHomesList[0].rooms
+              .firstWhere((element) => element.id == patient.roomId)
+              .patients!
+              .firstWhere((element) => element.id == patient.id)
+              .patientFile
+              .wounds!
+              .add(wound)
+        });
+  }
 
   static postWoundEntry(File img, Patient patient, Room room, String woundIndex,
       WoundEntry woundEntry) async {
@@ -171,57 +252,5 @@ class QueryWrapper {
       print('Got error:$e');
       return 42;
     });
-  }
-
-  static postDoctor(Doctor doctor) async {
-    await doctorsRef.add(doctor).catchError((e) {
-      print('Got error:$e');
-      return 42;
-    });
-    globals.masterContext.oldPeopleHomesList[0].doctors.add(doctor);
-  }
-
-  static postNurse(Nurse nurse) async {
-    await nursesRef.add(nurse).catchError((e) {
-      print('Got error:$e');
-      return 42;
-    });
-    globals.masterContext.oldPeopleHomesList[0].nurses.add(nurse);
-  }
-
-  static postRoom(Room room) async {
-    await roomsRef.doc(room.number.toString()).set(room).catchError((e) {
-      print('Got error:$e');
-      return 42;
-    });
-    globals.masterContext.oldPeopleHomesList[0].rooms.add(room);
-  }
-
-  static postPatient(roomId, Patient patient) async {
-    roomsRef
-        .doc(roomId)
-        .collection('Patient')
-        .add(patient.toJson())
-        .catchError((e) {
-      print('Got error:$e');
-      return 42;
-    });
-    Room room = await getRoom(roomId);
-    for (var element in globals.masterContext.oldPeopleHomesList[0].rooms) {
-      if (element.number == room.number) element.patients!.add(patient);
-    }
-  }
-
-  static postPatientFile(roomId, patientId, PatientRecord patientFile) async {
-    patientsRef(roomId).doc(patientId).update(patientFile.toJson());
-    Patient patient = await getPatient(roomId, patientId);
-    Room room = await getRoom(roomId);
-    for (var element in globals.masterContext.oldPeopleHomesList[0].rooms) {
-      if (element.number == room.number) {
-        for (var element in element.patients!) {
-          if (element.id == patient.id) element = patient;
-        }
-      }
-    }
   }
 }

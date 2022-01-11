@@ -7,7 +7,7 @@ part of 'wound.dart';
 // **************************************************************************
 
 Wound _$WoundFromJson(Map<String, dynamic> json) => Wound(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       location: json['location'] as String,
       type: json['type'] as String,
       isHealed: json['isHealed'] as bool,

@@ -12,7 +12,7 @@ DateTime firestoreDateTimeFromJson(dynamic value) {
 
 @JsonSerializable(explicitToJson: true)
 class Wound {
-  final String id;
+  String? id;
   final String location;
   final String type;
   final bool isHealed;
@@ -26,7 +26,7 @@ class Wound {
   final FormEnum? form;
 
   Wound(
-      {required this.id,
+      {this.id,
       required this.location,
       required this.type,
       required this.isHealed,

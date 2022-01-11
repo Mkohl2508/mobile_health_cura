@@ -16,12 +16,21 @@ Nurse _$NurseFromJson(Map<String, dynamic> json) => Nurse(
       role: json['role'] as String?,
     );
 
-Map<String, dynamic> _$NurseToJson(Nurse instance) => <String, dynamic>{
-      'id': instance.id,
-      'firstName': instance.firstName,
-      'surname': instance.surname,
-      'birthDate': firestoreDateTimeToJson(instance.birthDate),
-      'residence': instance.residence,
-      'phoneNumber': instance.phoneNumber,
-      'role': instance.role,
-    };
+Map<String, dynamic> _$NurseToJson(Nurse instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('id', instance.id);
+  val['firstName'] = instance.firstName;
+  val['surname'] = instance.surname;
+  val['birthDate'] = firestoreDateTimeToJson(instance.birthDate);
+  val['residence'] = instance.residence;
+  val['phoneNumber'] = instance.phoneNumber;
+  val['role'] = instance.role;
+  return val;
+}

@@ -112,7 +112,6 @@ Future<List<Patient>> _initPatient(roomID, doctors) async {
 
 PatientRecord addDoctorToPatientRecord(patientFile, doctors) {
   return PatientRecord(
-      id: patientFile.id,
       wounds: patientFile.wounds,
       medications: patientFile.medications,
       attendingDoctor:
@@ -135,6 +134,7 @@ Patient finalPatient(patient, patientRecord) {
       residence: patient.residence,
       surname: patient.surname,
       phoneNumber: patient.phoneNumber,
+      roomId: patient.roomId,
       patientFile: patientRecord);
 }
 
@@ -144,6 +144,7 @@ Future<List<Room>> _initRooms(doctors) async {
   for (var roomId in rooms) {
     Room room = await QueryWrapper.getRoom(roomId.id);
     initRooms.add(Room(
+        id: room.id,
         number: room.number,
         name: room.name,
         patients: await _initPatient(roomId.id, doctors)));

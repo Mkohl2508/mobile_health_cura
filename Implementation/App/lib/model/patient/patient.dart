@@ -6,15 +6,17 @@ part 'patient.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Patient extends Person {
   final PatientRecord patientFile;
+  final String roomId;
 
   Patient(
-      {required id,
+      {id,
       required firstName,
       required birthDate,
       required residence,
       required surname,
       required phoneNumber,
-      required this.patientFile})
+      required this.patientFile,
+      required this.roomId})
       : super(
             id: id,
             firstName: firstName,

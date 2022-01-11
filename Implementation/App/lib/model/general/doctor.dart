@@ -8,7 +8,7 @@ class Doctor extends Person {
   final String? type;
 
   Doctor(
-      {required id,
+      {id,
       required firstName,
       required birthDate,
       required residence,

@@ -72,11 +72,11 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                       if (_formKey.currentState!.validate()) {
                         Room newRoom =
                             Room(number: _roomNumber, name: _roomName);
-                        QueryWrapper.postRoom(newRoom);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                        QueryWrapper.postRoom(newRoom).whenComplete(() =>
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen())));
                       }
                     },
                     child: SizedBox(

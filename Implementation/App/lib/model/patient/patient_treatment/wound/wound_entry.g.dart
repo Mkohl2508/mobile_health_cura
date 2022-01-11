@@ -7,7 +7,7 @@ part of 'wound_entry.dart';
 // **************************************************************************
 
 WoundEntry _$WoundEntryFromJson(Map<String, dynamic> json) => WoundEntry(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       date: firestoreDateTimeFromJson(json['date']),
       size: (json['size'] as num).toDouble(),
       status: json['status'] as String,

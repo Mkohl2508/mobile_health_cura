@@ -6,12 +6,13 @@ part 'room.g.dart';
 class Room {
   static List<Patient> emptyPatients(dynamic value) => <Patient>[];
 
+  String? id;
   final int number;
   final String? name;
   @JsonKey(ignore: true)
   final List<Patient>? patients;
 
-  Room({required this.number, this.name, this.patients});
+  Room({this.id, required this.number, this.name, this.patients});
 
   factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
 
