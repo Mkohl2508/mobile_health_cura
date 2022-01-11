@@ -127,6 +127,7 @@ Doctor? findAttentingDoctor(doctorId, doctors) {
 Patient finalPatient(patient, patientRecord) {
   return Patient(
       id: patient.id,
+      profilePic: patient.profilePic,
       firstName: patient.firstName,
       birthDate: patient.birthDate,
       residence: patient.residence,

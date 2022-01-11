@@ -70,13 +70,14 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                                 side: BorderSide(color: AppColors.cura_cyan)))),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        Room newRoom =
-                            Room(number: _roomNumber, name: _roomName);
+                        Room newRoom = Room(
+                            number: _roomNumber, name: _roomName, patients: []);
                         QueryWrapper.postRoom(newRoom);
-                        Navigator.push(
+                        Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                                builder: (context) => HomeScreen()),
+                            (route) => false);
                       }
                     },
                     child: SizedBox(

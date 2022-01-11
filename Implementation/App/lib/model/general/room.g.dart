@@ -9,6 +9,7 @@ part of 'room.dart';
 Room _$RoomFromJson(Map<String, dynamic> json) => Room(
       number: json['number'] as int,
       name: json['name'] as String?,
+      patients: [],
     );
 
 Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{

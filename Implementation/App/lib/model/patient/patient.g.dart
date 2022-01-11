@@ -13,6 +13,7 @@ Patient _$PatientFromJson(Map<String, dynamic> json) => Patient(
       residence: firestoreResidenceFromJson(json['residence']),
       surname: json['surname'],
       phoneNumber: json['phoneNumber'],
+      profilePic: json['profilePic'] as String,
       patientFile:
           PatientRecord.fromJson(json['patientFile'] as Map<String, dynamic>),
     );
@@ -25,4 +26,5 @@ Map<String, dynamic> _$PatientToJson(Patient instance) => <String, dynamic>{
       'residence': instance.residence.toJson(),
       'phoneNumber': instance.phoneNumber,
       'patientFile': instance.patientFile.toJson(),
+      'profilePic': instance.profilePic,
     };
