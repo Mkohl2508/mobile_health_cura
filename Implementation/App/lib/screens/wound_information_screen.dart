@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cura/model/enums/enum_converter.dart';
+import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
@@ -13,8 +14,12 @@ import 'full_screen_screen.dart';
 class WoundInformationScreen extends StatefulWidget {
   final Patient patient;
   final Wound wound;
+  final Room room;
   const WoundInformationScreen(
-      {Key? key, required this.patient, required this.wound})
+      {Key? key,
+      required this.patient,
+      required this.wound,
+      required this.room})
       : super(key: key);
 
   @override
@@ -61,6 +66,7 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => AddWoundEntryScreen(
+                          room: widget.room,
                           patient: widget.patient,
                           wound: widget.wound,
                         ))).whenComplete(() {

@@ -53,4 +53,8 @@ class WoundEntry {
       _$WoundEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$WoundEntryToJson(this);
+
+  void add(String s) {
+    images.add(s);
+  }
 }

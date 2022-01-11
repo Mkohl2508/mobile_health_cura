@@ -40,6 +40,10 @@ class Wound {
     return DateFormat('dd.MM.yyyy').format(startDate);
   }
 
+  List<WoundEntry>? getWoundEntries() {
+    return woundEntrys;
+  }
+
   factory Wound.fromJson(Map<String, dynamic> json) => _$WoundFromJson(json);
 
   Map<String, dynamic> toJson() => _$WoundToJson(this);
