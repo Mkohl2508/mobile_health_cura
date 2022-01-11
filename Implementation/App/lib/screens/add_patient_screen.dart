@@ -36,10 +36,10 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
   File? _profilePic;
   DateTime? _birthdate;
 
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  TextEditingController _birthdayController = TextEditingController();
-  TextEditingController _numberController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _birthdayController = TextEditingController();
+  final TextEditingController _numberController = TextEditingController();
 
   @override
   void initState() {
@@ -290,7 +290,8 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                             profilePic: profilePicUrl,
                             firstName: _firstNameController.text,
                             surname: _lastNameController.text,
-                            birthDate: DateTime.parse(_birthdayController.text),
+                            birthDate: DateFormat('dd.MM.yyyy')
+                                .parse(_birthdayController.text),
                             residence: oldPeopleHome.residence,
                             phoneNumber: _numberController.text.isEmpty
                                 ? null
@@ -300,7 +301,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                         await QueryWrapper.postPatient(
                             _currentRoom!.number.toString(), newPerson);
 
-                        _currentRoom!.patients!.add(newPerson);
+                        _currentRoom!.patients.add(newPerson);
                         //globals.masterContext.oldPeopleHomesList[0].
                         Navigator.pushAndRemoveUntil(
                             context,

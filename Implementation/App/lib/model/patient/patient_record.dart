@@ -4,13 +4,14 @@ import 'package:cura/model/residence/residence.dart';
 import 'package:cura/model/patient/patient_treatment/medication.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:uuid/uuid.dart';
 part 'patient_record.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class PatientRecord {
   static Doctor fromJsonId(dynamic value) {
     return Doctor(
-        id: value,
+        id: value ?? Uuid().v1(),
         firstName: "",
         birthDate: DateTime.now(),
         residence:

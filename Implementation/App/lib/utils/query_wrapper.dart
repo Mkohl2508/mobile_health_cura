@@ -198,22 +198,15 @@ class QueryWrapper {
   }
 
   static postPatient(roomId, Patient patient) async {
-    var patientJSON = patient.toJson();
-    patientJSON['patientFile']['attendingDoctor'] =
-        patientJSON['patientFile']['attendingDoctor']["id"];
     roomsRef
         .doc(roomId)
         .collection('Patient')
         .doc(patient.id)
-        .set(patientJSON)
+        .set(patient.toJson())
         .catchError((e) {
       print('Got error:$e');
       return 42;
     });
-    Room room = await getRoom(roomId);
-    for (var element in globals.masterContext.oldPeopleHomesList[0].rooms) {
-      if (element.number == room.number) element.patients!.add(patient);
-    }
   }
 
   static postPatientFile(roomId, patientId, PatientRecord patientFile) async {
@@ -222,7 +215,7 @@ class QueryWrapper {
     Room room = await getRoom(roomId);
     for (var element in globals.masterContext.oldPeopleHomesList[0].rooms) {
       if (element.number == room.number) {
-        for (var element in element.patients!) {
+        for (var element in element.patients) {
           if (element.id == patient.id) element = patient;
         }
       }

@@ -19,7 +19,7 @@ class _PatienListScreenState extends State<PatienListScreen> {
         in globals.masterContext.getById(QueryWrapper.nursingHomeID)!.rooms) {
       final patientTiles = <BasicTile>[];
       if (room.patients != null) {
-        for (var patient in room.patients!) {
+        for (var patient in room.patients) {
           patientTiles.add(BasicTile(
               title: patient.fullName(),
               function: () {
