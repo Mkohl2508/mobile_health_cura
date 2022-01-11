@@ -472,24 +472,32 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                         _showSnackBar("Please enter a wound depth");
                         return;
                       }
+                      String id = Uuid().v1();
+                      QueryWrapper.uploadImageList(_images,
+                              "${widget.patient.fullName()}/${widget.wound.id}/$id/")
+                          .then((imageList) {
+                        WoundEntry entry = WoundEntry(
+                            id: id,
+                            date: DateTime.now(),
+                            images: imageList,
+                            painLevel: _painLevel.toInt(),
+                            phase: _phase,
+                            length: double.parse(_lengthController.text),
+                            width: double.parse(_widthController.text),
+                            depth: double.parse(_depthController.text),
+                            edge: _edge,
+                            isSmelly: _isSmelly,
+                            isOpen: _isOpen,
+                            exudate: _exudate);
 
-                      WoundEntry entry = WoundEntry(
-                          id: Uuid().v1(),
-                          date: DateTime.now(),
-                          images: [],
-                          painLevel: _painLevel.toInt(),
-                          phase: _phase,
-                          length: double.parse(_lengthController.text),
-                          width: double.parse(_widthController.text),
-                          depth: double.parse(_depthController.text),
-                          edge: _edge,
-                          isSmelly: _isSmelly,
-                          isOpen: _isOpen,
-                          exudate: _exudate);
-
-                      widget.wound.woundEntrys!.add(entry);
-
-                      Navigator.pop(context);
+                        widget.wound.woundEntrys!.add(entry);
+                        QueryWrapper.postWoundEntry(
+                            widget.patient, widget.room);
+                        Navigator.pop(context);
+                      }).catchError((e) {
+                        _showSnackBar(
+                            "ERROR: Could not upload images, " + e.toString());
+                      });
                     },
                     child: Container(
                         width: MediaQuery.of(context).size.width * 0.8,
