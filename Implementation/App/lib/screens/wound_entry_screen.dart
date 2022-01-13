@@ -11,11 +11,11 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'add_wound_entry_screen.dart';
 import 'full_screen_screen.dart';
 
-class WoundInformationScreen extends StatefulWidget {
+class WoundEntryScreen extends StatefulWidget {
   final Patient patient;
   final Wound wound;
   final Room room;
-  const WoundInformationScreen(
+  const WoundEntryScreen(
       {Key? key,
       required this.patient,
       required this.wound,
@@ -23,10 +23,10 @@ class WoundInformationScreen extends StatefulWidget {
       : super(key: key);
 
   @override
-  _WoundInformationScreenState createState() => _WoundInformationScreenState();
+  _WoundEntryScreenState createState() => _WoundEntryScreenState();
 }
 
-class _WoundInformationScreenState extends State<WoundInformationScreen> {
+class _WoundEntryScreenState extends State<WoundEntryScreen> {
   late int _currentIndex;
 
   void _sortByDate() {
