@@ -1,5 +1,7 @@
 import 'package:cura/model/residence/residence.dart';
+import 'package:cura/screens/loading_screen.dart';
 import 'package:cura/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'globals.dart' as globals;
@@ -31,6 +33,8 @@ class CuraApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: LoginScreen());
+        home: FirebaseAuth.instance.currentUser != null
+            ? LoadingScreen()
+            : LoginScreen());
   }
 }

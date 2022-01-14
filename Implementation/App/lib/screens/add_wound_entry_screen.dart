@@ -66,8 +66,6 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
       if (!mounted) return;
       setState(() {
         if (image != null) {
-          /* QueryWrapper.postWoundEntry(File(image.path), widget.patient,
-              widget.room, widget.wound.id, widget.wound.);*/
           _images.add(File(image.path));
         }
       });
