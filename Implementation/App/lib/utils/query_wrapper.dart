@@ -136,107 +136,28 @@ class QueryWrapper {
     });
   }
 
-  static postDoctor(Doctor doctor) async {
-    DocumentReference<Doctor> addedDoctor = await doctorsRef.add(doctor);
-    addedDoctor.update({'id': addedDoctor.id}).then((value) => {
-          doctor.id = addedDoctor.id,
-          globals.masterContext.oldPeopleHomesList[0].doctors.add(doctor)
-        });
-  }
 
-  static postNurse(Nurse nurse) async {
-    DocumentReference<Nurse> addedNurse = await nursesRef.add(nurse);
-    addedNurse.update({'id': addedNurse.id}).then((value) => {
-          nurse.id = addedNurse.id,
-          globals.masterContext.oldPeopleHomesList[0].nurses.add(nurse)
-        });
-  }
 
-  static Future postRoom(Room room) async {
-    DocumentReference<Room> addedRoom = await roomsRef.add(room);
-    addedRoom.update({'id': addedRoom.id}).then((value) => {
-          room.id = addedRoom.id,
-          globals.masterContext.oldPeopleHomesList[0].rooms.add(room)
-        });
-  }
-
-  static Future postPatient(Patient patient) async {
-    DocumentReference<Patient> addedPatient =
-        await patientsRef(patient.roomId).add(patient);
-    return addedPatient.update({'id': addedPatient.id}).then((value) => {
-          patient.id = addedPatient.id,
-          globals.masterContext.oldPeopleHomesList[0].rooms
-              .firstWhere((element) => element.id == patient.roomId)
-              .patients!
-              .add(patient)
-        });
-  }
-
-  static postAttendingDoctor(Doctor doctor, Patient patient) async {
-    patientsRef(patient.roomId).doc(patient.id).update({
-      'patientFile': {'attendingDoctor': doctor.id}
-    }).then((value) => {
-          globals.masterContext.oldPeopleHomesList[0].rooms
-              .firstWhere((element) => element.id == patient.roomId)
-              .patients!
-              .firstWhere((element) => element.id == patient.id)
-              .patientFile
-              .attendingDoctor = doctor
-        });
-  }
-
-  static postMedication(Medication medication, Patient patient) async {
-    patientsRef(patient.roomId).doc(patient.id).update({
-      'patientFile': {
-        'medications': FieldValue.arrayUnion([medication])
-      }
-    }).then((value) => {
-          globals.masterContext.oldPeopleHomesList[0].rooms
-              .firstWhere((element) => element.id == patient.roomId)
-              .patients!
-              .firstWhere((element) => element.id == patient.id)
-              .patientFile
-              .medications!
-              .add(medication)
-        });
-  }
-
-  static postWound(Patient patient, Wound wound) async {
-    patientsRef(patient.roomId).doc(patient.id).update({
-      'patientFile': {
-        'wounds': FieldValue.arrayUnion([wound])
-      }
-    }).then((value) => {
-          globals.masterContext.oldPeopleHomesList[0].rooms
-              .firstWhere((element) => element.id == patient.roomId)
-              .patients!
-              .firstWhere((element) => element.id == patient.id)
-              .patientFile
-              .wounds!
-              .add(wound)
-        });
-  }
-
-  static postWoundEntry(File img, Patient patient, Room room, String woundIndex,
-      WoundEntry woundEntry) async {
+  static Future<String> uploadImage(File img, String path) async {
     final _storage = FirebaseStorage.instance;
 
     // Upload image and receive image URL
-    var snapshot = await _storage
-        .ref()
-        .child(
-            "${patient.surname}_${patient.firstName}/$woundIndex/${woundEntry.id.toString()}/${woundEntry.images.length.toString()}")
-        .putFile(img);
+    var snapshot = await _storage.ref().child(path).putFile(img);
     var downloadURL = await snapshot.ref.getDownloadURL();
+    return downloadURL;
+  }
 
-    // Get wound entry and add the image URL to local model
-    Wound wound = patient.patientFile.wounds!
-        .firstWhere((element) => element.id == woundIndex);
-    wound
-        .getWoundEntries()!
-        .firstWhere((element) => element.id == woundEntry.id)
-        .add(downloadURL);
+  static Future<List<String>> uploadImageList(
+      List<File> images, String path) async {
+    List<String> imagesURL = [];
+    for (var i = 0; i < images.length; i++) {
+      imagesURL.add(await uploadImage(images[i], path + i.toString()));
+    }
 
+    return imagesURL;
+  }
+
+  static postWoundEntry(Patient patient, Room room) async {
     // Update the database
     var patiento = patient.patientFile.toJson();
     return await patientsRef(room.number.toString()).doc(patient.id).update({
@@ -252,5 +173,54 @@ class QueryWrapper {
       print('Got error:$e');
       return 42;
     });
+  }
+
+  static postDoctor(Doctor doctor) async {
+    await doctorsRef.add(doctor).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
+    globals.masterContext.oldPeopleHomesList[0].doctors.add(doctor);
+  }
+
+  static postNurse(Nurse nurse) async {
+    await nursesRef.add(nurse).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
+    globals.masterContext.oldPeopleHomesList[0].nurses.add(nurse);
+  }
+
+  static postRoom(Room room) async {
+    await roomsRef.doc(room.number.toString()).set(room).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
+    globals.masterContext.oldPeopleHomesList[0].rooms.add(room);
+  }
+
+  static postPatient(roomId, Patient patient) async {
+    roomsRef
+        .doc(roomId)
+        .collection('Patient')
+        .doc(patient.id)
+        .set(patient.toJson())
+        .catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
+  }
+
+  static postPatientFile(roomId, patientId, PatientRecord patientFile) async {
+    patientsRef(roomId).doc(patientId).update(patientFile.toJson());
+    Patient patient = await getPatient(roomId, patientId);
+    Room room = await getRoom(roomId);
+    for (var element in globals.masterContext.oldPeopleHomesList[0].rooms) {
+      if (element.number == room.number) {
+        for (var element in element.patients) {
+          if (element.id == patient.id) element = patient;
+        }
+      }
+    }
   }
 }

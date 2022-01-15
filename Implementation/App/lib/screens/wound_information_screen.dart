@@ -1,25 +1,25 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cura/model/enums/enum_converter.dart';
 import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import 'add_wound_entry_screen.dart';
 import 'full_screen_screen.dart';
 
 class WoundInformationScreen extends StatefulWidget {
   final Patient patient;
-  final Room room;
   final Wound wound;
-  final List<WoundEntry> woundEntrys;
+  final Room room;
   const WoundInformationScreen(
       {Key? key,
       required this.patient,
-      required this.room,
       required this.wound,
-      required this.woundEntrys})
+      required this.room})
       : super(key: key);
 
   @override
@@ -30,14 +30,15 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
   late int _currentIndex;
 
   void _sortByDate() {
-    widget.woundEntrys.sort((a, b) => a.date.compareTo(b.date));
+    widget.wound.woundEntrys!.sort((a, b) => a.date.compareTo(b.date));
   }
 
   @override
   void initState() {
     _sortByDate();
-    _currentIndex =
-        widget.woundEntrys.isNotEmpty ? widget.woundEntrys.length - 1 : 0;
+    _currentIndex = widget.wound.woundEntrys!.isNotEmpty
+        ? widget.wound.woundEntrys!.length - 1
+        : 0;
     super.initState();
   }
 
@@ -46,8 +47,8 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    WoundEntry? _currentEntry = widget.woundEntrys.isNotEmpty
-        ? widget.woundEntrys[_currentIndex]
+    WoundEntry? _currentEntry = widget.wound.woundEntrys!.isNotEmpty
+        ? widget.wound.woundEntrys![_currentIndex]
         : null;
 
     return Scaffold(
@@ -65,11 +66,14 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => AddWoundEntryScreen(
-                          patient: widget.patient,
                           room: widget.room,
-                          woundIndex: widget.wound.id!,
-                          woundEntry: widget.woundEntrys[_currentIndex],
-                        )));
+                          patient: widget.patient,
+                          wound: widget.wound,
+                        ))).whenComplete(() {
+              setState(() {
+                _currentIndex = widget.wound.woundEntrys!.length - 1;
+              });
+            });
           },
           child: Icon(Icons.add),
           backgroundColor: AppColors.cura_darkCyan),
@@ -84,6 +88,8 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                       ),
                     )
                   : Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 17),
                         Container(
@@ -101,15 +107,22 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 8),
                                 child: IconButton(
-                                    icon: Icon(Icons.arrow_back_ios_new),
-                                    onPressed: () {
-                                      setState(() {
-                                        if (_currentIndex > 0) {
-                                          _currentEntry = widget
-                                              .woundEntrys[_currentIndex--];
-                                        }
-                                      });
-                                    }),
+                                    color: Color(0xFF00B4D8),
+                                    disabledColor: Color(0x5500B4D8),
+                                    icon: Icon(
+                                      Icons.arrow_back_ios_new,
+                                    ),
+                                    onPressed: _currentIndex > 0
+                                        ? () {
+                                            setState(() {
+                                              if (_currentIndex > 0) {
+                                                _currentEntry =
+                                                    widget.wound.woundEntrys![
+                                                        _currentIndex--];
+                                              }
+                                            });
+                                          }
+                                        : null),
                               ),
                               Expanded(
                                   child: Center(
@@ -122,16 +135,24 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 8),
                                 child: IconButton(
+                                    color: Color(0xFF00B4D8),
+                                    disabledColor: Color(0x5500B4D8),
                                     icon: Icon(Icons.arrow_forward_ios),
-                                    onPressed: () {
-                                      setState(() {
-                                        if (_currentIndex <
-                                            widget.woundEntrys.length - 1) {
-                                          _currentEntry = widget
-                                              .woundEntrys[_currentIndex++];
-                                        }
-                                      });
-                                    }),
+                                    onPressed: _currentIndex <
+                                            widget.wound.woundEntrys!.length - 1
+                                        ? () {
+                                            setState(() {
+                                              if (_currentIndex <
+                                                  widget.wound.woundEntrys!
+                                                          .length -
+                                                      1) {
+                                                _currentEntry =
+                                                    widget.wound.woundEntrys![
+                                                        _currentIndex++];
+                                              }
+                                            });
+                                          }
+                                        : null),
                               )
                             ],
                           ),
@@ -194,7 +215,39 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                                 ),
                               );
                             }).toList()),
-                        SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            "Pain level",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SfSlider(
+                          value: _currentEntry!.painLevel != null
+                              ? _currentEntry!.painLevel!.toDouble()
+                              : 0,
+                          onChanged: (value) {},
+                          min: 0,
+                          max: 10,
+                          showLabels: true,
+                          showDividers: true,
+                          showTicks: true,
+                          interval: 2,
+                          stepSize: 1,
+                          minorTicksPerInterval: 1,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            "Wound information",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
                         Container(
                           decoration: BoxDecoration(
                               color: Colors.white,
@@ -214,7 +267,7 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "First name, surname",
+                                      "Is the wound open?",
                                       style: TextStyle(
                                           color: Colors.black, height: 1.5),
                                     ),
@@ -222,7 +275,11 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                                       height: 5,
                                     ),
                                     Text(
-                                      "widget.patient.fullName()",
+                                      _currentEntry!.isOpen != null
+                                          ? (_currentEntry!.isOpen!
+                                              ? "Yes"
+                                              : "No")
+                                          : "Not set",
                                       style: TextStyle(color: Colors.grey[700]),
                                     ),
                                   ],
@@ -239,13 +296,17 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text("Date of birth (DD-MM-YYYY)",
+                                    Text("Phase of healing",
                                         style: TextStyle(
                                             height: 1.5, color: Colors.black)),
                                     SizedBox(
                                       height: 5,
                                     ),
-                                    Text("widget.patient.formattedBirthday()",
+                                    Text(
+                                        _currentEntry!.phase != null
+                                            ? EnumConverter.phaseEnumToString(
+                                                _currentEntry!.phase!)
+                                            : "Not set",
                                         style:
                                             TextStyle(color: Colors.grey[700])),
                                   ],
@@ -262,14 +323,155 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text("Place of residence",
+                                    Text("Wound length",
                                         style: TextStyle(
                                             height: 1.5, color: Colors.black)),
                                     SizedBox(
                                       height: 5,
                                     ),
                                     Text(
-                                        "widget.patient.residence.getAddress(),",
+                                        _currentEntry!.length != null
+                                            ? _currentEntry!.length.toString()
+                                            : "Not set",
+                                        style: TextStyle(
+                                            color: Colors.grey[700],
+                                            height: 1.5)),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 20,
+                                thickness: 1,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 25, bottom: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text("Wound width",
+                                        style: TextStyle(
+                                            height: 1.5, color: Colors.black)),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                        _currentEntry!.width != null
+                                            ? _currentEntry!.width.toString()
+                                            : "Not set",
+                                        style: TextStyle(
+                                            color: Colors.grey[700],
+                                            height: 1.5)),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 20,
+                                thickness: 1,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 25, bottom: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text("Wound depth",
+                                        style: TextStyle(
+                                            height: 1.5, color: Colors.black)),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                        _currentEntry!.depth != null
+                                            ? _currentEntry!.depth.toString()
+                                            : "Not set",
+                                        style: TextStyle(
+                                            color: Colors.grey[700],
+                                            height: 1.5)),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 20,
+                                thickness: 1,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 25, bottom: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text("Wound edges",
+                                        style: TextStyle(
+                                            height: 1.5, color: Colors.black)),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                        _currentEntry!.edge != null
+                                            ? EnumConverter.edgeEnumToString(
+                                                _currentEntry!.edge!)
+                                            : "Not set",
+                                        style: TextStyle(
+                                            color: Colors.grey[700],
+                                            height: 1.5)),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 20,
+                                thickness: 1,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 25, bottom: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text("Is the wound smelly?",
+                                        style: TextStyle(
+                                            height: 1.5, color: Colors.black)),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                        _currentEntry!.isSmelly != null
+                                            ? (_currentEntry!.isSmelly!
+                                                ? "Yes"
+                                                : "No")
+                                            : "Not set",
+                                        style: TextStyle(
+                                            color: Colors.grey[700],
+                                            height: 1.5)),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 20,
+                                thickness: 1,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 25, bottom: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text("Wound exudate",
+                                        style: TextStyle(
+                                            height: 1.5, color: Colors.black)),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                        _currentEntry!.exudate != null
+                                            ? EnumConverter.exudateEnumToString(
+                                                _currentEntry!.exudate!)
+                                            : "Not set",
                                         style: TextStyle(
                                             color: Colors.grey[700],
                                             height: 1.5)),
@@ -279,6 +481,9 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                             ],
                           ),
                         ),
+                        SizedBox(
+                          height: 20,
+                        )
                       ],
                     ))),
     );

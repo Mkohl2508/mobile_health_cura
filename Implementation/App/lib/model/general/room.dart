@@ -9,10 +9,9 @@ class Room {
   String? id;
   final int number;
   final String? name;
-  @JsonKey(ignore: true)
-  final List<Patient>? patients;
+  final List<Patient> patients;
 
-  Room({this.id, required this.number, this.name, this.patients});
+  Room({required this.number, this.name, required this.patients});
 
   factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
 

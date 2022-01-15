@@ -20,8 +20,6 @@ class WoundEntry {
     fromJson: firestoreDateTimeFromJson,
   )
   final DateTime date;
-  final double size;
-  final String status;
   final List<String> images;
   final bool? isOpen;
   final PhaseEnum? phase;
@@ -36,8 +34,6 @@ class WoundEntry {
   WoundEntry(
       {this.id,
       required this.date,
-      required this.size,
-      required this.status,
       required this.images,
       this.isOpen,
       this.phase,

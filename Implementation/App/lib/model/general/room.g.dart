@@ -7,13 +7,16 @@ part of 'room.dart';
 // **************************************************************************
 
 Room _$RoomFromJson(Map<String, dynamic> json) => Room(
-      id: json['id'] as String?,
       number: json['number'] as int,
       name: json['name'] as String?,
-    );
+      patients: (json['patients'] as List<dynamic>)
+          .map((e) => Patient.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    )..id = json['id'] as String?;
 
 Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
       'id': instance.id,
       'number': instance.number,
       'name': instance.name,
+      'patients': instance.patients.map((e) => e.toJson()).toList(),
     };

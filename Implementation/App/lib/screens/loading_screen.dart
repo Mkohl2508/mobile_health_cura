@@ -25,45 +25,42 @@ class LoadingScreen extends StatefulWidget {
 
 Wound _initWound() {
   WoundEntry entry = WoundEntry(
-      id: "1woundEntry",
-      date: DateTime(2021, 11, 20),
-      edge: EdgeEnum.defined,
-      exudate: ExudateEnum.serosanguinous,
-      isOpen: true,
-      isSmelly: false,
-      phase: PhaseEnum.hemostasis,
-      size: 5.10,
-      images: [
-        "https://www.haeusliche-pflege.net/-/media/ahi/alle-netzwerke/digital/produkte-digital/elearning/0038_Expertenstandard-Pflege-von-Menschen-mit-chronischen-Wunden.png?bc=White&as=0&w=1000&hash=12DFA01B2A8FD46990BB13A311A3DE7C"
-      ],
-      status: "blutend");
+    id: "1woundEntry",
+    date: DateTime(2021, 11, 20),
+    edge: EdgeEnum.defined,
+    exudate: ExudateEnum.serosanguinous,
+    isOpen: true,
+    isSmelly: false,
+    phase: PhaseEnum.hemostasis,
+    images: [
+      "https://www.haeusliche-pflege.net/-/media/ahi/alle-netzwerke/digital/produkte-digital/elearning/0038_Expertenstandard-Pflege-von-Menschen-mit-chronischen-Wunden.png?bc=White&as=0&w=1000&hash=12DFA01B2A8FD46990BB13A311A3DE7C"
+    ],
+  );
   WoundEntry entry2 = WoundEntry(
-      id: "2woundEntry",
-      edge: EdgeEnum.defined,
-      exudate: ExudateEnum.serosanguinous,
-      isOpen: true,
-      isSmelly: false,
-      phase: PhaseEnum.hemostasis,
-      date: DateTime(2021, 11, 18),
-      size: 5.10,
-      images: [
-        'https://www.draco.de/fileadmin/_processed_/4/3/csm_chronische-wunde_2313ccd551.jpg',
-        'https://www.hartmann.info/-/media/wound/img/homesite-wunde_teaser_ulcus-cruris-venosum_phi21_02_03.png?h=270&iar=0&mw=868&w=525&rev=79ba654e383d4e8ba3006f3d8f7f481a&sc_lang=de-de&hash=D943076C221F102F181352CCE6102904',
-      ],
-      status: "blutend");
+    id: "2woundEntry",
+    edge: EdgeEnum.defined,
+    exudate: ExudateEnum.serosanguinous,
+    isOpen: true,
+    isSmelly: false,
+    phase: PhaseEnum.hemostasis,
+    date: DateTime(2021, 11, 18),
+    images: [
+      'https://www.draco.de/fileadmin/_processed_/4/3/csm_chronische-wunde_2313ccd551.jpg',
+      'https://www.hartmann.info/-/media/wound/img/homesite-wunde_teaser_ulcus-cruris-venosum_phi21_02_03.png?h=270&iar=0&mw=868&w=525&rev=79ba654e383d4e8ba3006f3d8f7f481a&sc_lang=de-de&hash=D943076C221F102F181352CCE6102904',
+    ],
+  );
   WoundEntry entry3 = WoundEntry(
-      edge: EdgeEnum.defined,
-      exudate: ExudateEnum.serosanguinous,
-      isOpen: true,
-      isSmelly: false,
-      phase: PhaseEnum.inflammatory,
-      id: "3woundEntry",
-      date: DateTime(2021, 11, 23),
-      size: 5.10,
-      images: [
-        "https://www.heh-bs.de/fileadmin/_processed_/5/0/csm_Chronische_Wunden_eigenes_46562dff92.jpg"
-      ],
-      status: "blutend");
+    edge: EdgeEnum.defined,
+    exudate: ExudateEnum.serosanguinous,
+    isOpen: true,
+    isSmelly: false,
+    phase: PhaseEnum.inflammatory,
+    id: "3woundEntry",
+    date: DateTime(2021, 11, 23),
+    images: [
+      "https://www.heh-bs.de/fileadmin/_processed_/5/0/csm_Chronische_Wunden_eigenes_46562dff92.jpg"
+    ],
+  );
   return Wound(
       id: "1wound",
       location: "Unterer Rücken",
@@ -129,12 +126,12 @@ Doctor? findAttentingDoctor(doctorId, doctors) {
 Patient finalPatient(patient, patientRecord) {
   return Patient(
       id: patient.id,
+      profilePic: patient.profilePic,
       firstName: patient.firstName,
       birthDate: patient.birthDate,
       residence: patient.residence,
       surname: patient.surname,
       phoneNumber: patient.phoneNumber,
-      roomId: patient.roomId,
       patientFile: patientRecord);
 }
 
@@ -144,7 +141,6 @@ Future<List<Room>> _initRooms(doctors) async {
   for (var roomId in rooms) {
     Room room = await QueryWrapper.getRoom(roomId.id);
     initRooms.add(Room(
-        id: room.id,
         number: room.number,
         name: room.name,
         patients: await _initPatient(roomId.id, doctors)));
