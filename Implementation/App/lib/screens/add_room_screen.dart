@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/general/room.dart';
 import 'package:cura/screens/home_screen.dart';
 import 'package:cura/utils/query_wrapper.dart';
@@ -72,7 +71,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                       if (_formKey.currentState!.validate()) {
                         Room newRoom = Room(
                             number: _roomNumber, name: _roomName, patients: []);
-                        QueryWrapper.postRoom(newRoom);
+                        await QueryWrapper.postRoom(newRoom);
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(

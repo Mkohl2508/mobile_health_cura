@@ -7,6 +7,7 @@ part 'patient.g.dart';
 class Patient extends Person {
   final PatientRecord patientFile;
   final String profilePic;
+  final String roomId;
 
   Patient(
       {id,
@@ -16,7 +17,8 @@ class Patient extends Person {
       required surname,
       required phoneNumber,
       required this.profilePic,
-      required this.patientFile})
+      required this.patientFile,
+      required this.roomId})
       : super(
             id: id,
             firstName: firstName,

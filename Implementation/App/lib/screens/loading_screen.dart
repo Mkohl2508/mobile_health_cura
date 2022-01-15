@@ -1,7 +1,3 @@
-import 'package:cura/model/enums/edge_enum.dart';
-import 'package:cura/model/enums/exudate_enum.dart';
-import 'package:cura/model/enums/form_enum.dart';
-import 'package:cura/model/enums/phase_enum.dart';
 import 'package:cura/model/general/doctor.dart';
 import 'package:cura/model/general/nurse.dart';
 import 'package:cura/model/general/old_people_home.dart';
@@ -9,8 +5,8 @@ import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_record.dart';
 import "package:cura/globals.dart" as globals;
+import 'package:cura/model/patient/patient_treatment/medication.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
-import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/screens/home_screen.dart';
 import 'package:cura/utils/query_wrapper.dart';
 
@@ -21,67 +17,6 @@ class LoadingScreen extends StatefulWidget {
 
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
-}
-
-Wound _initWound() {
-  WoundEntry entry = WoundEntry(
-    id: "1woundEntry",
-    date: DateTime(2021, 11, 20),
-    edge: EdgeEnum.defined,
-    exudate: ExudateEnum.serosanguinous,
-    isOpen: true,
-    isSmelly: false,
-    phase: PhaseEnum.hemostasis,
-    images: [
-      "https://www.haeusliche-pflege.net/-/media/ahi/alle-netzwerke/digital/produkte-digital/elearning/0038_Expertenstandard-Pflege-von-Menschen-mit-chronischen-Wunden.png?bc=White&as=0&w=1000&hash=12DFA01B2A8FD46990BB13A311A3DE7C"
-    ],
-  );
-  WoundEntry entry2 = WoundEntry(
-    id: "2woundEntry",
-    edge: EdgeEnum.defined,
-    exudate: ExudateEnum.serosanguinous,
-    isOpen: true,
-    isSmelly: false,
-    phase: PhaseEnum.hemostasis,
-    date: DateTime(2021, 11, 18),
-    images: [
-      'https://www.draco.de/fileadmin/_processed_/4/3/csm_chronische-wunde_2313ccd551.jpg',
-      'https://www.hartmann.info/-/media/wound/img/homesite-wunde_teaser_ulcus-cruris-venosum_phi21_02_03.png?h=270&iar=0&mw=868&w=525&rev=79ba654e383d4e8ba3006f3d8f7f481a&sc_lang=de-de&hash=D943076C221F102F181352CCE6102904',
-    ],
-  );
-  WoundEntry entry3 = WoundEntry(
-    edge: EdgeEnum.defined,
-    exudate: ExudateEnum.serosanguinous,
-    isOpen: true,
-    isSmelly: false,
-    phase: PhaseEnum.inflammatory,
-    id: "3woundEntry",
-    date: DateTime(2021, 11, 23),
-    images: [
-      "https://www.heh-bs.de/fileadmin/_processed_/5/0/csm_Chronische_Wunden_eigenes_46562dff92.jpg"
-    ],
-  );
-  return Wound(
-      id: "1wound",
-      location: "Unterer Rücken",
-      type: "Platzwunde",
-      isHealed: false,
-      form: FormEnum.ellipse,
-      isChronic: false,
-      startDate: DateTime(2021, 11, 20),
-      woundEntrys: [entry, entry2, entry3]);
-}
-
-Wound _initWound2() {
-  return Wound(
-      id: "2wound",
-      location: "Rechter Arm",
-      type: "Schürfwunde",
-      isHealed: false,
-      startDate: DateTime(2021, 12, 12),
-      form: FormEnum.ellipse,
-      isChronic: false,
-      woundEntrys: []);
 }
 
 Future<List<Doctor>> _initDoctors() async {
@@ -99,22 +34,41 @@ Future<List<Patient>> _initPatient(roomID, doctors) async {
   List<dynamic> patientsIds = await QueryWrapper.getPatients(roomID);
   for (var patientId in patientsIds) {
     Patient patient = await QueryWrapper.getPatient(patientId.id, roomID);
-    PatientRecord patientRecord =
-        addDoctorToPatientRecord(patient.patientFile, doctors);
+    PatientRecord patientRecord = await
+        addDoctorToPatientRecord(patient, doctors);
 
     initPatients.add(finalPatient(patient, patientRecord));
   }
   return initPatients;
 }
 
-PatientRecord addDoctorToPatientRecord(patientFile, doctors) {
+Future<PatientRecord> addDoctorToPatientRecord(Patient patient, doctors)async {
   return PatientRecord(
-      wounds: patientFile.wounds,
-      medications: patientFile.medications,
+      wounds: await _initWounds(patient),
+      medications:await _initMedications(patient),
       attendingDoctor:
-          findAttentingDoctor(patientFile.attendingDoctor!.id, doctors));
+          findAttentingDoctor(patient.patientFile.attendingDoctor!.id, doctors));
 }
 
+Future<List<Wound>> _initWounds(Patient patient)async {
+List<Wound> initWounds = [];
+  List<dynamic> woundsIds = await QueryWrapper.getPatientWounds(patient);
+  for (var woundId in woundsIds) {
+    Wound wound = await QueryWrapper.getWound(patient, woundId.id);
+    initWounds.add(wound);
+  }
+  return initWounds;
+}
+
+Future<List<Medication>> _initMedications(Patient patient) async{
+  List<Medication> initMedications = [];
+  List<dynamic> MedicationsIds = await QueryWrapper.getPatientMedications(patient);
+  for (var medicationId in MedicationsIds) {
+    Medication medication = await QueryWrapper.getMedication(patient, medicationId.id);
+    initMedications.add(medication);
+  }
+  return initMedications;
+}
 Doctor? findAttentingDoctor(doctorId, doctors) {
   for (var doctor in doctors) {
     if (doctor.id == doctorId) {
@@ -132,6 +86,7 @@ Patient finalPatient(patient, patientRecord) {
       residence: patient.residence,
       surname: patient.surname,
       phoneNumber: patient.phoneNumber,
+      roomId: patient.roomId,
       patientFile: patientRecord);
 }
 
@@ -141,6 +96,7 @@ Future<List<Room>> _initRooms(doctors) async {
   for (var roomId in rooms) {
     Room room = await QueryWrapper.getRoom(roomId.id);
     initRooms.add(Room(
+        id: room.id,
         number: room.number,
         name: room.name,
         patients: await _initPatient(roomId.id, doctors)));

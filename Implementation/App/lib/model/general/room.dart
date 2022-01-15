@@ -4,14 +4,14 @@ part 'room.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Room {
-  static List<Patient> emptyPatients(dynamic value) => <Patient>[];
 
-  String? id;
+String? id;
   final int number;
   final String? name;
-  final List<Patient> patients;
+  @JsonKey(ignore:true)
+  final List<Patient>? patients;
 
-  Room({required this.number, this.name, required this.patients});
+  Room({this.id, required this.number, this.name, this.patients});
 
   factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
 

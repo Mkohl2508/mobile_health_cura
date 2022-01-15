@@ -2,7 +2,9 @@ import 'package:cura/model/enums/enum_converter.dart';
 import 'package:cura/model/enums/form_enum.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
+import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/model/widget/AppColors.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -124,7 +126,7 @@ class _AddWoundScreenState extends State<AddWoundScreen> {
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(40.0),
                             side: BorderSide(color: AppColors.cura_cyan)))),
-                onPressed: () {
+                onPressed: () async {
                   //check the values
                   if (_typeController.text.isEmpty) {
                     _showSnackBar("Please enter a wound type");
@@ -138,13 +140,13 @@ class _AddWoundScreenState extends State<AddWoundScreen> {
                   }
 
                   Wound wound = Wound(
-                      id: Uuid().v1(),
                       isHealed: false,
                       type: _typeController.text,
                       location: _locationController.text,
                       form: _form,
-                      startDate: DateTime.now());
-
+                      isChronic: false,
+                      startDate: DateTime.now(),);
+                  await QueryWrapper.postWound(widget.patient, wound);
                   Navigator.pop(context, wound);
                 },
                 child: Container(

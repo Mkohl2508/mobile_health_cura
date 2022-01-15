@@ -6,7 +6,11 @@ part of 'medication.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication();
+Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
+      json['id'] as String?,
+    );
 
 Map<String, dynamic> _$MedicationToJson(Medication instance) =>
-    <String, dynamic>{};
+    <String, dynamic>{
+      'id': instance.id,
+    };

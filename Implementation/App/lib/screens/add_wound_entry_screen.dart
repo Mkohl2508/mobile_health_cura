@@ -475,7 +475,7 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                       String id = Uuid().v1();
                       QueryWrapper.uploadImageList(_images,
                               "${widget.patient.fullName()}/${widget.wound.id}/$id/")
-                          .then((imageList) {
+                          .then((imageList) async {
                         WoundEntry entry = WoundEntry(
                             id: id,
                             date: DateTime.now(),
@@ -490,9 +490,8 @@ class _AddWoundEntryScreenState extends State<AddWoundEntryScreen> {
                             isOpen: _isOpen,
                             exudate: _exudate);
 
-                        widget.wound.woundEntrys!.add(entry);
-                        QueryWrapper.postWoundEntry(
-                            widget.patient, widget.room);
+                        await QueryWrapper.postWoundEntry(
+                            widget.patient, widget.wound, entry);
                         Navigator.pop(context);
                       }).catchError((e) {
                         _showSnackBar(

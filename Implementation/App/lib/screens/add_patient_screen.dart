@@ -286,10 +286,10 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                             "${_firstNameController.text} ${_lastNameController.text}/ProfilePic");
 
                         Patient newPerson = Patient(
-                            id: Uuid().v1(),
                             profilePic: profilePicUrl,
                             firstName: _firstNameController.text,
                             surname: _lastNameController.text,
+                            roomId: _currentRoom!.id!,
                             birthDate: DateFormat('dd.MM.yyyy')
                                 .parse(_birthdayController.text),
                             residence: oldPeopleHome.residence,
@@ -298,10 +298,9 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                                 : _numberController.text,
                             patientFile: PatientRecord());
 
-                        await QueryWrapper.postPatient(
-                            _currentRoom!.number.toString(), newPerson);
+                        await QueryWrapper.postPatient(newPerson);
 
-                        _currentRoom!.patients.add(newPerson);
+                        // _currentRoom!.patients!.add(newPerson);
                         //globals.masterContext.oldPeopleHomesList[0].
                         Navigator.pushAndRemoveUntil(
                             context,

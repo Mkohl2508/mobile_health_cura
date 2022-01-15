@@ -3,7 +3,10 @@ part 'medication.g.dart';
 
 @JsonSerializable()
 class Medication {
-  Medication();
+
+    String? id;
+
+  Medication(this.id);
 
   factory Medication.fromJson(Map<String, dynamic> json) =>
       _$MedicationFromJson(json);

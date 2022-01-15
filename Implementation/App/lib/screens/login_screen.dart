@@ -1,12 +1,8 @@
 import 'package:cura/model/widget/AppColors.dart';
-import 'package:cura/screens/home_screen.dart';
 import 'package:cura/screens/loading_screen.dart';
 import 'package:cura/shared/text_input_login_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cura/utils/firebase_auth.dart';
-import 'package:cura/utils/validator.dart';
 import 'package:flutter_svg/svg.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;

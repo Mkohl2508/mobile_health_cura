@@ -86,7 +86,6 @@ class _WoundOverviewState extends State<WoundOverviewScreen> {
               return;
             }
             setState(() {
-              widget.patient.patientFile.wounds!.add(wound);
             });
           });
         },

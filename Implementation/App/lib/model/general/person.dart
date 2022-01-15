@@ -15,8 +15,7 @@ Residence firestoreResidenceFromJson(dynamic value) {
 
 @JsonSerializable(explicitToJson: true)
 class Person {
-  @JsonKey(includeIfNull: false)
-  String? id;
+ String? id;
   final String firstName;
   final String surname;
 

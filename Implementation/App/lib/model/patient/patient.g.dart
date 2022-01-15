@@ -16,24 +16,17 @@ Patient _$PatientFromJson(Map<String, dynamic> json) => Patient(
       profilePic: json['profilePic'] as String,
       patientFile:
           PatientRecord.fromJson(json['patientFile'] as Map<String, dynamic>),
+      roomId: json['roomId'] as String,
     );
 
-Map<String, dynamic> _$PatientToJson(Patient instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('id', instance.id);
-  val['firstName'] = instance.firstName;
-  val['surname'] = instance.surname;
-  val['birthDate'] = firestoreDateTimeToJson(instance.birthDate);
-  val['residence'] = instance.residence.toJson();
-  val['phoneNumber'] = instance.phoneNumber;
-  val['patientFile'] = instance.patientFile.toJson();
-  val['profilePic'] = instance.profilePic;
-  return val;
-}
+Map<String, dynamic> _$PatientToJson(Patient instance) => <String, dynamic>{
+      'id': instance.id,
+      'firstName': instance.firstName,
+      'surname': instance.surname,
+      'birthDate': firestoreDateTimeToJson(instance.birthDate),
+      'residence': instance.residence.toJson(),
+      'phoneNumber': instance.phoneNumber,
+      'patientFile': instance.patientFile.toJson(),
+      'profilePic': instance.profilePic,
+      'roomId': instance.roomId,
+    };
