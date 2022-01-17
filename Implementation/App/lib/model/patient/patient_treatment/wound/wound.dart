@@ -15,16 +15,16 @@ class Wound {
   final String id;
   final String location;
   final String type;
-  final bool isHealed;
+  bool isHealed;
+  final DateTime startDate;
+  final List<WoundEntry>? woundEntrys;
+  bool? isChronic;
+  final FormEnum? form;
+
   @JsonKey(
     toJson: firestoreDateTimeToJson,
     fromJson: firestoreDateTimeFromJson,
   )
-  final DateTime startDate;
-  final List<WoundEntry>? woundEntrys;
-  final bool? isChronic;
-  final FormEnum? form;
-
   Wound(
       {required this.id,
       required this.location,
