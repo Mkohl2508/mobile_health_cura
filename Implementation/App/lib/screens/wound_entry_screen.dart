@@ -60,32 +60,36 @@ class _WoundEntryScreenState extends State<WoundEntryScreen> {
           style: TextStyle(),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddWoundEntryScreen(
-                          room: widget.room,
-                          patient: widget.patient,
-                          wound: widget.wound,
-                        ))).whenComplete(() {
-              setState(() {
-                _currentIndex = widget.wound.woundEntrys!.length - 1;
-              });
-            });
-          },
-          child: Icon(Icons.add),
-          backgroundColor: AppColors.cura_darkCyan),
+      floatingActionButton: widget.wound.isHealed
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddWoundEntryScreen(
+                              room: widget.room,
+                              patient: widget.patient,
+                              wound: widget.wound,
+                            ))).whenComplete(() {
+                  setState(() {
+                    _currentIndex = widget.wound.woundEntrys!.length - 1;
+                  });
+                });
+              },
+              child: Icon(Icons.add),
+              backgroundColor: AppColors.cura_darkCyan),
       body: SafeArea(
           child: SingleChildScrollView(
               child: _currentEntry == null
-                  ? Padding(
-                      padding: const EdgeInsets.all(50.0),
+                  ? Container(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      width: MediaQuery.of(context).size.width,
                       child: Center(
-                        child: Text(
-                            "No entries.\nPlease add an entry for this wound."),
-                      ),
+                          child: Text(
+                        "No entries.\nPlease add an entry for this wound.",
+                        textAlign: TextAlign.center,
+                      )),
                     )
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -243,7 +247,7 @@ class _WoundEntryScreenState extends State<WoundEntryScreen> {
                         Padding(
                           padding: const EdgeInsets.all(20),
                           child: Text(
-                            "Wound information",
+                            "Wound entry information",
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),

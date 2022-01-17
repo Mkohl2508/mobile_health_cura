@@ -143,6 +143,7 @@ class _AddWoundScreenState extends State<AddWoundScreen> {
                       type: _typeController.text,
                       location: _locationController.text,
                       form: _form,
+                      isChronic: false,
                       startDate: DateTime.now());
 
                   Navigator.pop(context, wound);
