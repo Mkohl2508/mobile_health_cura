@@ -27,29 +27,35 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      floatingActionButton: SpeedDial(
-        icon: Icons.add,
-        children: [
-          SpeedDialChild(
-            child: Icon(Icons.room),
-            label: "Add Room",
-            backgroundColor: AppColors.cure_brightBlue,
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddRoomScreen()));
-            },
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.person),
-            label: "Add Patient",
-            backgroundColor: AppColors.cure_brightBlue,
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddPatientScreen()));
-            },
-          )
-        ],
-      ),
+      floatingActionButton: _currentIndex == 0
+          ? SpeedDial(
+              icon: Icons.add,
+              children: [
+                SpeedDialChild(
+                  child: Icon(Icons.room),
+                  label: "Add Room",
+                  backgroundColor: AppColors.cure_brightBlue,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddRoomScreen()));
+                  },
+                ),
+                SpeedDialChild(
+                  child: Icon(Icons.person),
+                  label: "Add Patient",
+                  backgroundColor: AppColors.cure_brightBlue,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddPatientScreen()));
+                  },
+                )
+              ],
+            )
+          : null,
       body: Column(
         children: [
           SafeArea(

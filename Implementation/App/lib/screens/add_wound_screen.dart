@@ -98,8 +98,8 @@ class _AddWoundScreenState extends State<AddWoundScreen> {
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 15.0, horizontal: 10.0),
-                      hintText: "Choose a wound edge",
-                      labelText: "Wound edge",
+                      hintText: "Choose a wound form",
+                      labelText: "Wound form",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0))),
                   onChanged: (value) {
@@ -143,6 +143,7 @@ class _AddWoundScreenState extends State<AddWoundScreen> {
                       type: _typeController.text,
                       location: _locationController.text,
                       form: _form,
+                      isChronic: false,
                       startDate: DateTime.now());
 
                   Navigator.pop(context, wound);
