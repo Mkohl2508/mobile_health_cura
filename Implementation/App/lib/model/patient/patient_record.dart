@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/general/doctor.dart';
 import 'package:cura/model/residence/residence.dart';
 import 'package:cura/model/patient/patient_treatment/medication.dart';

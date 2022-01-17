@@ -8,7 +8,6 @@ class Room {
 
   final int number;
   final String? name;
-  @JsonKey(ignore: true)
   final List<Patient> patients;
 
   Room({required this.number, this.name, required this.patients});

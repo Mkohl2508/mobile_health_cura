@@ -3,6 +3,7 @@ import 'package:cura/model/enums/exudate_enum.dart';
 import 'package:cura/model/enums/form_enum.dart';
 import 'package:cura/model/enums/phase_enum.dart';
 import 'package:cura/model/general/doctor.dart';
+import 'package:cura/model/general/local_user.dart';
 import 'package:cura/model/general/nurse.dart';
 import 'package:cura/model/general/old_people_home.dart';
 import 'package:cura/model/general/room.dart';
@@ -17,7 +18,8 @@ import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class LoadingScreen extends StatefulWidget {
-  const LoadingScreen({Key? key}) : super(key: key);
+  final LocalUser user;
+  const LoadingScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
@@ -210,7 +212,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoadingScreen()));
+                                    builder: (context) =>
+                                        LoadingScreen(user: widget.user)));
                           },
                           icon: Icon(Icons.update))
                     ]);

@@ -1,12 +1,8 @@
 import 'package:cura/model/widget/AppColors.dart';
-import 'package:cura/screens/home_screen.dart';
-import 'package:cura/screens/loading_screen.dart';
 import 'package:cura/shared/text_input_login_widget.dart';
+import 'package:cura/utils/auth_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cura/utils/firebase_auth.dart';
-import 'package:cura/utils/validator.dart';
 import 'package:flutter_svg/svg.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -110,17 +106,27 @@ class _LoginScreenState extends State<LoginScreen> {
                                           color: AppColors.cura_cyan)))),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              _signInWithEmailAndPassword().then((success) => {
-                                    if (success)
-                                      {
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    LoadingScreen()),
-                                            (route) => false)
-                                      }
-                                  });
+                              if (_emailController.text.isEmpty ||
+                                  _passwordController.text.isEmpty) {
+                                print("Email and password cannot be empty");
+                                return;
+                              }
+                              try {
+                                final user = await AuthHelper.signInWithEmail(
+                                    email: _emailController.text,
+                                    password: _passwordController.text);
+                                if (user != null) {
+                                  print("login successful");
+                                }
+                              } on FirebaseAuthException catch (error) {
+                                switch (error.code) {
+                                  case "user-not-found":
+                                  case "invalid-email":
+                                  case "wrong-password":
+                                    print("Wrong email/password combination.");
+                                    break;
+                                }
+                              }
                             }
                           },
                           child: SizedBox(
@@ -134,10 +140,41 @@ class _LoginScreenState extends State<LoginScreen> {
                               )),
                         ),
                         SizedBox(
+                          height: 50,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  AppColors.cura_cyan),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(40.0),
+                                      side: BorderSide(
+                                          color: AppColors.cura_cyan)))),
+                          onPressed: () async {
+                            try {
+                              await AuthHelper.signInWithGoogle();
+                            } catch (e) {
+                              print(e);
+                            }
+                          },
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              height: 50,
+                              child: Center(
+                                child: Text(
+                                  "Login With Google",
+                                  style: TextStyle(fontSize: 22),
+                                ),
+                              )),
+                        ),
+                        SizedBox(
                           height: 20,
                         ),
                         ElevatedButton(
                           style: ButtonStyle(
+                            
                               backgroundColor: MaterialStateProperty.all(
                                   Color.fromRGBO(134, 118, 102, 0.5)),
                               shape: MaterialStateProperty.all<
@@ -148,11 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           color: Color.fromRGBO(
                                               134, 118, 102, 0.5))))),
                           onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoadingScreen()),
-                                (route) => false);
+                         
                           },
                           child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.5,
@@ -161,6 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Text(
                                   "Sign up",
                                   style: TextStyle(fontSize: 22),
+                                  
                                 ),
                               )),
                         )
@@ -172,26 +206,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  // Example code of how to sign in with email and password.
-  Future<bool> _signInWithEmailAndPassword() async {
-    try {
-      final User user = (await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      ))
-          .user!;
-      print('${user.email} signed in');
-      return true;
-    } catch (e) {
-      print('Failed to sign in with Email & Password');
-      return false;
-    }
-  }
+  // @override
+  // void dispose() {
+  //   _emailController.dispose();
+  //   _passwordController.dispose();
+  //   super.dispose();
+  // }
 }

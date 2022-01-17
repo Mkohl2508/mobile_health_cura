@@ -1,9 +1,12 @@
+import 'package:cura/main.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/calendar_view_screen.dart';
+import 'package:cura/screens/login_screen.dart';
 import 'package:cura/screens/notification_screen.dart';
 import 'package:cura/screens/patient_list_screen.dart';
 import 'package:cura/screens/add_room_screen.dart';
 import 'package:cura/screens/add_patient_screen.dart';
+import 'package:cura/utils/auth_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -46,6 +49,21 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => AddPatientScreen()));
+            },
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.logout),
+            label: "Logout",
+            backgroundColor: AppColors.cure_brightBlue,
+            onTap: () {
+              // Navigator.pushAndRemoveUntil(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => LoginScreen()),
+              //     (route) => false).then((value) => AuthHelper.logOut());
+              AuthHelper.logOut().then((value) => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (route) => false));
             },
           )
         ],
