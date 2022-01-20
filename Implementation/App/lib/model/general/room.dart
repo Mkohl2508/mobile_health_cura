@@ -9,7 +9,7 @@ class Room {
 
   final int number;
   final String? name;
-  
+
   @JsonKey(toJson: toNull, fromJson: emptyPatients, includeIfNull: false)
   final List<Patient> patients;
 

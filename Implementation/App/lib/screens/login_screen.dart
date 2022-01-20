@@ -1,6 +1,7 @@
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/shared/text_input_login_widget.dart';
 import 'package:cura/utils/auth_helper.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
@@ -144,7 +145,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         ElevatedButton(
                           style: ButtonStyle(
-                            
                               backgroundColor: MaterialStateProperty.all(
                                   Color.fromRGBO(134, 118, 102, 0.5)),
                               shape: MaterialStateProperty.all<
@@ -154,9 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       side: BorderSide(
                                           color: Color.fromRGBO(
                                               134, 118, 102, 0.5))))),
-                          onPressed: () {
-                         
-                          },
+                          onPressed: () {},
                           child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.5,
                               height: 50,
@@ -164,7 +162,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Text(
                                   "Sign up",
                                   style: TextStyle(fontSize: 22),
-                                  
                                 ),
                               )),
                         )
