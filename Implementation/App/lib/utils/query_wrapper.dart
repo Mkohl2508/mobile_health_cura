@@ -163,7 +163,7 @@ class QueryWrapper {
         "id": patiento["id"],
         "wounds": patiento["wounds"],
         "medication": [{}],
-        "attendingDoctor": patiento["attendingDoctor"]["id"]
+        "attendingDoctor": patiento["attendingDoctor"]?["id"]
       }
     }).then((value) {
       return value;

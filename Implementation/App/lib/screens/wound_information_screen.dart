@@ -5,6 +5,7 @@ import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/wound_entry_screen.dart';
 import 'package:cura/shared/icon_tile_widget.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class WoundInformationScreen extends StatefulWidget {
@@ -289,6 +290,8 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
                       child: Text("Continue"),
                       onPressed: () {
                         widget.wound.isHealed = true;
+                        QueryWrapper.postWoundEntry(
+                            widget.patient, widget.room);
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },

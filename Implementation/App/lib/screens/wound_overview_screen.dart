@@ -5,6 +5,7 @@ import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/add_wound_screen.dart';
 import 'package:cura/screens/wound_information_screen.dart';
 import 'package:cura/shared/icon_tile_widget.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class WoundOverviewScreen extends StatefulWidget {
@@ -130,6 +131,7 @@ class _WoundOverviewState extends State<WoundOverviewScreen> {
               widget.patient.patientFile.wounds!.add(wound);
               _notHealedWounds = _initWounds(widget.patient, false);
             });
+            QueryWrapper.postWoundEntry(widget.patient, widget.room);
           });
         },
       ),
