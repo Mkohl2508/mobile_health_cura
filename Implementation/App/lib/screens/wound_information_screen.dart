@@ -1,25 +1,23 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cura/model/enums/enum_converter.dart';
 import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
-import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/model/widget/AppColors.dart';
+import 'package:cura/screens/wound_entry_screen.dart';
+import 'package:cura/shared/icon_tile_widget.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
-
-import 'add_wound_entry_screen.dart';
-import 'full_screen_screen.dart';
 
 class WoundInformationScreen extends StatefulWidget {
+  final Room room;
   final Patient patient;
   final Wound wound;
-  final Room room;
+
   const WoundInformationScreen(
       {Key? key,
+      required this.room,
       required this.patient,
-      required this.wound,
-      required this.room})
+      required this.wound})
       : super(key: key);
 
   @override
@@ -27,465 +25,321 @@ class WoundInformationScreen extends StatefulWidget {
 }
 
 class _WoundInformationScreenState extends State<WoundInformationScreen> {
-  late int _currentIndex;
-
   void _sortByDate() {
     widget.wound.woundEntrys!.sort((a, b) => a.date.compareTo(b.date));
   }
 
   @override
   void initState() {
+    // TODO: implement initState
     _sortByDate();
-    _currentIndex = widget.wound.woundEntrys!.isNotEmpty
-        ? widget.wound.woundEntrys!.length - 1
-        : 0;
     super.initState();
   }
 
-  final CarouselController _controller = CarouselController();
-  int _currentPic = 0;
+  final Widget _isHealedLabel = Row(
+    children: [
+      Icon(
+        Icons.check_circle,
+        color: Colors.green,
+        size: 20,
+      ),
+      SizedBox(
+        width: 3,
+      ),
+      Text(
+        "is healed",
+        style: TextStyle(color: Colors.green),
+      )
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
-    WoundEntry? _currentEntry = widget.wound.woundEntrys!.isNotEmpty
-        ? widget.wound.woundEntrys![_currentIndex]
-        : null;
-
     return Scaffold(
       appBar: AppBar(
-        elevation: 1,
         backgroundColor: AppColors.cura_darkCyan,
         title: Text(
           widget.patient.fullName(),
-          style: TextStyle(),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddWoundEntryScreen(
-                          room: widget.room,
-                          patient: widget.patient,
-                          wound: widget.wound,
-                        ))).whenComplete(() {
-              setState(() {
-                _currentIndex = widget.wound.woundEntrys!.length - 1;
-              });
-            });
-          },
-          child: Icon(Icons.add),
-          backgroundColor: AppColors.cura_darkCyan),
       body: SafeArea(
-          child: SingleChildScrollView(
-              child: _currentEntry == null
-                  ? Padding(
-                      padding: const EdgeInsets.all(50.0),
-                      child: Center(
-                        child: Text(
-                            "No entries.\nPlease add an entry for this wound."),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Wound information",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                    )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 17),
-                        Container(
-                          decoration:
-                              BoxDecoration(color: Colors.white, boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 5,
-                                spreadRadius: 1,
-                                offset: Offset(0, 3))
-                          ]),
-                          width: double.infinity,
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: IconButton(
-                                    color: Color(0xFF00B4D8),
-                                    disabledColor: Color(0x5500B4D8),
-                                    icon: Icon(
-                                      Icons.arrow_back_ios_new,
-                                    ),
-                                    onPressed: _currentIndex > 0
-                                        ? () {
-                                            setState(() {
-                                              if (_currentIndex > 0) {
-                                                _currentEntry =
-                                                    widget.wound.woundEntrys![
-                                                        _currentIndex--];
-                                              }
-                                            });
-                                          }
-                                        : null),
-                              ),
-                              Expanded(
-                                  child: Center(
-                                      child: Text(
-                                _currentEntry!.formattedDate(),
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ))),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8),
-                                child: IconButton(
-                                    color: Color(0xFF00B4D8),
-                                    disabledColor: Color(0x5500B4D8),
-                                    icon: Icon(Icons.arrow_forward_ios),
-                                    onPressed: _currentIndex <
-                                            widget.wound.woundEntrys!.length - 1
-                                        ? () {
-                                            setState(() {
-                                              if (_currentIndex <
-                                                  widget.wound.woundEntrys!
-                                                          .length -
-                                                      1) {
-                                                _currentEntry =
-                                                    widget.wound.woundEntrys![
-                                                        _currentIndex++];
-                                              }
-                                            });
-                                          }
-                                        : null),
-                              )
-                            ],
+                    ),
+                    widget.wound.isHealed ? _isHealedLabel : Container()
+                  ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border:
+                        Border(bottom: BorderSide(color: Color(0xFFe2e2e2)))),
+                width: 500,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 25, top: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("First reported date",
+                              style:
+                                  TextStyle(height: 1.5, color: Colors.black)),
+                          SizedBox(
+                            height: 5,
                           ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CarouselSlider(
-                            items: _currentEntry!.images
-                                .map((item) => Container(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(builder: (_) {
-                                            return FullScreenImage(
-                                                imageUrl: item);
-                                          }));
-                                        },
-                                        child: Center(
-                                            child: Hero(
-                                          tag: "imageHero",
-                                          child: Image.network(item,
-                                              width: double.infinity),
-                                        )),
-                                      ),
-                                    ))
-                                .toList(),
-                            options: CarouselOptions(
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  _currentPic = index;
-                                });
-                              },
-                              viewportFraction: 1,
-                              enlargeCenterPage: true,
-                              enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                              autoPlay: false,
-                              enableInfiniteScroll: false,
-                            )),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: _currentEntry!.images
-                                .asMap()
-                                .entries
-                                .map((entry) {
-                              return GestureDetector(
-                                onTap: () =>
-                                    _controller.animateToPage(entry.key),
-                                child: Container(
-                                  width: 8.0,
-                                  height: 8.0,
-                                  margin: EdgeInsets.symmetric(
-                                      vertical: 8.0, horizontal: 4.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: AppColors.cura_darkBlue
-                                          .withOpacity(_currentPic == entry.key
-                                              ? 0.9
-                                              : 0.4)),
-                                ),
-                              );
-                            }).toList()),
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Text(
-                            "Pain level",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                          Text(widget.wound.formattedDate(),
+                              style: TextStyle(
+                                  color: Colors.grey[700], height: 1.5)),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      height: 20,
+                      thickness: 1,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 25),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Wound type",
+                            style: TextStyle(color: Colors.black, height: 1.5),
                           ),
-                        ),
-                        SfSlider(
-                          value: _currentEntry!.painLevel != null
-                              ? _currentEntry!.painLevel!.toDouble()
-                              : 0,
-                          onChanged: (value) {},
-                          min: 0,
-                          max: 10,
-                          showLabels: true,
-                          showDividers: true,
-                          showTicks: true,
-                          interval: 2,
-                          stepSize: 1,
-                          minorTicksPerInterval: 1,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Text(
-                            "Wound information",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                          SizedBox(
+                            height: 5,
                           ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border(
-                                  bottom:
-                                      BorderSide(color: Color(0xFFe2e2e2)))),
-                          width: 500,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 20, top: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Is the wound open?",
+                          Text(
+                            widget.wound.type,
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      height: 20,
+                      thickness: 1,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 25),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Located at",
+                              style:
+                                  TextStyle(height: 1.5, color: Colors.black)),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(widget.wound.location,
+                              style: TextStyle(color: Colors.grey[700])),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      height: 20,
+                      thickness: 1,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 25),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Wound form",
+                              style:
+                                  TextStyle(height: 1.5, color: Colors.black)),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                              EnumConverter.formEnumToString(
+                                  widget.wound.form!),
+                              style: TextStyle(color: Colors.grey[700])),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      height: 20,
+                      thickness: 1,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 25, bottom: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Is chronic?",
+                              style:
+                                  TextStyle(height: 1.5, color: Colors.black)),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          widget.wound.isChronic == null
+                              ? Text("Not set",
+                                  style: TextStyle(
+                                      color: Colors.grey[700], height: 1.5))
+                              : (widget.wound.isChronic!
+                                  ? Row(
+                                      children: [
+                                        Icon(
+                                          Icons.warning,
+                                          color: Colors.yellow[600],
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text("Yes",
+                                            style: TextStyle(
+                                                color: Colors.grey[700],
+                                                height: 1.5)),
+                                      ],
+                                    )
+                                  : Text("No",
                                       style: TextStyle(
-                                          color: Colors.black, height: 1.5),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      _currentEntry!.isOpen != null
-                                          ? (_currentEntry!.isOpen!
-                                              ? "Yes"
-                                              : "No")
-                                          : "Not set",
-                                      style: TextStyle(color: Colors.grey[700]),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Divider(
-                                height: 20,
-                                thickness: 1,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 20, right: 25),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("Phase of healing",
-                                        style: TextStyle(
-                                            height: 1.5, color: Colors.black)),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                        _currentEntry!.phase != null
-                                            ? EnumConverter.phaseEnumToString(
-                                                _currentEntry!.phase!)
-                                            : "Not set",
-                                        style:
-                                            TextStyle(color: Colors.grey[700])),
-                                  ],
-                                ),
-                              ),
-                              Divider(
-                                height: 20,
-                                thickness: 1,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20, right: 25, bottom: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("Wound length",
-                                        style: TextStyle(
-                                            height: 1.5, color: Colors.black)),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                        _currentEntry!.length != null
-                                            ? _currentEntry!.length.toString()
-                                            : "Not set",
-                                        style: TextStyle(
-                                            color: Colors.grey[700],
-                                            height: 1.5)),
-                                  ],
-                                ),
-                              ),
-                              Divider(
-                                height: 20,
-                                thickness: 1,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20, right: 25, bottom: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("Wound width",
-                                        style: TextStyle(
-                                            height: 1.5, color: Colors.black)),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                        _currentEntry!.width != null
-                                            ? _currentEntry!.width.toString()
-                                            : "Not set",
-                                        style: TextStyle(
-                                            color: Colors.grey[700],
-                                            height: 1.5)),
-                                  ],
-                                ),
-                              ),
-                              Divider(
-                                height: 20,
-                                thickness: 1,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20, right: 25, bottom: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("Wound depth",
-                                        style: TextStyle(
-                                            height: 1.5, color: Colors.black)),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                        _currentEntry!.depth != null
-                                            ? _currentEntry!.depth.toString()
-                                            : "Not set",
-                                        style: TextStyle(
-                                            color: Colors.grey[700],
-                                            height: 1.5)),
-                                  ],
-                                ),
-                              ),
-                              Divider(
-                                height: 20,
-                                thickness: 1,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20, right: 25, bottom: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("Wound edges",
-                                        style: TextStyle(
-                                            height: 1.5, color: Colors.black)),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                        _currentEntry!.edge != null
-                                            ? EnumConverter.edgeEnumToString(
-                                                _currentEntry!.edge!)
-                                            : "Not set",
-                                        style: TextStyle(
-                                            color: Colors.grey[700],
-                                            height: 1.5)),
-                                  ],
-                                ),
-                              ),
-                              Divider(
-                                height: 20,
-                                thickness: 1,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20, right: 25, bottom: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("Is the wound smelly?",
-                                        style: TextStyle(
-                                            height: 1.5, color: Colors.black)),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                        _currentEntry!.isSmelly != null
-                                            ? (_currentEntry!.isSmelly!
-                                                ? "Yes"
-                                                : "No")
-                                            : "Not set",
-                                        style: TextStyle(
-                                            color: Colors.grey[700],
-                                            height: 1.5)),
-                                  ],
-                                ),
-                              ),
-                              Divider(
-                                height: 20,
-                                thickness: 1,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20, right: 25, bottom: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("Wound exudate",
-                                        style: TextStyle(
-                                            height: 1.5, color: Colors.black)),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                        _currentEntry!.exudate != null
-                                            ? EnumConverter.exudateEnumToString(
-                                                _currentEntry!.exudate!)
-                                            : "Not set",
-                                        style: TextStyle(
-                                            color: Colors.grey[700],
-                                            height: 1.5)),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        )
+                                          color: Colors.grey[700],
+                                          height: 1.5))),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              IconTileWidget(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return WoundEntryScreen(
+                      patient: widget.patient,
+                      wound: widget.wound,
+                      room: widget.room,
+                    );
+                  }));
+                },
+                leadingWidget: Icon(
+                  Icons.healing,
+                  color: Colors.white,
+                ),
+                leadingColor: AppColors.cura_cyan,
+                height: 70,
+                listInputs: [
+                  Text(
+                    "Wound entries",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                      "Last update: ${widget.wound.woundEntrys!.isEmpty ? "-" : widget.wound.woundEntrys!.last.formattedDate()}"),
+                ],
+                trailingIcon: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Color(0xFF065fc4),
+                ),
+              ),
+              SizedBox(
+                height: 60,
+              ),
+              Center(
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(AppColors.cura_darkBlue),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40.0),
+                              side:
+                                  BorderSide(color: AppColors.cura_darkBlue)))),
+                  onPressed: () {
+                    // set up the buttons
+                    Widget cancelButton = TextButton(
+                      child: Text("Cancel"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    );
+                    Widget continueButton = TextButton(
+                      child: Text("Continue"),
+                      onPressed: () {
+                        widget.wound.isHealed = true;
+                        QueryWrapper.postWoundEntry(
+                            widget.patient, widget.room);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                    );
+
+                    // set up the AlertDialog
+                    AlertDialog alert = AlertDialog(
+                      title: Text("Wound is healed"),
+                      content: Text(
+                          "After this action, the wound is considered healed. You cannot add any more entries afterwards.\n\nWould you like to continue?"),
+                      actions: [
+                        cancelButton,
+                        continueButton,
                       ],
-                    ))),
+                    );
+
+                    // show the dialog
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return alert;
+                      },
+                    );
+                  },
+                  child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 60,
+                      child: Center(
+                          child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.health_and_safety,
+                            size: 26,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("Wound is healed"),
+                        ],
+                      ))),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
