@@ -237,7 +237,7 @@ class QueryWrapper {
     Room room = await getRoom(roomId);
     for (var element in globals.masterContext.oldPeopleHomesList[0].rooms) {
       if (element.number == room.number) {
-        for (var element in element.patients) {
+        for (var element in element.patients!) {
           if (element.id == patient.id) element = patient;
         }
       }

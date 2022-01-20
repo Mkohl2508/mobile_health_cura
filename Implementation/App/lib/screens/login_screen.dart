@@ -144,36 +144,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         ElevatedButton(
                           style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  AppColors.cura_cyan),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(40.0),
-                                      side: BorderSide(
-                                          color: AppColors.cura_cyan)))),
-                          onPressed: () async {
-                            try {
-                              await AuthHelper.signInWithGoogle();
-                            } catch (e) {
-                              print(e);
-                            }
-                          },
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.5,
-                              height: 50,
-                              child: Center(
-                                child: Text(
-                                  "Login With Google",
-                                  style: TextStyle(fontSize: 22),
-                                ),
-                              )),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
                             
                               backgroundColor: MaterialStateProperty.all(
                                   Color.fromRGBO(134, 118, 102, 0.5)),
