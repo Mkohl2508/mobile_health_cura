@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/general/local_user.dart';
 import 'package:cura/screens/loading_screen.dart';
 import 'package:cura/screens/login_screen.dart';
-import 'package:cura/utils/query_wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -34,42 +32,8 @@ class CuraApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: MainScreen());
-  }
-}
-
-class MainScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData && snapshot.data != null && snapshot.hasData) {
-            QueryWrapper.postOrUpdateUser(snapshot.data!);
-            return StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(snapshot.data!.uid)
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<DocumentSnapshot> snapshot) {
-                if (snapshot.hasData &&
-                    snapshot.data != null &&
-                    snapshot.hasData) {
-                  final user = LocalUser.fromJson(
-                      snapshot.data!.data() as Map<String, dynamic>);
-                  return LoadingScreen(user: user);
-                } else {
-                  return Material(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-              },
-            );
-          }
-          return LoginScreen();
-        });
+        home: FirebaseAuth.instance.currentUser != null
+            ? LoadingScreen(loggedUser:FirebaseAuth.instance.currentUser)
+            : LoginScreen());
   }
 }

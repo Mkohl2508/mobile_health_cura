@@ -47,7 +47,8 @@ class QueryWrapper {
         toFirestore: (nurse, _) => nurse.toJson(),
       );
 
-        static final usersRef = FirebaseFirestore.instance.collection("users")
+  static final usersRef = FirebaseFirestore.instance
+      .collection("users")
       .withConverter<LocalUser>(
         fromFirestore: (snapshot, _) => LocalUser.fromJson(snapshot.data()!),
         toFirestore: (user, _) => user.toJson(),
@@ -67,10 +68,7 @@ class QueryWrapper {
   }
 
   static getUser(snapshot) async {
-    return await usersRef
-        .doc(snapshot.data!.uid)
-        .get()
-        .then((value) {
+    return await usersRef.doc(snapshot.data!.uid).get().then((value) {
       return value.data();
     });
   }
@@ -237,14 +235,14 @@ class QueryWrapper {
     Room room = await getRoom(roomId);
     for (var element in globals.masterContext.oldPeopleHomesList[0].rooms) {
       if (element.number == room.number) {
-        for (var element in element.patients!) {
+        for (var element in element.patients) {
           if (element.id == patient.id) element = patient;
         }
       }
     }
   }
 
-  static postOrUpdateUser(User user) async {
+  static Future<Nurse?> postOrUpdateUser(User user) async {
     final _userRef = usersRef.doc(user.uid);
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -252,13 +250,17 @@ class QueryWrapper {
 
     if ((await _userRef.get()).exists) {
       await _userRef.update({
-        "last_login": DateTime.fromMillisecondsSinceEpoch(
+        "lastLogin": DateTime.fromMillisecondsSinceEpoch(
             user.metadata.lastSignInTime!.millisecondsSinceEpoch),
-        "build_number": buildNumber,
+        "buildNumber": buildNumber,
       });
+      return nursesRef
+          .where('userId', isEqualTo: user.uid)
+          .get()
+          .then((value) => value.docs.first.data());
     } else {
       LocalUser userData = LocalUser(
-          name: user.displayName!.isEmpty? user.email:user.displayName,
+          name: user.displayName!.isEmpty ? user.email : user.displayName,
           email: user.email!,
           lastLogin: DateTime.fromMicrosecondsSinceEpoch(
               user.metadata.lastSignInTime!.microsecondsSinceEpoch),
@@ -266,19 +268,28 @@ class QueryWrapper {
               user.metadata.creationTime!.millisecondsSinceEpoch),
           role: Roles.admin,
           buildNumber: buildNumber);
+      await _postOrUpdateDevice(user);
 
       await _userRef.set(userData);
-      await _postOrUpdateDevice(user);
+
+      return nursesRef
+          .add(Nurse(userId: user.uid))
+          .then((value) => value.get().then((value) => value.data()));
     }
+  }
+
+  static Future<Nurse?> getNurseFromUser(user) {
+    return nursesRef
+        .where('userId', isEqualTo: user.uid)
+        .get()
+        .then((value) => value.docs.first.data());
   }
 
   static _postOrUpdateDevice(User user) async {
     Device device = await _initDevice(user);
 
-    final deviceRef = usersRef
-        .doc(user.uid)
-        .collection("devices")
-        .doc(device.deviceId);
+    final deviceRef =
+        usersRef.doc(user.uid).collection("devices").doc(device.deviceId);
 
     if ((await deviceRef.get()).exists) {
       await deviceRef.update({

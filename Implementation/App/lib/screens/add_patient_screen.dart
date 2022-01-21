@@ -299,7 +299,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                         await QueryWrapper.postPatient(
                             _currentRoom!.number.toString(), newPerson);
 
-                        _currentRoom!.patients!.add(newPerson);
+                        _currentRoom!.patients.add(newPerson);
                         //globals.masterContext.oldPeopleHomesList[0].
                         Navigator.pushAndRemoveUntil(
                             context,

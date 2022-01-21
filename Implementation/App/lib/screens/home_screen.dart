@@ -56,18 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             builder: (context) => AddPatientScreen()));
                   },
                 ),
-                SpeedDialChild(
-                  child: Icon(Icons.logout),
-                  label: "Logout",
-                  backgroundColor: AppColors.cure_brightBlue,
-                  onTap: () {
-                    // Navigator.pushAndRemoveUntil(
-                    //     context,
-                    //     MaterialPageRoute(builder: (context) => LoginScreen()),
-                    //     (route) => false).then((value) => AuthHelper.logOut());
-                    AuthHelper.logOut();
-                  },
-                )
               ],
             )
           : null,

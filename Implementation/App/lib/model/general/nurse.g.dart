@@ -13,15 +13,5 @@ Nurse _$NurseFromJson(Map<String, dynamic> json) => Nurse(
       birthDate: firestoreDateTimeFromJson(json['birthDate']),
       residence: firestoreResidenceFromJson(json['residence']),
       phoneNumber: json['phoneNumber'],
-      role: json['role'] as String?,
+      userId: json['userId'] as String,
     );
-
-Map<String, dynamic> _$NurseToJson(Nurse instance) => <String, dynamic>{
-      'id': instance.id,
-      'firstName': instance.firstName,
-      'surname': instance.surname,
-      'birthDate': firestoreDateTimeToJson(instance.birthDate),
-      'residence': instance.residence,
-      'phoneNumber': instance.phoneNumber,
-      'role': instance.role,
-    };

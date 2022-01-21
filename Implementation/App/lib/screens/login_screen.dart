@@ -1,4 +1,5 @@
 import 'package:cura/model/widget/AppColors.dart';
+import 'package:cura/screens/loading_screen.dart';
 import 'package:cura/shared/text_input_login_widget.dart';
 import 'package:cura/utils/auth_helper.dart';
 import 'package:cura/utils/query_wrapper.dart';
@@ -117,7 +118,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     email: _emailController.text,
                                     password: _passwordController.text);
                                 if (user != null) {
-                                  print("login successful");
+                                  QueryWrapper.postOrUpdateUser(user).then((nurse) => 
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LoadingScreen(loggedNurse:nurse!)),
+                                      (route) => false));
                                 }
                               } on FirebaseAuthException catch (error) {
                                 switch (error.code) {
