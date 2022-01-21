@@ -119,6 +119,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
           setState(() {
             notif.status = NotificationStatus.inProgress;
             notif.nurseId = masterContext.loggedNurse!.id;
+            QueryWrapper.postNotification(
+                notif.id,
+                EnumConverter.notificationStatusEnumToString(notif.status),
+                notif.nurseId!);
           });
         },
         child:
@@ -158,6 +162,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     //change status to in Progress
                     setState(() {
                       notif.status = NotificationStatus.done;
+                      QueryWrapper.postNotification(
+                          notif.id,
+                          EnumConverter.notificationStatusEnumToString(
+                              notif.status),
+                          notif.nurseId!);
                     });
                   },
                   child: const Text('Done',

@@ -8,6 +8,7 @@ part 'wound_notification.g.dart';
 
 @JsonSerializable()
 class WoundNotification {
+  final String id;
   final String woundId;
   final String patientId;
   String? nurseId;
@@ -21,6 +22,7 @@ class WoundNotification {
   final int roomId;
 
   WoundNotification({
+    required this.id,
     required this.woundId,
     required this.patientId,
     required this.status,

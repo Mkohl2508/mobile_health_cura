@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -100,7 +101,9 @@ class QueryWrapper {
     var notifications = await notificationsRef;
     List<WoundNotification> woundNotifications = [];
     for (var notification in notifications.docs) {
-      woundNotifications.add(WoundNotification.fromJson(notification.data()));
+      var notificationJSON = notification.data();
+      notificationJSON["id"] = notification.id;
+      woundNotifications.add(WoundNotification.fromJson(notificationJSON));
     }
     return woundNotifications;
   }
@@ -189,6 +192,21 @@ class QueryWrapper {
     return imagesURL;
   }
 
+  static postNotification(
+      String notificationID, String status, String nurseID) async {
+    return await nursingHomeRef
+        .doc(nursingHomeID)
+        .collection("Notifications")
+        .doc(notificationID)
+        .update({"status": status, "nurseId": nurseID}).then((value) {
+      return value;
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
+  }
+
+  //patientid, nurseid, woundid, status, description
   static postWoundEntry(Patient patient, Room room) async {
     // Update the database
     var patiento = patient.patientFile.toJson();
