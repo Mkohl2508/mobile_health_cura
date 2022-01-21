@@ -2,17 +2,20 @@ import 'package:cura/model/general/person.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'nurse.g.dart';
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class Nurse extends Person {
   final String userId;
 
+  final String? profileImage;
+
   Nurse(
-      {id,
-      firstName,
-      surname,
-      birthDate,
-      residence,
-      phoneNumber,
+      {required id,
+      required firstName,
+      required surname,
+      required birthDate,
+      required residence,
+      required phoneNumber,
+      required this.profileImage,
       required this.userId})
       : super(
             id: id,
@@ -24,7 +27,5 @@ class Nurse extends Person {
 
   factory Nurse.fromJson(Map<String, dynamic> json) => _$NurseFromJson(json);
 
-  Map<String, dynamic> toJson() =>  <String, dynamic>{
-      'id': id
-    };
+  Map<String, dynamic> toJson() => _$NurseToJson(this);
 }

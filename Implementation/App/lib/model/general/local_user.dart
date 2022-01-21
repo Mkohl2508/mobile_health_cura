@@ -12,8 +12,6 @@ class LocalUser {
   final Roles role;
   final int buildNumber;
   @JsonKey(ignore: true)
-  String? profileImage;
-  @JsonKey(ignore: true)
   Device? device;
 
   LocalUser(
@@ -23,7 +21,6 @@ class LocalUser {
       required this.creationDate,
       required this.role,
       required this.buildNumber,
-      this.profileImage,
       this.device});
 
   factory LocalUser.fromJson(Map<String, dynamic> json) =>

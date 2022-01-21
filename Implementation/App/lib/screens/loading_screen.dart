@@ -176,10 +176,16 @@ Future<OldPeopleHome> _initOldPeopleHome() async {
       residence: oldPeopleHome.residence);
 }
 
-Future<MasterContext> initMasterContext(User? loggedUser, Nurse? loggedNurse) async {
+Future<MasterContext> initMasterContext(
+    User? loggedUser, Nurse? loggedNurse) async {
   MasterContext masterContext = MasterContext();
-  masterContext.oldPeopleHomesList.add(await _initOldPeopleHome());
-  masterContext.loggedNurse = loggedNurse ?? await QueryWrapper.getNurseFromUser(loggedUser);
+  OldPeopleHome oldPeopleHome = await _initOldPeopleHome();
+
+  masterContext.oldPeopleHomesList.add(oldPeopleHome);
+  masterContext.loggedNurse = loggedNurse ??
+      oldPeopleHome.nurses
+          .firstWhere((element) => element.userId == loggedUser!.uid);
+          
   return masterContext;
 }
 

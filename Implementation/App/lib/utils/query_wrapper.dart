@@ -16,6 +16,7 @@ import "package:cura/globals.dart" as globals;
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_record.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:uuid/uuid.dart';
 
 class QueryWrapper {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -270,10 +271,20 @@ class QueryWrapper {
       await _postOrUpdateDevice(user);
 
       await _userRef.set(userData);
-
-      return nursesRef
-          .add(Nurse(userId: user.uid))
-          .then((value) => value.get().then((value) => value.data()));
+      String id = Uuid().v1();
+      Nurse newNurse = Nurse(
+          id: id,
+          firstName: "",
+          surname: "",
+          birthDate: DateTime.now(),
+          residence: "",
+          phoneNumber: "",
+          profileImage: "",
+          userId: user.uid);
+      nursesRef
+          .doc(Uuid().v1())
+          .set(newNurse)
+          .then((value) => newNurse);
     }
   }
 
