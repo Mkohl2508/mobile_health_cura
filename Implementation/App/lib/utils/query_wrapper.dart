@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -100,7 +101,9 @@ class QueryWrapper {
     var notifications = await notificationsRef;
     List<WoundNotification> woundNotifications = [];
     for (var notification in notifications.docs) {
-      woundNotifications.add(WoundNotification.fromJson(notification.data()));
+      var notificationJSON = notification.data();
+      notificationJSON["id"] = notification.id;
+      woundNotifications.add(WoundNotification.fromJson(notificationJSON));
     }
     return woundNotifications;
   }
@@ -191,7 +194,7 @@ class QueryWrapper {
 
   static postNotification(
       String notificationID, String status, String nurseID) async {
-    return await nursesRef
+    return await nursingHomeRef
         .doc(nursingHomeID)
         .collection("Notifications")
         .doc(notificationID)

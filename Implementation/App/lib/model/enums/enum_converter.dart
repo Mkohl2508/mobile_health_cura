@@ -131,11 +131,11 @@ class EnumConverter {
 
   static NotificationStatus stringToNotificationStatusEnum(String str) {
     switch (str) {
-      case "toDo":
+      case "To do":
         return NotificationStatus.toDo;
-      case "inProgress":
+      case "In progress":
         return NotificationStatus.inProgress;
-      case "done":
+      case "Done":
         return NotificationStatus.done;
       default:
         throw Exception("Invalid NotificationStatus");
