@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "930698715620",
+    "project_id": "mobile-health-cura",
+    "storage_bucket": "mobile-health-cura.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930698715620:android:3ef7800cb660df020667f1",
+        "android_client_info": {
+          "package_name": "com.example.cura"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "930698715620-acr2cdhfmssfkft0q528okrqgdh8u0ni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cura",
+            "certificate_hash": "560aab45662ada37f77d951cbe9158e267ef38d3"
+          }
+        },
+        {
+          "client_id": "930698715620-kko3f4aj9vtg3tn455aruvrgnjdbabk8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvkWQll62mJUTDf_w7alAyIjUNXX1cg70"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "930698715620-kko3f4aj9vtg3tn455aruvrgnjdbabk8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

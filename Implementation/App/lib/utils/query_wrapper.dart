@@ -1,8 +1,12 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
-import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
+import 'package:cura/model/enums/roles.dart';
+import 'package:cura/model/general/device.dart';
+import 'package:cura/model/general/device_data.dart';
+import 'package:cura/model/general/local_user.dart';
+import 'package:device_info/device_info.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cura/model/general/doctor.dart';
 import 'package:cura/model/general/nurse.dart';
@@ -11,8 +15,12 @@ import 'package:cura/model/general/room.dart';
 import "package:cura/globals.dart" as globals;
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_record.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:uuid/uuid.dart';
 
 class QueryWrapper {
+  static final FirebaseFirestore _db = FirebaseFirestore.instance;
+
   static const String nursingHomeID =
       "gjsrMjy7BzLeWQD844kx"; //"Uoto3xaa5ZL9N2mMjPhG";
 
@@ -21,7 +29,7 @@ class QueryWrapper {
       .withConverter<OldPeopleHome>(
         fromFirestore: (snapshot, _) =>
             OldPeopleHome.fromJson(snapshot.data()!),
-        toFirestore: (movie, _) => movie.toJson(),
+        toFirestore: (oldPeopleHome, _) => oldPeopleHome.toJson(),
       );
 
   static final doctorsRef = nursingHomeRef
@@ -40,6 +48,13 @@ class QueryWrapper {
         toFirestore: (nurse, _) => nurse.toJson(),
       );
 
+  static final usersRef = FirebaseFirestore.instance
+      .collection("users")
+      .withConverter<LocalUser>(
+        fromFirestore: (snapshot, _) => LocalUser.fromJson(snapshot.data()!),
+        toFirestore: (user, _) => user.toJson(),
+      );
+
   static final roomsRef =
       nursingHomeRef.doc(nursingHomeID).collection('Room').withConverter<Room>(
             fromFirestore: (snapshot, _) => Room.fromJson(snapshot.data()!),
@@ -51,6 +66,12 @@ class QueryWrapper {
           fromFirestore: (snapshot, _) => Patient.fromJson(snapshot.data()!),
           toFirestore: (patient, _) => patient.toJson(),
         );
+  }
+
+  static getUser(userUid) async {
+    return await usersRef.doc(userUid).get().then((value) {
+      return value.data();
+    });
   }
 
   static getDoctors() async {
@@ -220,5 +241,107 @@ class QueryWrapper {
         }
       }
     }
+  }
+
+  static Future<Nurse?> postOrUpdateUser(User user) async {
+    final _userRef = usersRef.doc(user.uid);
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    int buildNumber = int.parse(packageInfo.buildNumber);
+
+    if ((await _userRef.get()).exists) {
+      await _userRef.update({
+        "lastLogin": DateTime.fromMillisecondsSinceEpoch(
+            user.metadata.lastSignInTime!.millisecondsSinceEpoch),
+        "buildNumber": buildNumber,
+      });
+      return nursesRef
+          .where('userId', isEqualTo: user.uid)
+          .get()
+          .then((value) => value.docs.first.data());
+    } else {
+      LocalUser userData = LocalUser(
+          name: user.displayName!.isEmpty ? user.email : user.displayName,
+          email: user.email!,
+          lastLogin: DateTime.fromMicrosecondsSinceEpoch(
+              user.metadata.lastSignInTime!.microsecondsSinceEpoch),
+          creationDate: DateTime.fromMillisecondsSinceEpoch(
+              user.metadata.creationTime!.millisecondsSinceEpoch),
+          role: Roles.admin,
+          buildNumber: buildNumber);
+      await _postOrUpdateDevice(user);
+
+      await _userRef.set(userData);
+      String id = Uuid().v1();
+      Nurse newNurse = Nurse(
+          id: id,
+          firstName: "",
+          surname: "",
+          birthDate: DateTime.now(),
+          residence: "",
+          phoneNumber: "",
+          profileImage: "",
+          userId: user.uid);
+      nursesRef
+          .doc(Uuid().v1())
+          .set(newNurse)
+          .then((value) => newNurse);
+    }
+  }
+
+  static Future<Nurse?> getNurseFromUser(user) {
+    return nursesRef
+        .where('userId', isEqualTo: user.uid)
+        .get()
+        .then((value) => value.docs.first.data());
+  }
+
+  static _postOrUpdateDevice(User user) async {
+    Device device = await _initDevice(user);
+
+    final deviceRef =
+        usersRef.doc(user.uid).collection("devices").doc(device.deviceId);
+
+    if ((await deviceRef.get()).exists) {
+      await deviceRef.update({
+        "updated_at": device.updateDate,
+        "uninstalled": device.uninstalled,
+      });
+    } else {
+      await deviceRef.set(device.toJson());
+    }
+  }
+
+  static Future<Device> _initDevice(User user) async {
+    DeviceInfoPlugin devicePlugin = DeviceInfoPlugin();
+    String deviceId;
+    DeviceData deviceData;
+
+    if (Platform.isAndroid) {
+      final deviceInfo = await devicePlugin.androidInfo;
+      deviceId = deviceInfo.androidId;
+      deviceData = DeviceData(
+          platform: 'android',
+          osVersion: deviceInfo.version.sdkInt.toString(),
+          model: deviceInfo.model,
+          device: deviceInfo.device);
+    } else {
+      final deviceInfo = await devicePlugin.iosInfo;
+      deviceId = deviceInfo.identifierForVendor;
+      deviceData = DeviceData(
+          platform: 'ios',
+          osVersion: deviceInfo.systemVersion,
+          model: deviceInfo.utsname.machine,
+          device: deviceInfo.name);
+    }
+
+    final nowMS = DateTime.fromMillisecondsSinceEpoch(
+        DateTime.now().toUtc().millisecondsSinceEpoch);
+
+    return Device(
+        deviceId: deviceId,
+        creationDate: nowMS,
+        updateDate: nowMS,
+        uninstalled: false,
+        deviceData: deviceData);
   }
 }

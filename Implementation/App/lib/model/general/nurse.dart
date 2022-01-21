@@ -4,7 +4,9 @@ part 'nurse.g.dart';
 
 @JsonSerializable()
 class Nurse extends Person {
-  final String? role;
+  final String userId;
+
+  final String? profileImage;
 
   Nurse(
       {required id,
@@ -13,7 +15,8 @@ class Nurse extends Person {
       required birthDate,
       required residence,
       required phoneNumber,
-      this.role})
+      required this.profileImage,
+      required this.userId})
       : super(
             id: id,
             firstName: firstName,
