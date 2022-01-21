@@ -53,19 +53,6 @@ class QueryWrapper {
         );
   }
 
-  static getNotifications() async {
-    return await nursingHomeRef
-        .doc(nursingHomeID)
-        .collection("Notifications")
-        .get()
-        .then((value) {
-      return value.docs;
-    }).catchError((e) {
-      print('Got error:$e');
-      return 42;
-    });
-  }
-
   static getDoctors() async {
     return await doctorsRef.get().then((value) {
       return value.docs;
@@ -168,6 +155,20 @@ class QueryWrapper {
     return imagesURL;
   }
 
+  static postNotification() async {
+    return await nursesRef
+        .doc(nursingHomeID)
+        .collection("Notifications")
+        .doc("ID")
+        .update({"status": "toDo"}).then((value) {
+      return value;
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
+  }
+
+  //patientid, nurseid, woundid, status, description
   static postWoundEntry(Patient patient, Room room) async {
     // Update the database
     var patiento = patient.patientFile.toJson();
