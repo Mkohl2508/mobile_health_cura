@@ -21,14 +21,14 @@ class QueryWrapper {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   static const String nursingHomeID =
-      "gjsrMjy7BzLeWQD844kx"; //"Uoto3xaa5ZL9N2mMjPhG";
+      "hGBmTs0P4UGBtDNso29f"; //"Uoto3xaa5ZL9N2mMjPhG";
 
   static final nursingHomeRef = FirebaseFirestore.instance
       .collection('NursingHome')
       .withConverter<OldPeopleHome>(
         fromFirestore: (snapshot, _) =>
             OldPeopleHome.fromJson(snapshot.data()!),
-        toFirestore: (movie, _) => movie.toJson(),
+        toFirestore: (oldPeopleHome, _) => oldPeopleHome.toJson(),
       );
 
   static final doctorsRef = nursingHomeRef
@@ -67,8 +67,8 @@ class QueryWrapper {
         );
   }
 
-  static getUser(snapshot) async {
-    return await usersRef.doc(snapshot.data!.uid).get().then((value) {
+  static getUser(userUid) async {
+    return await usersRef.doc(userUid).get().then((value) {
       return value.data();
     });
   }
@@ -244,7 +244,6 @@ class QueryWrapper {
 
   static Future<Nurse?> postOrUpdateUser(User user) async {
     final _userRef = usersRef.doc(user.uid);
-
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     int buildNumber = int.parse(packageInfo.buildNumber);
 

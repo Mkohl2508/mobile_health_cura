@@ -118,13 +118,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     email: _emailController.text,
                                     password: _passwordController.text);
                                 if (user != null) {
-                                  QueryWrapper.postOrUpdateUser(user).then((nurse) => 
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              LoadingScreen(loggedNurse:nurse!)),
-                                      (route) => false));
+                                  QueryWrapper.postOrUpdateUser(user).then(
+                                      (nurse) => Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoadingScreen(
+                                                      loggedNurse: nurse!)),
+                                          (route) => false));
                                 }
                               } on FirebaseAuthException catch (error) {
                                 switch (error.code) {
@@ -148,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               )),
                         ),
                         SizedBox(
-                          height: 50,
+                          height: 20,
                         ),
                         ElevatedButton(
                           style: ButtonStyle(
@@ -161,7 +162,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       side: BorderSide(
                                           color: Color.fromRGBO(
                                               134, 118, 102, 0.5))))),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoadingScreen()),
+                                (route) => false);
+                          },
                           child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.5,
                               height: 50,
@@ -180,10 +187,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 
-  // @override
-  // void dispose() {
-  //   _emailController.dispose();
-  //   _passwordController.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 }
