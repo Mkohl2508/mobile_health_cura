@@ -1,6 +1,13 @@
 import 'dart:io';
 
+import 'package:cura/globals.dart';
+import 'package:cura/model/enums/enum_converter.dart';
+import 'package:cura/model/enums/notification_status_enum.dart';
+import 'package:cura/model/general/nurse.dart';
+import 'package:cura/model/general/wound_notification.dart';
+import 'package:cura/model/residence/residence.dart';
 import 'package:cura/model/widget/AppColors.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -10,166 +17,160 @@ class NotificationScreen extends StatefulWidget {
   _NotificationScreenState createState() => _NotificationScreenState();
 }
 
-Widget notifciationTemplate(Notif notif) {
-  List<String> messages = [
-    'The phase of the wound should have changed. Please check if the phase has changed.',
-    'The wound has not healed in the last 12 weeks. It is now marked as a chronic wound. Please check if the assessment is still correct.',
-    'The pain level of the patient has not decreased in the last three days. Please check on the patient.',
-    'The size of the wound has not decreased in the last week. Please check if the treatment of the wound should be changed.',
-    'The odor of the wound had been marked odd yesterday. Please check if the wound still smells odd.'
-  ];
-
-  if (notif.status == 'toDo') {
-    return Card(
-      margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              children: [
-                Text(
-                  'Name: ',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                      color: Colors.grey[600]),
-                ),
-                Text(
-                  'Patient Name',
-                  style: TextStyle(fontSize: 18.0, color: Colors.grey[600]),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 6.0,
-            ),
-            Row(
-              children: [
-                Text(
-                  'Location: ',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                      color: Colors.grey[600]),
-                ),
-                Text(
-                  'upper arm',
-                  style: TextStyle(fontSize: 18.0, color: Colors.grey[600]),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 6.0,
-            ),
-            Text(
-              messages[notif.type],
-              style: TextStyle(fontSize: 18.0, color: Colors.grey[600]),
-            ),
-            SizedBox(
-              height: 6.0,
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(AppColors.cure_brightBlue),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                          side: BorderSide(color: AppColors.cura_cyan)))),
-              onPressed: () async {
-                //change status to in Progress
-              },
-              child: const Text('Start',
-                  style: TextStyle(color: AppColors.cura_cyan)),
-            ),
-          ],
-        ),
-      ),
-    );
-  } else if (notif.status == 'inProgress') {
-    return Card(
-      margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              children: [
-                Text(
-                  'Name: ',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                      color: Colors.grey[600]),
-                ),
-                Text(
-                  'Patient Name',
-                  style: TextStyle(fontSize: 18.0, color: Colors.grey[600]),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 6.0,
-            ),
-            Row(
-              children: [
-                Text(
-                  'Location: ',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                      color: Colors.grey[600]),
-                ),
-                Text(
-                  'upper arm',
-                  style: TextStyle(fontSize: 18.0, color: Colors.grey[600]),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 6.0,
-            ),
-            Text(
-              messages[notif.type],
-              style: TextStyle(fontSize: 18.0, color: Colors.grey[600]),
-            ),
-            SizedBox(
-              height: 6.0,
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(AppColors.cure_brightBlue),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                          side: BorderSide(color: AppColors.cura_cyan)))),
-              onPressed: () async {
-                //change status to Done
-              },
-              child: const Text('Done',
-                  style: TextStyle(color: AppColors.cura_cyan)),
-            ),
-          ],
-        ),
-      ),
-    );
-  } else {
-    return SizedBox.shrink();
-  }
-}
-
 class _NotificationScreenState extends State<NotificationScreen> {
-  List notifs = [
-    Notif('toDo', 0, 0, 0, 0),
-    Notif('toDo', 1, 0, 0, 0),
-    Notif('toDo', 2, 0, 0, 0),
-    Notif('inProgress', 3, 0, 0, 0),
-    Notif('Done', 4, 0, 0, 0),
-  ];
+  final _localUserId = "me1";
+
+  Widget notifciationTemplate(WoundNotification notif) {
+    var nursingHome = masterContext.getById(QueryWrapper.nursingHomeID);
+    var room = nursingHome!.getRoomById(notif.roomId);
+    var patient = room!.getPatientById(notif.patientId);
+    var nurse =
+        notif.nurseId != null ? nursingHome.getNurseById(notif.nurseId!) : null;
+    var wound = patient.patientFile.getWoundById(notif.woundId);
+
+    return Card(
+      margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Row(
+              children: [
+                Expanded(
+                  child: RichText(
+                      text: TextSpan(children: [
+                    TextSpan(
+                      text: 'Name: ',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                          color: Colors.grey[600]),
+                    ),
+                    TextSpan(
+                        text: patient.fullName(),
+                        style:
+                            TextStyle(fontSize: 16.0, color: Colors.grey[600]))
+                  ])),
+                ),
+                Text(
+                  EnumConverter.notificationStatusEnumToString(notif.status),
+                  style: TextStyle(
+                      fontSize: 14.0,
+                      color: notif.status == NotificationStatus.toDo
+                          ? Colors.red
+                          : (notif.status == NotificationStatus.inProgress
+                              ? Colors.yellow[700]
+                              : Colors.green[600])),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 6.0,
+            ),
+            Row(
+              children: [
+                RichText(
+                    text: TextSpan(children: [
+                  TextSpan(
+                    text: 'Location: ',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: Colors.grey[600]),
+                  ),
+                  TextSpan(
+                      text: wound!.location,
+                      style: TextStyle(fontSize: 16.0, color: Colors.grey[600]))
+                ])),
+              ],
+            ),
+            SizedBox(
+              height: 15.0,
+            ),
+            RichText(
+              text: TextSpan(
+                text: notif.description != null ? notif.description! : '-',
+                style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
+              ),
+            ),
+            SizedBox(
+              height: 6.0,
+            ),
+            _initStatusButton(notif, nurse)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _initStatusButton(WoundNotification notif, Nurse? nurse) {
+    if (notif.status == NotificationStatus.toDo) {
+      return ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all(AppColors.cure_brightBlue),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40.0),
+                    side: BorderSide(color: AppColors.cura_cyan)))),
+        onPressed: () async {
+          //change status to in Progress
+          setState(() {
+            notif.status = NotificationStatus.inProgress;
+            notif.nurseId = "me";
+          });
+        },
+        child:
+            const Text('Start', style: TextStyle(color: AppColors.cura_cyan)),
+      );
+    } else if (notif.status == NotificationStatus.inProgress) {
+      return Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                height: 15,
+              ),
+              Text(
+                'Nurse: ',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                    color: Colors.grey[600]),
+              ),
+              Text(
+                nurse!.fullName(),
+                style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
+              )
+            ],
+          ),
+          _localUserId == notif.nurseId!
+              ? ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(AppColors.cure_brightBlue),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40.0),
+                              side: BorderSide(color: AppColors.cura_cyan)))),
+                  onPressed: () async {
+                    //change status to in Progress
+                    setState(() {
+                      notif.status = NotificationStatus.done;
+                    });
+                  },
+                  child: const Text('Done',
+                      style: TextStyle(color: AppColors.cura_cyan)),
+                )
+              : Container()
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -189,7 +190,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
             Container(
                 height: MediaQuery.of(context).size.height * 0.66,
                 child: ListView(
-                  children: notifs
+                  children: masterContext
+                      .getById(QueryWrapper.nursingHomeID)!
+                      .notifications
                       .map((notif) => notifciationTemplate(notif))
                       .toList(),
                 ))
@@ -198,15 +201,4 @@ class _NotificationScreenState extends State<NotificationScreen> {
       ),
     );
   }
-}
-
-class Notif {
-  String? status;
-  int type = 0;
-  int? woundID;
-  int? patientID;
-  int? nurseID;
-  DateTime? date;
-
-  Notif(this.status, this.type, this.woundID, this.patientID, this.nurseID);
 }

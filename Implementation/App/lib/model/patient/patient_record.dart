@@ -37,4 +37,8 @@ class PatientRecord {
       _$PatientRecordFromJson(json);
 
   Map<String, dynamic> toJson() => _$PatientRecordToJson(this);
+
+  Wound? getWoundById(String id) {
+    return wounds?.firstWhere((wound) => wound.id == id);
+  }
 }
