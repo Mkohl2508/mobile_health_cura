@@ -118,7 +118,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           //change status to in Progress
           setState(() {
             notif.status = NotificationStatus.inProgress;
-            notif.nurseId = "me";
+            notif.nurseId = masterContext.loggedNurse!.id;
           });
         },
         child:
