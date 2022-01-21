@@ -14,6 +14,7 @@ OldPeopleHome _$OldPeopleHomeFromJson(Map<String, dynamic> json) =>
       nurses: OldPeopleHome.emptyNurses(json['nurses']),
       residence: Residence.fromJson(json['residence'] as Map<String, dynamic>),
       doctors: OldPeopleHome.emptyDoctors(json['doctors']),
+      notifications: OldPeopleHome.emptyNotifications(json['notifications']),
     );
 
 Map<String, dynamic> _$OldPeopleHomeToJson(OldPeopleHome instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$OldPeopleHomeToJson(OldPeopleHome instance) =>
       'nurses': instance.nurses.map((e) => e.toJson()).toList(),
       'residence': instance.residence.toJson(),
       'doctors': instance.doctors.map((e) => e.toJson()).toList(),
+      'notifications': instance.notifications.map((e) => e.toJson()).toList(),
     };

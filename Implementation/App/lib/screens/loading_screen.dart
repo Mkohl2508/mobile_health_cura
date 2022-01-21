@@ -177,7 +177,8 @@ Future<OldPeopleHome> _initOldPeopleHome() async {
       doctors: doctors,
       nurses: await _initNurses(),
       rooms: await _initRooms(doctors),
-      residence: oldPeopleHome.residence);
+      residence: oldPeopleHome.residence,
+      notifications: await QueryWrapper.getNotifications());
 }
 
 Future<MasterContext> initMasterContext(
