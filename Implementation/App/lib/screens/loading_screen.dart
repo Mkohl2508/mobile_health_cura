@@ -15,8 +15,12 @@ import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/screens/home_screen.dart';
 import 'package:cura/utils/query_wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import '../main.dart';
 
 class LoadingScreen extends StatefulWidget {
   final User? loggedUser;
@@ -190,6 +194,92 @@ Future<MasterContext> initMasterContext(
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  void _showSnackBar(String title, String message) {
+    final snackBar = SnackBar(
+      content: Container(
+        height: 50,
+        width: double.infinity,
+        child: Row(
+          children: [
+            Icon(Icons.ac_unit),
+            Column(
+              children: [
+                RichText(
+                    text: TextSpan(children: [
+                  TextSpan(text: title),
+                  TextSpan(text: message)
+                ]))
+              ],
+            )
+          ],
+        ),
+      ),
+      duration: Duration(seconds: 2),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.instance.subscribeToTopic("chronicWounds");
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      print("im triggered onMessage");
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                color: Colors.blue,
+                playSound: true,
+                icon: '@mipmap/cura_logo',
+              ),
+            ));
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      print("im triggered onMessageOpenedApp");
+      if (notification != null && android != null) {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text(notification.title!),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [Text(notification.body!)],
+                  ),
+                ),
+              );
+            });
+      }
+    });
+  }
+
+  void showNotification() {
+    flutterLocalNotificationsPlugin.show(
+        0,
+        "Cura notification",
+        "Alert: Patient wound status changed",
+        NotificationDetails(
+            android: AndroidNotificationDetails(channel.id, channel.name,
+                importance: Importance.high,
+                color: Colors.blue,
+                playSound: true,
+                icon: '@mipmap/cura_logo')));
+  }
+
   @override
   Widget build(BuildContext context) {
     // init mock data
