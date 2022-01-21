@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cura/model/general/wound_notification.dart';
 import 'package:cura/model/enums/roles.dart';
 import 'package:cura/model/general/device.dart';
 import 'package:cura/model/general/device_data.dart';
@@ -61,6 +63,9 @@ class QueryWrapper {
             toFirestore: (room, _) => room.toJson(),
           );
 
+  static final notificationsRef =
+      nursingHomeRef.doc(nursingHomeID).collection("Notifications").get();
+
   static CollectionReference<Patient> patientsRef(roomId) {
     return roomsRef.doc(roomId).collection("Patient").withConverter<Patient>(
           fromFirestore: (snapshot, _) => Patient.fromJson(snapshot.data()!),
@@ -90,6 +95,17 @@ class QueryWrapper {
       print('Got error:$e');
       return 42;
     });
+  }
+
+  static Future<List<WoundNotification>> getNotifications() async {
+    var notifications = await notificationsRef;
+    List<WoundNotification> woundNotifications = [];
+    for (var notification in notifications.docs) {
+      var notificationJSON = notification.data();
+      notificationJSON["id"] = notification.id;
+      woundNotifications.add(WoundNotification.fromJson(notificationJSON));
+    }
+    return woundNotifications;
   }
 
   static getPatients(roomID) async {
@@ -176,6 +192,21 @@ class QueryWrapper {
     return imagesURL;
   }
 
+  static postNotification(
+      String notificationID, String status, String nurseID) async {
+    return await nursingHomeRef
+        .doc(nursingHomeID)
+        .collection("Notifications")
+        .doc(notificationID)
+        .update({"status": status, "nurseId": nurseID}).then((value) {
+      return value;
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
+  }
+
+  //patientid, nurseid, woundid, status, description
   static postWoundEntry(Patient patient, Room room) async {
     // Update the database
     var patiento = patient.patientFile.toJson();
@@ -281,10 +312,7 @@ class QueryWrapper {
           phoneNumber: "",
           profileImage: "",
           userId: user.uid);
-      nursesRef
-          .doc(Uuid().v1())
-          .set(newNurse)
-          .then((value) => newNurse);
+      nursesRef.doc(Uuid().v1()).set(newNurse).then((value) => newNurse);
     }
   }
 

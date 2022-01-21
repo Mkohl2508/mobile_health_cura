@@ -1,6 +1,7 @@
 import 'package:cura/model/enums/edge_enum.dart';
 import 'package:cura/model/enums/exudate_enum.dart';
 import 'package:cura/model/enums/form_enum.dart';
+import 'package:cura/model/enums/notification_status_enum.dart';
 import 'package:cura/model/enums/phase_enum.dart';
 
 class EnumConverter {
@@ -125,6 +126,33 @@ class EnumConverter {
         return "Undefined";
       default:
         throw Exception("Invalid FormEnum");
+    }
+  }
+
+  static NotificationStatus stringToNotificationStatusEnum(String str) {
+    switch (str) {
+      case "To do":
+        return NotificationStatus.toDo;
+      case "In progress":
+        return NotificationStatus.inProgress;
+      case "Done":
+        return NotificationStatus.done;
+      default:
+        throw Exception("Invalid NotificationStatus");
+    }
+  }
+
+  static String notificationStatusEnumToString(
+      NotificationStatus notificationStatus) {
+    switch (notificationStatus) {
+      case NotificationStatus.toDo:
+        return "To do";
+      case NotificationStatus.inProgress:
+        return "In progress";
+      case NotificationStatus.done:
+        return "Done";
+      default:
+        throw Exception("Invalid NotificationStatus");
     }
   }
 }

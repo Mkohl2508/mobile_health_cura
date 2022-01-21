@@ -18,4 +18,7 @@ class Room {
   factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
 
   Map<String, dynamic> toJson() => _$RoomToJson(this);
+
+  Patient getPatientById(String id) =>
+      patients.firstWhere((patient) => patient.id == id);
 }

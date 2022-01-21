@@ -65,7 +65,7 @@ class CuraApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: FirebaseAuth.instance.currentUser != null
-            ? LoadingScreen(loggedUser:FirebaseAuth.instance.currentUser)
+            ? LoadingScreen(loggedUser: FirebaseAuth.instance.currentUser)
             : LoginScreen());
   }
 }
