@@ -3,6 +3,7 @@ import 'package:cura/model/enums/exudate_enum.dart';
 import 'package:cura/model/enums/form_enum.dart';
 import 'package:cura/model/enums/phase_enum.dart';
 import 'package:cura/model/general/doctor.dart';
+import 'package:cura/model/general/master_context.dart';
 import 'package:cura/model/general/nurse.dart';
 import 'package:cura/model/general/old_people_home.dart';
 import 'package:cura/model/general/room.dart';
@@ -13,6 +14,7 @@ import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/screens/home_screen.dart';
 import 'package:cura/utils/query_wrapper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
@@ -21,7 +23,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../main.dart';
 
 class LoadingScreen extends StatefulWidget {
-  const LoadingScreen({Key? key}) : super(key: key);
+  final User? loggedUser;
+  final Nurse? loggedNurse;
+  const LoadingScreen({Key? key, this.loggedUser, this.loggedNurse})
+      : super(key: key);
 
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
@@ -176,8 +181,17 @@ Future<OldPeopleHome> _initOldPeopleHome() async {
       notifications: await QueryWrapper.getNotifications());
 }
 
-Future<OldPeopleHome> initMasterContext() async {
-  return await _initOldPeopleHome();
+Future<MasterContext> initMasterContext(
+    User? loggedUser, Nurse? loggedNurse) async {
+  MasterContext masterContext = MasterContext();
+  OldPeopleHome oldPeopleHome = await _initOldPeopleHome();
+
+  masterContext.oldPeopleHomesList.add(oldPeopleHome);
+  masterContext.loggedNurse = loggedNurse ??
+      oldPeopleHome.nurses
+          .firstWhere((element) => element.userId == loggedUser!.uid);
+          
+  return masterContext;
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
@@ -272,13 +286,16 @@ class _LoadingScreenState extends State<LoadingScreen> {
     // init mock data
     return Scaffold(
       body: Center(
-        child: FutureBuilder<OldPeopleHome>(
-            future: initMasterContext(),
+        child: FutureBuilder<MasterContext>(
+            future: initMasterContext(widget.loggedUser, widget.loggedNurse),
             builder:
-                (BuildContext context, AsyncSnapshot<OldPeopleHome> snapshot) {
+                (BuildContext context, AsyncSnapshot<MasterContext> snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.data != null) {
-                  globals.masterContext.oldPeopleHomesList.add(snapshot.data!);
+                  globals.masterContext.oldPeopleHomesList
+                      .add(snapshot.data!.oldPeopleHomesList.first);
+                  globals.masterContext.loggedNurse =
+                      snapshot.data!.loggedNurse!;
                 }
                 return HomeScreen();
               } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -301,7 +318,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoadingScreen()));
+                                    builder: (context) => LoadingScreen(
+                                        loggedUser: widget.loggedUser)));
                           },
                           icon: Icon(Icons.update))
                     ]);

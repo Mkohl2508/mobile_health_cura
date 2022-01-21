@@ -1,12 +1,10 @@
 import 'package:cura/model/widget/AppColors.dart';
-import 'package:cura/screens/home_screen.dart';
 import 'package:cura/screens/loading_screen.dart';
 import 'package:cura/shared/text_input_login_widget.dart';
+import 'package:cura/utils/auth_helper.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cura/utils/firebase_auth.dart';
-import 'package:cura/utils/validator.dart';
 import 'package:flutter_svg/svg.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -110,17 +108,34 @@ class _LoginScreenState extends State<LoginScreen> {
                                           color: AppColors.cura_cyan)))),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              _signInWithEmailAndPassword().then((success) => {
-                                    if (success)
-                                      {
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    LoadingScreen()),
-                                            (route) => false)
-                                      }
-                                  });
+                              if (_emailController.text.isEmpty ||
+                                  _passwordController.text.isEmpty) {
+                                print("Email and password cannot be empty");
+                                return;
+                              }
+                              try {
+                                final user = await AuthHelper.signInWithEmail(
+                                    email: _emailController.text,
+                                    password: _passwordController.text);
+                                if (user != null) {
+                                  QueryWrapper.postOrUpdateUser(user).then(
+                                      (nurse) => Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoadingScreen(
+                                                      loggedNurse: nurse!)),
+                                          (route) => false));
+                                }
+                              } on FirebaseAuthException catch (error) {
+                                switch (error.code) {
+                                  case "user-not-found":
+                                  case "invalid-email":
+                                  case "wrong-password":
+                                    print("Wrong email/password combination.");
+                                    break;
+                                }
+                              }
                             }
                           },
                           child: SizedBox(
@@ -177,21 +192,5 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  // Example code of how to sign in with email and password.
-  Future<bool> _signInWithEmailAndPassword() async {
-    try {
-      final User user = (await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      ))
-          .user!;
-      print('${user.email} signed in');
-      return true;
-    } catch (e) {
-      print('Failed to sign in with Email & Password');
-      return false;
-    }
   }
 }
