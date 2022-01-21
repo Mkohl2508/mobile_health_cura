@@ -1,7 +1,7 @@
-import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/model/widget/BasicTile.dart';
 import 'package:cura/screens/patient_screen.dart';
 import 'package:cura/shared/basic_tile_widget.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:cura/globals.dart' as globals;
 
@@ -15,19 +15,23 @@ class PatienListScreen extends StatefulWidget {
 class _PatienListScreenState extends State<PatienListScreen> {
   List<BasicTile> _initTiles() {
     final roomTiles = <BasicTile>[];
-    for (var room in globals.masterContext.getById("1oldPeopleHome")!.rooms) {
+    for (var room
+        in globals.masterContext.getById(QueryWrapper.nursingHomeID)!.rooms) {
       final patientTiles = <BasicTile>[];
-      for (var patient in room.patients) {
-        patientTiles.add(BasicTile(
-            title: patient.fullName(),
-            function: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PatientScreen(
-                            patient: patient,
-                          )));
-            }));
+      if (room.patients != null) {
+        for (var patient in room.patients) {
+          patientTiles.add(BasicTile(
+              title: patient.fullName(),
+              function: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PatientScreen(
+                              patient: patient,
+                              room: room,
+                            )));
+              }));
+        }
       }
 
       BasicTile roomTile = BasicTile(

@@ -2,7 +2,10 @@ import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/calendar_view_screen.dart';
 import 'package:cura/screens/notification_screen.dart';
 import 'package:cura/screens/patient_list_screen.dart';
+import 'package:cura/screens/add_room_screen.dart';
+import 'package:cura/screens/add_patient_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,14 +28,32 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButton: _currentIndex == 0
-          ? FloatingActionButton(
-              child: Icon(
-                Icons.add,
-                size: 30,
-                color: Colors.white,
-              ),
-              backgroundColor: AppColors.cura_darkBlue,
-              onPressed: () {},
+          ? SpeedDial(
+              icon: Icons.add,
+              children: [
+                SpeedDialChild(
+                  child: Icon(Icons.room),
+                  label: "Add Room",
+                  backgroundColor: AppColors.cure_brightBlue,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddRoomScreen()));
+                  },
+                ),
+                SpeedDialChild(
+                  child: Icon(Icons.person),
+                  label: "Add Patient",
+                  backgroundColor: AppColors.cure_brightBlue,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddPatientScreen()));
+                  },
+                )
+              ],
             )
           : null,
       body: Column(

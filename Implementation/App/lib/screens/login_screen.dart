@@ -24,8 +24,11 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     _auth.userChanges().listen(
-          (event) => setState(() => user = event),
-        );
+      (event) {
+        if (!mounted) return;
+        setState(() => user = event);
+      },
+    );
     super.initState();
   }
 
