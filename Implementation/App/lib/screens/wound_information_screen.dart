@@ -5,6 +5,7 @@ import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/screens/wound_entry_screen.dart';
 import 'package:cura/shared/icon_tile_widget.dart';
+import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class WoundInformationScreen extends StatefulWidget {
@@ -267,75 +268,74 @@ class _WoundInformationScreenState extends State<WoundInformationScreen> {
               SizedBox(
                 height: 60,
               ),
-              widget.wound.isHealed
-                  ? Container()
-                  : Center(
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                AppColors.cura_darkBlue),
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40.0),
-                                    side: BorderSide(
-                                        color: AppColors.cura_darkBlue)))),
-                        onPressed: () {
-                          // set up the buttons
-                          Widget cancelButton = TextButton(
-                            child: Text("Cancel"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          );
-                          Widget continueButton = TextButton(
-                            child: Text("Continue"),
-                            onPressed: () {
-                              widget.wound.isHealed = true;
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                          );
+              Center(
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(AppColors.cura_darkBlue),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40.0),
+                              side:
+                                  BorderSide(color: AppColors.cura_darkBlue)))),
+                  onPressed: () {
+                    // set up the buttons
+                    Widget cancelButton = TextButton(
+                      child: Text("Cancel"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    );
+                    Widget continueButton = TextButton(
+                      child: Text("Continue"),
+                      onPressed: () {
+                        widget.wound.isHealed = true;
+                        QueryWrapper.postWoundEntry(
+                            widget.patient, widget.room);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                    );
 
-                          // set up the AlertDialog
-                          AlertDialog alert = AlertDialog(
-                            title: Text("Wound is healed"),
-                            content: Text(
-                                "After this action, the wound is considered healed. You cannot add any more entries afterwards.\n\nWould you like to continue?"),
-                            actions: [
-                              cancelButton,
-                              continueButton,
-                            ],
-                          );
+                    // set up the AlertDialog
+                    AlertDialog alert = AlertDialog(
+                      title: Text("Wound is healed"),
+                      content: Text(
+                          "After this action, the wound is considered healed. You cannot add any more entries afterwards.\n\nWould you like to continue?"),
+                      actions: [
+                        cancelButton,
+                        continueButton,
+                      ],
+                    );
 
-                          // show the dialog
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return alert;
-                            },
-                          );
-                        },
-                        child: Container(
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            height: 60,
-                            child: Center(
-                                child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.health_and_safety,
-                                  size: 26,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text("Wound is healed"),
-                              ],
-                            ))),
-                      ),
-                    ),
+                    // show the dialog
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return alert;
+                      },
+                    );
+                  },
+                  child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 60,
+                      child: Center(
+                          child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.health_and_safety,
+                            size: 26,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("Wound is healed"),
+                        ],
+                      ))),
+                ),
+              ),
             ],
           ),
         ),

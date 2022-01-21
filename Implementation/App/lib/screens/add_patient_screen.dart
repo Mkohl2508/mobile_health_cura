@@ -296,7 +296,8 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                             phoneNumber: _numberController.text.isEmpty
                                 ? null
                                 : _numberController.text,
-                            patientFile: PatientRecord(id: Uuid().v1()));
+                            patientFile:
+                                PatientRecord(id: Uuid().v1(), wounds: []));
 
                         await QueryWrapper.postPatient(
                             _currentRoom!.number.toString(), newPerson);

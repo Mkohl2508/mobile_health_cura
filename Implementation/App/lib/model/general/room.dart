@@ -5,10 +5,12 @@ part 'room.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Room {
   static List<Patient> emptyPatients(dynamic value) => <Patient>[];
+  static toNull(_) => null;
 
   final int number;
   final String? name;
-  @JsonKey(ignore: true)
+  
+  @JsonKey(toJson: toNull, fromJson: emptyPatients, includeIfNull: false)
   final List<Patient> patients;
 
   Room({required this.number, this.name, required this.patients});
