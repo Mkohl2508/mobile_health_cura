@@ -45,7 +45,7 @@ class OldPeopleHome {
 
   Nurse? getNurseById(String id) {
     try {
-      nurses.firstWhere((nurse) => nurse.id == id,
+      return nurses.firstWhere((nurse) => nurse.id == id,
           orElse: () => throw Exception('Nurse not found'));
     } catch (e) {
       return null;

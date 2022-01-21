@@ -145,7 +145,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               )
             ],
           ),
-          _localUserId == notif.nurseId!
+          masterContext.loggedNurse!.id == notif.nurseId!
               ? ElevatedButton(
                   style: ButtonStyle(
                       backgroundColor:
