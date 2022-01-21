@@ -53,6 +53,19 @@ class QueryWrapper {
         );
   }
 
+  static getNotifications() async {
+    return await nursingHomeRef
+        .doc(nursingHomeID)
+        .collection("Notifications")
+        .get()
+        .then((value) {
+      return value.docs;
+    }).catchError((e) {
+      print('Got error:$e');
+      return 42;
+    });
+  }
+
   static getDoctors() async {
     return await doctorsRef.get().then((value) {
       return value.docs;
