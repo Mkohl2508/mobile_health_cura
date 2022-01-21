@@ -176,12 +176,13 @@ class QueryWrapper {
     return imagesURL;
   }
 
-  static postNotification() async {
+  static postNotification(
+      String notificationID, String status, String nurseID) async {
     return await nursesRef
         .doc(nursingHomeID)
         .collection("Notifications")
-        .doc("ID")
-        .update({"status": "toDo"}).then((value) {
+        .doc(notificationID)
+        .update({"status": status, "nurseId": nurseID}).then((value) {
       return value;
     }).catchError((e) {
       print('Got error:$e');
@@ -295,10 +296,7 @@ class QueryWrapper {
           phoneNumber: "",
           profileImage: "",
           userId: user.uid);
-      nursesRef
-          .doc(Uuid().v1())
-          .set(newNurse)
-          .then((value) => newNurse);
+      nursesRef.doc(Uuid().v1()).set(newNurse).then((value) => newNurse);
     }
   }
 
