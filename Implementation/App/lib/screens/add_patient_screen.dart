@@ -1,11 +1,8 @@
 import 'dart:io';
 
-import 'package:carousel_slider/carousel_options.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cura/model/general/old_people_home.dart';
 import 'package:cura/model/general/room.dart';
 import 'package:cura/model/patient/patient_record.dart';
-import 'package:cura/model/residence/residence.dart';
 import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:cura/model/widget/AppColors.dart';

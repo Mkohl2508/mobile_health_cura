@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/general/room.dart';
 import 'package:cura/screens/home_screen.dart';
 import 'package:cura/utils/query_wrapper.dart';
