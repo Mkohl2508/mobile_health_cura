@@ -1,3 +1,5 @@
+import 'package:cura/model/general/local_user.dart';
+import 'package:cura/screens/loading_screen.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -63,7 +65,7 @@ class CuraApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: FirebaseAuth.instance.currentUser != null
-            ? LoadingScreen()
+            ? LoadingScreen(loggedUser:FirebaseAuth.instance.currentUser)
             : LoginScreen());
   }
 }

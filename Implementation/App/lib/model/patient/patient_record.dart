@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cura/model/general/doctor.dart';
 import 'package:cura/model/residence/residence.dart';
 import 'package:cura/model/patient/patient_treatment/medication.dart';
@@ -37,4 +36,8 @@ class PatientRecord {
       _$PatientRecordFromJson(json);
 
   Map<String, dynamic> toJson() => _$PatientRecordToJson(this);
+
+  Wound? getWoundById(String id) {
+    return wounds?.firstWhere((wound) => wound.id == id);
+  }
 }
