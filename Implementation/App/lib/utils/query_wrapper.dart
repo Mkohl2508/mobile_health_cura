@@ -22,7 +22,7 @@ class QueryWrapper {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   static const String nursingHomeID =
-      "hGBmTs0P4UGBtDNso29f"; //"Uoto3xaa5ZL9N2mMjPhG";
+      "gjsrMjy7BzLeWQD844kx"; //"Uoto3xaa5ZL9N2mMjPhG";
 
   static final nursingHomeRef = FirebaseFirestore.instance
       .collection('NursingHome')
