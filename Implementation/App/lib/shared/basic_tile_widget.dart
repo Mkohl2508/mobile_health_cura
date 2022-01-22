@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class BasicTileWidget extends StatelessWidget {
   final BasicTile tile;
 
+  /// Standardized tile for reuse
   const BasicTileWidget({Key? key, required this.tile}) : super(key: key);
 
   @override

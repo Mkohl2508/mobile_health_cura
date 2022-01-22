@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 class AddWoundScreen extends StatefulWidget {
   final Patient patient;
 
+  /// Screen enables to add a new wound to the patient record by submitting form.
   const AddWoundScreen({Key? key, required this.patient}) : super(key: key);
 
   @override

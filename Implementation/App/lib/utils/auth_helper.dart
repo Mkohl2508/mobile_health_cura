@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// static class to help with authentication process
 class AuthHelper {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 

@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 class WoundOverviewScreen extends StatefulWidget {
   final Patient patient;
   final Room room;
+
+  /// This screen shows all wounds that are ongoing or already healed.
   const WoundOverviewScreen(
       {Key? key, required this.patient, required this.room})
       : super(key: key);
@@ -22,6 +24,7 @@ class WoundOverviewScreen extends StatefulWidget {
 class _WoundOverviewState extends State<WoundOverviewScreen> {
   final _isHealedOpacity = 0.3;
 
+  /// Filles the widget with information of all wounds
   List<Widget> _initWounds(Patient patient, bool initHealed) {
     final List<Widget> widgets = [];
     final List<Wound>? wounds = patient.patientFile.wounds;

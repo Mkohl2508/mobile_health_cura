@@ -15,6 +15,8 @@ class WoundEntryScreen extends StatefulWidget {
   final Patient patient;
   final Wound wound;
   final Room room;
+
+  /// Screen to show detailed information about one documentation entry of a wound
   const WoundEntryScreen(
       {Key? key,
       required this.patient,

@@ -12,6 +12,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatefulWidget {
+  /// Home screen that hosts the three views for Rooms/Patients, Profile
+  /// and Notifications
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
