@@ -25,6 +25,8 @@ import '../main.dart';
 class LoadingScreen extends StatefulWidget {
   final User? loggedUser;
   final Nurse? loggedNurse;
+
+  /// Screen to show loading icon while data is being fetched from the database.
   const LoadingScreen({Key? key, this.loggedUser, this.loggedNurse})
       : super(key: key);
 
@@ -93,6 +95,7 @@ Wound _initWound2() {
       woundEntrys: []);
 }
 
+/// Get all doctors from database and convert them to local objects.
 Future<List<Doctor>> _initDoctors() async {
   List<Doctor> doctors = [];
   List<dynamic> doctorsIds = await QueryWrapper.getDoctors();
@@ -103,6 +106,8 @@ Future<List<Doctor>> _initDoctors() async {
   return doctors;
 }
 
+/// Get all patients from database and convert them to local objects.
+/// also completes the patient file by adding the attending doctor to it.
 Future<List<Patient>> _initPatient(roomID, doctors) async {
   List<Patient> initPatients = [];
   List<dynamic> patientsIds = await QueryWrapper.getPatients(roomID);
@@ -116,6 +121,7 @@ Future<List<Patient>> _initPatient(roomID, doctors) async {
   return initPatients;
 }
 
+/// Creates a patient records and adds the attending doctor
 PatientRecord addDoctorToPatientRecord(patientFile, doctors) {
   return PatientRecord(
       id: patientFile.id,
@@ -125,6 +131,7 @@ PatientRecord addDoctorToPatientRecord(patientFile, doctors) {
           findAttentingDoctor(patientFile.attendingDoctor!.id, doctors));
 }
 
+/// Gets the attending doctor by the ID
 Doctor? findAttentingDoctor(doctorId, doctors) {
   for (var doctor in doctors) {
     if (doctor.id == doctorId) {
@@ -133,6 +140,7 @@ Doctor? findAttentingDoctor(doctorId, doctors) {
   }
 }
 
+/// combines patient data and patient record to one complete object
 Patient finalPatient(patient, patientRecord) {
   return Patient(
       id: patient.id,
@@ -145,6 +153,7 @@ Patient finalPatient(patient, patientRecord) {
       patientFile: patientRecord);
 }
 
+/// Initializes all rooms and calls the initialization of the patients within this room
 Future<List<Room>> _initRooms(doctors) async {
   List<Room> initRooms = [];
   List<dynamic> rooms = await QueryWrapper.getRooms();
@@ -158,6 +167,7 @@ Future<List<Room>> _initRooms(doctors) async {
   return initRooms;
 }
 
+/// Initializes all nurses registered in the database
 Future<List<Nurse>> _initNurses() async {
   List<Nurse> nurses = [];
   List<dynamic> nursesIds = await QueryWrapper.getNurses();
@@ -168,6 +178,7 @@ Future<List<Nurse>> _initNurses() async {
   return nurses;
 }
 
+/// Initial call to create the structure for one nursing home
 Future<OldPeopleHome> _initOldPeopleHome() async {
   OldPeopleHome oldPeopleHome = await QueryWrapper.getNursingHome();
   List<Doctor> doctors = await _initDoctors();
@@ -181,6 +192,7 @@ Future<OldPeopleHome> _initOldPeopleHome() async {
       notifications: await QueryWrapper.getNotifications());
 }
 
+/// Initializes the master context and fills it with a nursing home
 Future<MasterContext> initMasterContext(
     User? loggedUser, Nurse? loggedNurse) async {
   MasterContext masterContext = MasterContext();
@@ -190,10 +202,11 @@ Future<MasterContext> initMasterContext(
   masterContext.loggedNurse = loggedNurse ??
       oldPeopleHome.nurses
           .firstWhere((element) => element.userId == loggedUser!.uid);
-          
+
   return masterContext;
 }
 
+/// Screen to show loading icon while data is being fethced from the database.
 class _LoadingScreenState extends State<LoadingScreen> {
   void _showSnackBar(String title, String message) {
     final snackBar = SnackBar(
@@ -268,6 +281,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     });
   }
 
+  /// Will show notofication to notification screen
   void showNotification() {
     flutterLocalNotificationsPlugin.show(
         0,

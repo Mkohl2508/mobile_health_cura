@@ -13,6 +13,7 @@ class WoundInformationScreen extends StatefulWidget {
   final Patient patient;
   final Wound wound;
 
+  /// Screen to show detailed information about one particular wound.
   const WoundInformationScreen(
       {Key? key,
       required this.room,

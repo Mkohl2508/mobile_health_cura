@@ -6,6 +6,7 @@ import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/globals.dart' as globals;
 
 class AddRoomScreen extends StatefulWidget {
+  /// Screen to create a new room at add to retirenment home.
   const AddRoomScreen({Key? key}) : super(key: key);
 
   @override

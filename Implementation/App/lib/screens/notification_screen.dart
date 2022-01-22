@@ -11,6 +11,7 @@ import 'package:cura/utils/query_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatefulWidget {
+  /// The screen to present all notifications
   const NotificationScreen({Key? key}) : super(key: key);
 
   @override

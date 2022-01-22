@@ -7,6 +7,8 @@ class TextInputLogin extends StatefulWidget {
   final bool isPassword;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+
+  /// Standardized text input field for reuse
   const TextInputLogin(
       {Key? key,
       Icon? icon,

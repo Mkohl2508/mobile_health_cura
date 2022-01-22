@@ -7,6 +7,7 @@ class FullScreenImage extends StatelessWidget {
   final File? imageFile;
   final String? imageUrl;
 
+  /// Enables fullscreen mode for images
   const FullScreenImage({Key? key, this.imageFile, this.imageUrl})
       : super(key: key);
 

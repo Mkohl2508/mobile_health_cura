@@ -22,6 +22,8 @@ class AddWoundEntryScreen extends StatefulWidget {
   final Wound wound;
   final Patient patient;
   final Room room;
+
+  ///A new wound entry can be created on this screen by filling out the form.
   const AddWoundEntryScreen(
       {Key? key,
       required this.wound,

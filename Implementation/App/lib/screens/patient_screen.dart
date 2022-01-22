@@ -10,6 +10,8 @@ import 'full_screen_screen.dart';
 class PatientScreen extends StatefulWidget {
   final Patient patient;
   final Room room;
+
+  /// This screen shows detailed information of one patient
   const PatientScreen({Key? key, required this.patient, required this.room})
       : super(key: key);
 
@@ -202,6 +204,8 @@ class _PatientScreenState extends State<PatientScreen> {
     ));
   }
 
+  /// Builds a widget that displays the information to the currently attending doctor
+  /// of this patient. It will only be build if this information is given.
   Widget initDoctorWidget() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
