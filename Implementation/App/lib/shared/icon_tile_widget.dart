@@ -10,6 +10,7 @@ class IconTileWidget extends StatefulWidget {
   final List<Widget>? listInputs;
   final Icon? trailingIcon;
 
+  /// Standardized icon tile for reuse
   const IconTileWidget(
       {Key? key,
       this.onTap,

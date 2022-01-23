@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:cura/globals.dart' as globals;
 
 class PatienListScreen extends StatefulWidget {
+  /// This Screen displays an overview of all rooms with the individual patients
   const PatienListScreen({Key? key}) : super(key: key);
 
   @override
@@ -18,18 +19,18 @@ class _PatienListScreenState extends State<PatienListScreen> {
     for (var room
         in globals.masterContext.getById(QueryWrapper.nursingHomeID)!.rooms) {
       final patientTiles = <BasicTile>[];
-        for (var patient in room.patients) {
-          patientTiles.add(BasicTile(
-              title: patient.fullName(),
-              function: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PatientScreen(
-                              patient: patient,
-                              room: room,
-                            )));
-              }));
+      for (var patient in room.patients) {
+        patientTiles.add(BasicTile(
+            title: patient.fullName(),
+            function: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PatientScreen(
+                            patient: patient,
+                            room: room,
+                          )));
+            }));
       }
 
       BasicTile roomTile = BasicTile(

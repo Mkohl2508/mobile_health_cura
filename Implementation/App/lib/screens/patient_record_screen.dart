@@ -9,6 +9,8 @@ class PatientRecordScreen extends StatefulWidget {
   final Patient patient;
   final Room room;
 
+  /// This screen shows an overview of the patient record with current medication, wounds
+  /// and emergency contacts. Medication and emergency contacts are only placeholder for now.
   const PatientRecordScreen(
       {Key? key, required this.patient, required this.room})
       : super(key: key);
