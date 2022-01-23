@@ -23,6 +23,9 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(
+            height: 15,
+          ),
           Center(
             child: GestureDetector(
               onTap: nurse.profileImage == null
@@ -37,7 +40,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 child: nurse.profileImage == null
                     ? Image.asset("assets/no-image.jpg")
                     : FadeInImage.memoryNetwork(
-                        height: 300,
+                        height: 250,
                         width: double.infinity,
                         fit: BoxFit.cover,
                         placeholder: kTransparentImage,

@@ -5,6 +5,7 @@ import 'package:cura/model/enums/enum_converter.dart';
 import 'package:cura/model/enums/notification_status_enum.dart';
 import 'package:cura/model/general/nurse.dart';
 import 'package:cura/model/general/wound_notification.dart';
+import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/residence/residence.dart';
 import 'package:cura/model/widget/AppColors.dart';
 import 'package:cura/utils/query_wrapper.dart';
@@ -20,6 +21,8 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   final _localUserId = "me1";
+  List<WoundNotification> notifications = [];
+  late Future<void> _initNotificationData;
 
   Widget notifciationTemplate(WoundNotification notif) {
     var nursingHome = masterContext.getById(QueryWrapper.nursingHomeID);
@@ -182,6 +185,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    _initNotificationData = _initNotifications();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
@@ -199,16 +209,47 @@ class _NotificationScreenState extends State<NotificationScreen> {
             ),
             Container(
                 height: MediaQuery.of(context).size.height * 0.66,
-                child: ListView(
-                  children: masterContext
-                      .getById(QueryWrapper.nursingHomeID)!
-                      .notifications
+                child: FutureBuilder<void>(
+                  future: _initNotificationData,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return CircularProgressIndicator();
+
+                      case ConnectionState.done:
+                        return RefreshIndicator(
+                          onRefresh: _refreshNotifications,
+                          child: ListView(
+                              children: notifications
+                                  .map((notif) => notifciationTemplate(notif))
+                                  .toList()),
+                        );
+
+                      default:
+                        return Container();
+                    }
+                  },
+                ) /*ListView(
+                  children: notifications
                       .map((notif) => notifciationTemplate(notif))
                       .toList(),
-                ))
+                )*/
+                )
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _initNotifications() async {
+    final notif = await QueryWrapper.getNotifications();
+    notifications = notif;
+  }
+
+  Future<void> _refreshNotifications() async {
+    final notif = await QueryWrapper.getNotifications();
+    setState(() {
+      notifications = notif;
+    });
   }
 }

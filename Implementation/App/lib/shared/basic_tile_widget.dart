@@ -14,8 +14,9 @@ class BasicTileWidget extends StatelessWidget {
     final title = tile.title;
     final tiles = tile.tiles;
     final function = tile.function;
+    final parent = tile.parent;
 
-    if (tiles.isEmpty) {
+    if (tiles.isEmpty && parent != null) {
       return Container(
         decoration: BoxDecoration(
             color: Colors.white, borderRadius: BorderRadius.circular(10)),
@@ -26,6 +27,29 @@ class BasicTileWidget extends StatelessWidget {
           ),
           tileColor: Colors.white,
           title: Text(title),
+        ),
+      );
+    } else if (tiles.isEmpty && parent == null) {
+      return Container(
+        decoration: BoxDecoration(
+            color: AppColors.cure_brightBlue,
+            borderRadius: BorderRadius.circular(10)),
+        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+        child: ListTile(
+          onTap: function,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          tileColor: AppColors.cura_cyan,
+          title: Padding(
+            padding: const EdgeInsets.only(
+              left: 25,
+            ),
+            child: Text(
+              title,
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
         ),
       );
     } else {
