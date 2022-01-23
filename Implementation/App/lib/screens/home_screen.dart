@@ -1,6 +1,6 @@
 import 'package:cura/main.dart';
 import 'package:cura/model/widget/AppColors.dart';
-import 'package:cura/screens/calendar_view_screen.dart';
+import 'package:cura/screens/profile_screen.dart';
 import 'package:cura/screens/login_screen.dart';
 import 'package:cura/screens/notification_screen.dart';
 import 'package:cura/screens/patient_list_screen.dart';
@@ -12,6 +12,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatefulWidget {
+  /// Home screen that hosts the three views for Rooms/Patients, Profile
+  /// and Notifications
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -22,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final tabs = [
     PatienListScreen(),
-    CalendarViewScreen(),
+    ProfileViewScreen(),
     NotificationScreen(),
   ];
 
@@ -58,7 +60,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             )
-          : null,
+          : _currentIndex == 1
+              ? FloatingActionButton(
+                  onPressed: () {
+                    AuthHelper.logOut();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                  },
+                  child: const Icon(Icons.logout),
+                  backgroundColor: Colors.blue,
+                )
+              : null,
       body: Column(
         children: [
           SafeArea(
@@ -83,8 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.menu),
           ),
           BottomNavigationBarItem(
-            label: "Calendar",
-            icon: Icon(Icons.calendar_today),
+            label: "Profile",
+            icon: Icon(Icons.person),
           ),
           BottomNavigationBarItem(
             label: "Notification",

@@ -10,6 +10,7 @@ import 'package:flutter_svg/svg.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class LoginScreen extends StatefulWidget {
+  /// Screen for authentication
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
