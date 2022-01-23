@@ -16,6 +16,7 @@ import 'package:uuid/uuid.dart';
 import 'full_screen_screen.dart';
 
 class AddPatientScreen extends StatefulWidget {
+  /// Screen to add a new patient to a room. At least one room has to exist.
   const AddPatientScreen({Key? key}) : super(key: key);
 
   @override
