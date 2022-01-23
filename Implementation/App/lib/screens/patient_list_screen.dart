@@ -30,11 +30,14 @@ class _PatienListScreenState extends State<PatienListScreen> {
                             patient: patient,
                             room: room,
                           )));
-            }));
+            },
+            parent: 'there is one'));
       }
 
       BasicTile roomTile = BasicTile(
-          title: "Room " + room.number.toString(), tiles: patientTiles);
+          parent: null,
+          title: "Room " + room.number.toString(),
+          tiles: patientTiles);
       roomTiles.add(roomTile);
     }
     return roomTiles;

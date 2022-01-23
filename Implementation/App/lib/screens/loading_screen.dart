@@ -7,12 +7,14 @@ import 'package:cura/model/general/master_context.dart';
 import 'package:cura/model/general/nurse.dart';
 import 'package:cura/model/general/old_people_home.dart';
 import 'package:cura/model/general/room.dart';
+import 'package:cura/model/general/wound_notification.dart';
 import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_record.dart';
 import "package:cura/globals.dart" as globals;
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound_entry.dart';
 import 'package:cura/screens/home_screen.dart';
+import 'package:cura/screens/notification_screen.dart';
 import 'package:cura/utils/query_wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -243,6 +245,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
       AndroidNotification? android = message.notification?.android;
       print("im triggered onMessage");
       if (notification != null && android != null) {
+        //load the notification
+
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
             notification.title,

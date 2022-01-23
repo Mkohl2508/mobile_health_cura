@@ -70,8 +70,10 @@ class QueryWrapper {
           );
 
   /// Database reference to notifications
-  static final notificationsRef =
-      nursingHomeRef.doc(nursingHomeID).collection("Notifications").get();
+  static Future<QuerySnapshot<Map<String, dynamic>>>
+      getNotificationsRef() async {
+    return nursingHomeRef.doc(nursingHomeID).collection("Notifications").get();
+  }
 
   /// Database reference to patients
   static CollectionReference<Patient> patientsRef(roomId) {
@@ -110,7 +112,7 @@ class QueryWrapper {
 
   /// Gets all notifications from the database and adds the ids
   static Future<List<WoundNotification>> getNotifications() async {
-    var notifications = await notificationsRef;
+    var notifications = await getNotificationsRef();
     List<WoundNotification> woundNotifications = [];
     for (var notification in notifications.docs) {
       var notificationJSON = notification.data();
@@ -317,7 +319,7 @@ class QueryWrapper {
           .then((value) => value.docs.first.data());
     } else {
       LocalUser userData = LocalUser(
-          name: user.displayName!.isEmpty ? user.email : user.displayName,
+          name: user.email ?? '',
           email: user.email!,
           lastLogin: DateTime.fromMicrosecondsSinceEpoch(
               user.metadata.lastSignInTime!.microsecondsSinceEpoch),

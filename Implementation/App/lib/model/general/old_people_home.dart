@@ -23,7 +23,7 @@ class OldPeopleHome {
   @JsonKey(fromJson: emptyDoctors, includeIfNull: false)
   final List<Doctor> doctors;
   @JsonKey(fromJson: emptyNotifications, includeIfNull: false)
-  final List<WoundNotification> notifications;
+  List<WoundNotification> notifications;
 
   OldPeopleHome(
       {required this.id,

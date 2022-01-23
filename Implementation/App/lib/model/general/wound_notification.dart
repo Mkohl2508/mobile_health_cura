@@ -1,12 +1,8 @@
 import 'package:cura/model/enums/notification_status_enum.dart';
-import 'package:cura/model/general/nurse.dart';
-import 'package:cura/model/general/room.dart';
-import 'package:cura/model/patient/patient.dart';
 import 'package:cura/model/patient/patient_treatment/wound/wound.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'wound_notification.g.dart';
 
-@JsonSerializable()
 class WoundNotification {
   final String id;
   final String woundId;
